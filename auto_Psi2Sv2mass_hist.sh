@@ -31,6 +31,7 @@
 
 
 
+#									pt      / |y|      / cent.
 root -l -b -q 'Psi2S_v2mass_hist.C(3.0, 6.5, 1.6, 2.4, 20, 120)'
 root -l -b -q 'Psi2S_v2mass_hist.C(6.5, 10., 0, 2.4, 20, 120)'
 root -l -b -q 'Psi2S_v2mass_hist.C(10., 50., 0, 2.4, 20, 120)'

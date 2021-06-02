@@ -27,7 +27,7 @@ void GetHistSqrt(TH1D* h1 =0, TH1D* h2=0);
 void GetHistBkg(TH1D* h1 =0, TH1D* h2=0);
 
 void Psi2S_v2mass_hist(
-    double ptLow = 10, double ptHigh =  50,
+    double ptLow = 6.5, double ptHigh = 10,
     double yLow = 0, double yHigh = 2.4,
     int cLow = 20, int cHigh = 120,
 	double ctauCut=0.1,
@@ -40,12 +40,13 @@ void Psi2S_v2mass_hist(
 {
   //Basic Setting
   gStyle->SetOptStat(0);
-  TString DATE="210524";
+  TString DATE="210602";
   //TString DATE="Corr";
   //TString DATE="210503";
   gStyle->SetEndErrorSize(0);
-  gSystem->mkdir(Form("figs/v2mass_hist/%s",DATE.Data()), kTRUE);
-  gSystem->mkdir(Form("roots/v2mass_hist/%s",DATE.Data()), kTRUE);
+  gSystem->mkdir(Form("figs/v2mass_hist"), kTRUE);
+  gSystem->mkdir(Form("roots/v2mass_hist"), kTRUE);
+  // gSystem->mkdir(Form("roots/v2mass_hist/%s",DATE.Data()), kTRUE);
   gStyle->SetOptStat(000000000);
   gROOT->ForceStyle();
   setTDRStyle();
@@ -70,7 +71,7 @@ void Psi2S_v2mass_hist(
   TChain *tree = new TChain("mmepevt");
   if(!isMC){
     //TString f1 = "roots/OniaFlowSkim_JpsiTrig_DBAllPD_isMC0_HFNom_201127.root";
-    TString f1 = "/mnt/d/works/CMS/JPsi/Jpsi_v2_PbPb2018/skimmedFiles/OniaFlowSkim_JpsiTrig_DBAllPD_isMC0_HFNom_201127.root";
+    TString f1 = "roots/OniaFlowSkim_JpsiTrig_DBAllPD_isMC0_HFNom_201127.root";
     //TString f1 = "/Users/goni/Downloads/ONIATREESKIMFILE/OniaFlowSkim_JpsiTrig_DBPD_isMC0_HFNom_AddEP_200217.root";
     //TString f2 = "/Users/goni/Downloads/ONIATREESKIMFILE/OniaFlowSkim_JpsiTrig_DBPeriPD_isMC0_HFNom_AddEP_Peri_200217.root";
     tree->Add(f1.Data());
@@ -563,7 +564,7 @@ void Psi2S_v2mass_hist(
   pad1->SetLeftMargin(0.19);
   pad1->SetTopMargin(0.08);
   pad1->cd();
-  pad1->SetLogy();
+  // pad1->SetLogy();
   g_mass->GetXaxis()->SetTitleSize(0);
   g_mass->GetXaxis()->SetLabelSize(0);
   g_mass->Draw("AP");
@@ -581,9 +582,9 @@ void Psi2S_v2mass_hist(
   g_mass->GetXaxis()->SetLimits(massLow,massHigh);
   g_mass->GetXaxis()->SetRangeUser(massLow,massHigh);
 
-  if(ptLow==0) drawText(Form("p_{T}^{#mu#mu} < %.f GeV/c",ptHigh ),pos_x_mass,pos_y,text_color,text_size);
+  if(ptLow==0) drawText(Form("p_{T}^{#mu#mu} < %.1f GeV/c", ptHigh ),pos_x_mass,pos_y,text_color,text_size);
   else if(ptLow ==6.5) drawText(Form("%.1f < p_{T}^{#mu#mu} < %.1f GeV/c",(float)ptLow, ptHigh ),pos_x_mass,pos_y,text_color,text_size);
-  else if(ptHigh==6.5) drawText(Form("%.f < p_{T}^{#mu#mu} < %.1f GeV/c",(float)ptLow, ptHigh ),pos_x_mass,pos_y,text_color,text_size);
+  else if(ptHigh==6.5) drawText(Form("%1.f < p_{T}^{#mu#mu} < %.1f GeV/c",(float)ptLow, ptHigh ),pos_x_mass,pos_y,text_color,text_size);
   else if(ptLow!=0) drawText(Form("%.1f < p_{T}^{#mu#mu} < %.1f GeV/c",(float)ptLow, ptHigh ),pos_x_mass,pos_y,text_color,text_size);
   if(yLow==0) drawText(Form("|y^{#mu#mu}| < %.1f",yHigh ), pos_x_mass,pos_y-pos_y_diff,text_color,text_size);
   else if(yLow!=0) drawText(Form("%.1f < |y^{#mu#mu}| < %.1f",yLow, yHigh ), pos_x_mass,pos_y-pos_y_diff,text_color,text_size);
@@ -610,6 +611,8 @@ void Psi2S_v2mass_hist(
   pad2->Draw();
   //gSystem->mkdir(Form("figs/q_vector",sample.Data()),1);
   c_mass_v2->SaveAs(Form("figs/v2mass_hist/Psi2S_Inclusive_v2Mass_%s.pdf", kineLabel.Data()));
+  
+
 
   TCanvas* c_decayL = new TCanvas("c_decayL","",600,600);
   c_decayL->SetLogy();
@@ -628,8 +631,8 @@ void Psi2S_v2mass_hist(
   TCanvas* c_mass = new TCanvas("c_mass","",600,600);
   c_mass->cd();
   h_mass->Draw("P");
-  if(ptLow==0) drawText(Form("p_{T}^{#mu#mu} < %.f GeV/c",ptHigh ),pos_x_mass,pos_y,text_color,text_size);
-  else if(ptLow!=0) drawText(Form("%.f < p_{T}^{#mu#mu} < %.f GeV/c",ptLow, ptHigh ),pos_x_mass,pos_y,text_color,text_size);
+  if(ptLow==0) drawText(Form("p_{T}^{#mu#mu} < %.1f GeV/c",ptHigh ),pos_x_mass,pos_y,text_color,text_size);
+  else if(ptLow!=0) drawText(Form("%.1f < p_{T}^{#mu#mu} < %.1f GeV/c",ptLow, ptHigh ),pos_x_mass,pos_y,text_color,text_size);
   if(yLow==0) drawText(Form("|y^{#mu#mu}| < %.1f",yHigh ), pos_x_mass,pos_y-pos_y_diff,text_color,text_size);
   else if(yLow!=0) drawText(Form("%.1f < |y^{#mu#mu}| < %.1f",yLow, yHigh ), pos_x_mass,pos_y-pos_y_diff,text_color,text_size);
   //drawText(Form("p_{T}^{#mu} > %.1f GeV/c", SiMuPtCut ), pos_x_mass,pos_y-pos_y_diff*2,text_color,text_size);
@@ -744,6 +747,14 @@ void Psi2S_v2mass_hist(
   h_decayL->Write();
   g_mass->Write();
   h_mass->Write();
+
+  // Get # of entries for every bins.
+  // To compare events number point by point
+  // Due to there was events number issue
+  // ofstream fout(Form("entry_check_v2mass_hist_Psi2S_Inclusive_%s.txt", kineLabel.Data()));
+  // for (int i = 1; i <= h_mass->GetNbinsX(); i++)
+	  // fout << h_mass->GetBinContent(i) << endl;
+
 }
 
 void GetHistSqrt(TH1D* h1, TH1D* h2){
