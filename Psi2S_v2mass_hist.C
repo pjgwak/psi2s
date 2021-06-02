@@ -69,7 +69,8 @@ void Psi2S_v2mass_hist(
 
   TChain *tree = new TChain("mmepevt");
   if(!isMC){
-    TString f1 = "roots/OniaFlowSkim_JpsiTrig_DBAllPD_isMC0_HFNom_201127.root";
+    //TString f1 = "roots/OniaFlowSkim_JpsiTrig_DBAllPD_isMC0_HFNom_201127.root";
+    TString f1 = "/mnt/d/works/CMS/JPsi/Jpsi_v2_PbPb2018/skimmedFiles/OniaFlowSkim_JpsiTrig_DBAllPD_isMC0_HFNom_201127.root";
     //TString f1 = "/Users/goni/Downloads/ONIATREESKIMFILE/OniaFlowSkim_JpsiTrig_DBPD_isMC0_HFNom_AddEP_200217.root";
     //TString f2 = "/Users/goni/Downloads/ONIATREESKIMFILE/OniaFlowSkim_JpsiTrig_DBPeriPD_isMC0_HFNom_AddEP_Peri_200217.root";
     tree->Add(f1.Data());
@@ -322,7 +323,7 @@ void Psi2S_v2mass_hist(
 		//if(ctau3D<ctauCut) continue;
         // Fill Dimuon Loop
         for(int j=0; j<nDimu; j++){
-          if(pt[j]>ptLow&&pt[j]<ptHigh&&recoQQsign[j]==0&&mass[j]>massLow&&mass[j]<massHigh&&abs(y[j])>yLow&&abs(y[j])<yHigh
+          if(pt[j]>ptLow&&pt[j]<ptHigh&&recoQQsign[j]==0&&mass[j]>massLow&&mass[j]<massHigh&&abs(y[j])>yLow&&abs(y[j])<yHigh && IsAcceptanceQQ(pt1[j],eta1[j]) && IsAcceptanceQQ(pt2[j],eta2[j])
               //( ((abs(eta1[j]) <= 1.2) && (pt1[j] >=3.5)) || ((abs(eta2[j]) <= 1.2) && (pt2[j] >=3.5)) ||
               //  ((abs(eta1[j]) > 1.2) && (abs(eta1[j]) <= 2.1) && (pt1[j] >= 5.47-1.89*(abs(eta1[j])))) || 
               //  ((abs(eta2[j]) > 1.2)  && (abs(eta2[j]) <= 2.1) && (pt2[j] >= 5.47-1.89*(abs(eta2[j])))) ||
@@ -351,6 +352,7 @@ void Psi2S_v2mass_hist(
               // else if ( abs((double)y[j])>=1.8 && abs((double)y[j])<2.4 ) { weight_eff = getEffWeight(hEffPt[3], pt[j]); }
             }
             double weight_ = weight * weight_eff * weight_acc;
+						weight_=1.;
             for(int imbin=0; imbin<nMassBin; imbin++){
               if(mass[j]>=massBin[imbin] && mass[j]<massBin[imbin+1]){
                 v2_1[imbin][count[imbin]] = (qxa[j]*qxdimu[j] + qya[j]*qydimu[j])*weight_;
