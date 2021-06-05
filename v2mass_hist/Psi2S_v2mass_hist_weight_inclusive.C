@@ -40,7 +40,7 @@ void Psi2S_v2mass_hist_weight_inclusive(
 {
   //Basic Setting
   gStyle->SetOptStat(0);
-  TString DATE="210603";
+  TString DATE="210605";
   //TString DATE="Corr";
   //TString DATE="210503";
   gStyle->SetEndErrorSize(0);
@@ -50,8 +50,7 @@ void Psi2S_v2mass_hist_weight_inclusive(
   gSystem->mkdir(Form("figs/decayL"), kTRUE);
   gSystem->mkdir(Form("figs/mass_dist"), kTRUE);
   gSystem->mkdir(Form("figs/q_vector"), kTRUE);
-  gSystem->mkdir(Form("roots/v2mass_hist"), kTRUE);
-  gSystem->mkdir(Form("roots/v2mass_hist/%s",DATE.Data()), kTRUE);
+  gSystem->mkdir(Form("roots/%s",DATE.Data()), kTRUE);
   gStyle->SetOptStat(000000000);
   gROOT->ForceStyle();
   setTDRStyle();
