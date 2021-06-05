@@ -546,7 +546,7 @@ void doSimultaneousV2MassFit_pt65_10_y0_24_cent20_120_test(int cLow = 20, int cH
   }
 
   //Get yield distribution{{{
-  TFile* rf = new TFile(Form("../roots/v2mass_hist/Psi2S_Inclusive_%s_Eff0_Acc0_PtW1_TnP1.root",kineLabel.Data()),"read");
+  TFile* rf = new TFile(Form("../roots/v2mass_hist/Psi2S_Inclusive_%s_Eff1_Acc1_PtW1_TnP1.root",kineLabel.Data()),"read");
   TH1D* h_v2_SplusB = (TH1D*) rf->Get("h_v2_SplusB");  
   TGraphAsymmErrors* g_mass = (TGraphAsymmErrors*) rf->Get("g_mass");  
 
@@ -590,7 +590,7 @@ void doSimultaneousV2MassFit_pt65_10_y0_24_cent20_120_test(int cLow = 20, int cH
   //}}}
 
   TString kineLabel_ = getKineLabel (ptLow, ptHigh, yLow, yHigh, SiMuPtCut, cLow, cHigh) ;
-  TFile* f_mass = new TFile(Form("../FromMassFit/MassFitResult_%s_w_Effw0_Accw0_PtW1_TnP1.root",kineLabel_.Data()),"read");
+  TFile* f_mass = new TFile(Form("../FromMassFit/MassFitResult_%s_PRw_Effw1_Accw1_PtW1_TnP1.root",kineLabel_.Data()),"read");
   RooWorkspace *ws = new RooWorkspace("workspace");
   RooDataSet *datasetMass = (RooDataSet*)f_mass->Get("datasetMass");
   ws->import(*datasetMass);
@@ -606,14 +606,24 @@ void doSimultaneousV2MassFit_pt65_10_y0_24_cent20_120_test(int cLow = 20, int cH
   Double_t n_ = ws->var("n_1_A")->getVal();
   Double_t ratio_ = ws->var("x_A")->getVal();
   Double_t frac_ = ws->var("f")->getVal();
-  Double_t cheb0_ = 0.022246;
-  Double_t cheb1_ = 0.0701198;
-  Double_t cheb2_ = 0.0206221;
-  Double_t c_  = 0.1204321;
-  Double_t c1_ = 0.002203;
-  Double_t c2_ = 0.200113;
-  Double_t c3_ = 0.10025;
-  Double_t c4_ = 0.500248;
+  Double_t cheb0_ = 0.04710;
+  Double_t cheb1_ = 0.01818;
+  Double_t cheb2_ = 0.02321;
+  Double_t c_  = 0.00103;
+  Double_t c1_ = 0.05102;
+  Double_t c2_ = 0.04811;
+  Double_t c3_ = 0.01105;
+  Double_t c4_ = 0.02014;
+
+  // Parameters without weighting
+  // Double_t cheb0_ = 0.00010;
+  // Double_t cheb1_ = 0.00018;
+  // Double_t cheb2_ = 0.00021;
+  // Double_t c_  = 0.00503;
+  // Double_t c1_ = 0.00302;
+  // Double_t c2_ = 0.00011;
+  // Double_t c3_ = 0.00005;
+  // Double_t c4_ = 0.00014;
   //}}}
 
 
@@ -779,7 +789,7 @@ void doSimultaneousV2MassFit_pt65_10_y0_24_cent20_120_test(int cLow = 20, int cH
   fAlpha->SetLineColor(kGreen+2);
   fAlpha->SetLineWidth(2);
 
-  h_v2_SplusB->GetYaxis()->SetRangeUser(0.0,0.19);
+  h_v2_SplusB->GetYaxis()->SetRangeUser(0.06,0.21);
   h_v2_SplusB->GetYaxis()->SetTitle("v_{2}^{S+B}");
   h_v2_SplusB->GetXaxis()->SetTitle("m_{#mu^{+}#mu^{-}} (GeV)");
   h_v2_SplusB->GetYaxis()->SetLabelSize(0.055);
@@ -795,8 +805,8 @@ void doSimultaneousV2MassFit_pt65_10_y0_24_cent20_120_test(int cLow = 20, int cH
   SetGraphStyle2(g_mass,0,0);
   
   g_mass->SetMarkerSize(1);
-  g_mass->SetMinimum(massYMin);
-  g_mass->SetMaximum(massYMax);
+  // g_mass->SetMinimum(massYMin);
+  // g_mass->SetMaximum(massYMax);
   g_mass->GetXaxis()->SetLimits(massLow,massHigh);
   g_mass->GetXaxis()->SetRangeUser(massLow,massHigh);
   g_mass->GetYaxis()->SetTitleOffset(1.7);

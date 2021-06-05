@@ -22,30 +22,25 @@
 using namespace std;
 using namespace RooFit;
 
-void MassFit(
-		float ptLow=6.5, float ptHigh=10,
+void MassFit_weight(
+		float ptLow=6.5, float ptHigh=50,
 		float yLow=0, float yHigh=2.4,
-		int cLow=20, int cHigh=120,
-		double sl1_mean = 0.512, double sl2_mean = 0.369, double sl3_mean = 0.32,
-		double N_Jpsi_high = 2290, double N_Bkg_high = 50000,
-		int PR=2, //0=PR, 1=NP, 2=Inc.
+		int cLow=0, int cHigh=20,
+		double sl1_mean = 0.58, double sl2_mean = 0.36, double sl3_mean = 0.204,
+		double N_Jpsi_high = 12900, double N_Bkg_high = 420000,
 		int PRw=1, bool fEffW = true, bool fAccW = true, bool isPtW = true, bool isTnP = true
 		)
 {
+	massLow = 3.4;
+	massHigh = 4.0;
 	TString DATE = "210604";
 	gStyle->SetEndErrorSize(0);
 	gSystem->mkdir(Form("roots/2DFit_%s/Mass",DATE.Data()),kTRUE);
 	gSystem->mkdir(Form("figs/2DFit_%s/Mass",DATE.Data()),kTRUE);
 
-	TString bCont;
-	if(PR==0) bCont="Prompt";
-	else if(PR==1) bCont="NonPrompt";
-	else if(PR==2) bCont="Inclusive";
-
 	TString fname;
 	if (PRw==1) fname="PR";
 	else if (PRw==2) fname="NP";
-
 	RooMsgService::instance().getStream(0).removeTopic(Caching);
 	RooMsgService::instance().getStream(1).removeTopic(Caching);
 	RooMsgService::instance().getStream(0).removeTopic(Plotting);
@@ -62,7 +57,8 @@ void MassFit(
 	RooMsgService::instance().setGlobalKillBelow(ERROR);
 	RooMsgService::instance().setSilentMode(true);
 
-	TFile* f1 = new TFile(Form("roots/OniaRooDataSet_isMC0_JPsi_PRw_Effw1_Accw1_PtW1_TnP1_20210426.root"));
+	TFile* f1 = new TFile(Form("../make_RooDataSet/roots/OniaRooDataSet_isMC0_Psi_2S_PRw_Effw1_Accw1_PtW1_TnP1_20210604.root"));
+	// TFile* f1 = new TFile(Form("../make_RooDataSet/roots/OniaRooDataSet_isMC0_Psi_2S_PRw_Effw1_Accw1_PtW1_TnP1_cent0_20_20210604.root"));
 	// TFile* f1 = new TFile(Form("../data/OniaRooDataSet_isMC0_JPsi_%sw_Effw%d_Accw%d_PtW%d_TnP%d_20210111.root",fname.Data(),fEffW,fAccW,isPtW,isTnP));
 
 
@@ -86,7 +82,8 @@ void MassFit(
 	ws->data("dataset")->Print();
 	cout << "pt: "<<ptLow<<"-"<<ptHigh<<", y: "<<yLow<<"-"<<yHigh<<", Cent: "<<cLow<<"-"<<cHigh<<"%"<<endl;
 	cout << "####################################" << endl;
-	RooDataSet *dsAB = (RooDataSet*)dataset->reduce(RooArgSet(*(ws->var("ctau3DRes")),*(ws->var("ctau3D")), *(ws->var("ctau3DErr")), *(ws->var("mass")), *(ws->var("pt")), *(ws->var("y"))), kineCut.Data() );
+	RooDataSet *datasetW = new RooDataSet("datasetW","A sample",*dataset->get(),Import(*dataset),WeightVar(*ws->var("weight")));
+	RooDataSet *dsAB = (RooDataSet*)datasetW->reduce(RooArgSet(*(ws->var("ctau3DRes")),*(ws->var("ctau3D")), *(ws->var("ctau3DErr")), *(ws->var("mass")), *(ws->var("pt")), *(ws->var("y"))), kineCut.Data() );
 	cout << "******** New Combined Dataset ***********" << endl;
 	dsAB->SetName("dsAB");
 	ws->import(*dsAB);
@@ -110,9 +107,14 @@ void MassFit(
 	double x_init = 0.35;
 	double alpha_1_init = 2.1;
 	double n_1_init = 1.4;
+	// double alpha_1_init = 2.1;
+	// double n_1_init = 1.4;
 	double f_init = 0.4;
-	double m_lambda_init = 5;
 
+
+
+
+	double m_lambda_init = 5;
 	double psi_2S_mass = 3.686;
 
 	//SIGNAL
@@ -146,8 +148,8 @@ void MassFit(
 	pdfMASS_bkg = new RooChebychev("pdfMASS_bkg","Background",*(ws->var("mass")),RooArgList(*sl1, *sl2, *sl3));
 
 	//Build the model
-	RooRealVar *N_Jpsi= new RooRealVar("N_Jpsi","inclusive Jpsi signals",0, N_Jpsi_high);
-	RooRealVar *N_Bkg = new RooRealVar("N_Bkg","fraction of component 1 in bkg",0, N_Bkg_high);
+	RooRealVar *N_Jpsi= new RooRealVar("N_Jpsi","inclusive Jpsi signals", 0, N_Jpsi_high);
+	RooRealVar *N_Bkg = new RooRealVar("N_Bkg","fraction of component 1 in bkg", 0, N_Bkg_high);
 	RooAddPdf* pdfMASS_Tot = new RooAddPdf("pdfMASS_Tot","Jpsi + Bkg",RooArgList(*pdfMASS_Jpsi, *pdfMASS_bkg),RooArgList(*N_Jpsi,*N_Bkg));
 	//pdfMASS_Tot = new RooAddPdf("pdfMASS_Tot","Jpsi + Bkg",RooArgList(*pdfMASS_Jpsi, *bkg_1order),RooArgList(*N_Jpsi,*N_Bkg));
 	//pdfMASS_Tot = new RooAddPdf("pdfMASS_Tot","PR Jpsi + NP Jpsi + Bkg",RooArgList(*cb_1_A, *cb_2_A, *bkg),RooArgList(*N_JpsiPR,*N_JpsiNP,*N_Bkg));
@@ -278,18 +280,13 @@ void MassFit(
 	c_A->Update();
 	TString kineLabel = getKineLabel (ptLow, ptHigh,yLow, yHigh, 0.0, cLow, cHigh);
 
+
 	TFile* outFile;
-	if (PR==2) {
-		outFile = new TFile(Form("roots/2DFit_%s/Mass/MassFitResult_%s_%sw_Effw%d_Accw%d_PtW%d_TnP%d.root", DATE.Data(), kineLabel.Data(), fname.Data(), fEffW, fAccW, isPtW, isTnP),"recreate");
-		c_A->SaveAs(Form("figs/2DFit_%s/Mass/Mass_%s_%sw_Effw%d_Accw%d_PtW%d_TnP%d.pdf", DATE.Data(), kineLabel.Data(), fname.Data(), fEffW, fAccW, isPtW, isTnP));
-	}
-
-
+	outFile = new TFile(Form("roots/2DFit_%s/Mass/MassFitResult_%s_%sw_Effw%d_Accw%d_PtW%d_TnP%d.root", DATE.Data(), kineLabel.Data(), fname.Data(), fEffW, fAccW, isPtW, isTnP),"recreate");
+	c_A->SaveAs(Form("figs/2DFit_%s/Mass/Mass_%s_%sw_Effw%d_Accw%d_PtW%d_TnP%d.pdf", DATE.Data(), kineLabel.Data(), fname.Data(), fEffW, fAccW, isPtW, isTnP));
 	pdfMASS_Tot->Write();
 	datasetMass->Write();
 	outh->Write();
-	// ws->Write();
-
 	outFile->Close();
 
 	// Get # of entries for every bins.

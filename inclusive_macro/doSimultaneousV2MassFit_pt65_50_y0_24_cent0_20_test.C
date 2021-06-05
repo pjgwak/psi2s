@@ -512,8 +512,8 @@ Double_t pol3bkg(Double_t* x, Double_t* par)
 }
 //}}}
 
-void doSimultaneousV2MassFit_pt10_50_y0_24_cent20_120_test(int cLow = 20, int cHigh = 120,
-    float ptLow = 10, float ptHigh = 50,
+void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20_test(int cLow = 0, int cHigh = 20,
+    float ptLow =  6.5, float ptHigh = 50,
     float yLow = 0, float yHigh = 2.4,
     float SiMuPtCut = 0, float massLow = 3.4, float massHigh =4.0, bool dimusign=true, int ibkg_vn_sel = fpol3, bool fixSigPar=true)
 {
@@ -595,7 +595,7 @@ void doSimultaneousV2MassFit_pt10_50_y0_24_cent20_120_test(int cLow = 20, int cH
   RooDataSet *datasetMass = (RooDataSet*)f_mass->Get("datasetMass");
   ws->import(*datasetMass);
   f_mass->cd();
-
+  
   //Get fitting parameter{{{
   Double_t N1_ = ws->var("N_Jpsi")->getVal();
   Double_t Nbkg_ = ws->var("N_Bkg")->getVal();
@@ -605,24 +605,24 @@ void doSimultaneousV2MassFit_pt10_50_y0_24_cent20_120_test(int cLow = 20, int cH
   Double_t n_ = ws->var("n_1_A")->getVal();
   Double_t ratio_ = ws->var("x_A")->getVal();
   Double_t frac_ = ws->var("f")->getVal();
-  Double_t cheb0_ = 0.0121;
-  Double_t cheb1_ = -0.0135;
-  Double_t cheb2_ = -0.0226;
-  Double_t c_  = 0.0021;
-  Double_t c1_ = 0.1210;
-  Double_t c2_ = 0.0007;
-  Double_t c3_ = 0.0210;
-  Double_t c4_ = -0.0010;
+  Double_t cheb0_ = 0.0030801;
+  Double_t cheb1_ = 0.0020521;
+  Double_t cheb2_ = 0.001023;
+  Double_t c_  = 0.0040011;
+  Double_t c1_ = 0.0020121;
+  Double_t c2_ = 0.0020314;
+  Double_t c3_ = 0.0010103;
+  Double_t c4_ = 0.0030601;
   
   // Without weighting
-  // Double_t cheb0_ = 0.0121;
-  // Double_t cheb1_ = -0.0135;
-  // Double_t cheb2_ = -0.0226;
-  // Double_t c_  = 0.0321;
-  // Double_t c1_ = 0.1210;
-  // Double_t c2_ = -0.0707;
-  // Double_t c3_ = -0.0510;
-  // Double_t c4_ = -0.0010;
+  // Double_t cheb0_ = 0.0000001;
+  // Double_t cheb1_ = -.0000021;
+  // Double_t cheb2_ = 0.0000003;
+  // Double_t c_  = 0.0000011;
+  // Double_t c1_ = -.0000021;
+  // Double_t c2_ = -.0000014;
+  // Double_t c3_ = -.0000103;
+  // Double_t c4_ = 0.0000001;
   //}}}
 
 
@@ -694,8 +694,8 @@ void doSimultaneousV2MassFit_pt10_50_y0_24_cent20_120_test(int cLow = 20, int cH
   int nprm_sigf      = 8;
   int nprm_bkgf      = 4;
   int nprm_alpha     = 11;
-  double massYMin=0;
-  double massYMax=1000;
+  double massYMin=600;
+  double massYMax=1200;
 
   TF1* fyield_bkg = new TF1("fyield_bkg", TotalYieldBkg, massLow, massHigh,nprm_bkgf);
   fyield_bkg->FixParameter(0, fmass_total->GetParameter(prmid_bkgyield));
@@ -786,7 +786,7 @@ void doSimultaneousV2MassFit_pt10_50_y0_24_cent20_120_test(int cLow = 20, int cH
   fAlpha->SetLineColor(kGreen+2);
   fAlpha->SetLineWidth(2);
 
-  h_v2_SplusB->GetYaxis()->SetRangeUser(-0.05,0.7);
+  h_v2_SplusB->GetYaxis()->SetRangeUser(-0.05,0.21);
   h_v2_SplusB->GetYaxis()->SetTitle("v_{2}^{S+B}");
   h_v2_SplusB->GetXaxis()->SetTitle("m_{#mu^{+}#mu^{-}} (GeV)");
   h_v2_SplusB->GetYaxis()->SetLabelSize(0.055);
@@ -800,7 +800,7 @@ void doSimultaneousV2MassFit_pt10_50_y0_24_cent20_120_test(int cLow = 20, int cH
   h_v2_SplusB->GetXaxis()->SetLimits(massLow,massHigh);
   SetHistStyle(h_v2_SplusB,0,0);
   SetGraphStyle2(g_mass,0,0);
-  
+ 
   g_mass->SetMarkerSize(1);
   // g_mass->SetMinimum(massYMin);
   // g_mass->SetMaximum(massYMax);
@@ -838,7 +838,6 @@ void doSimultaneousV2MassFit_pt10_50_y0_24_cent20_120_test(int cLow = 20, int cH
   TPad* pad2 = new TPad("pad2","pad2",0,0.0,1.0,0.5);
   c_mass_v2->cd();
   pad1->SetTicks(1,1);
-  pad1->SetBottomMargin(0);
   pad1->SetLeftMargin(0.19);
   pad1->SetTopMargin(0.08);
   // pad1->SetLogy();

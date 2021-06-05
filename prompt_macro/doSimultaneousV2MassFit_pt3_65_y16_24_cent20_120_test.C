@@ -327,9 +327,10 @@ Double_t pol3bkg(Double_t* x, Double_t* par)
 }
 //}}}
 
+
 // here1
-void a0531_doSimultaneousV2MassFit_pt3_65_y16_24_cent20_120_test(
-		float ptLow =  3, float ptHigh = 6.5,
+void doSimultaneousV2MassFit_pt3_65_y16_24_cent20_120_test(
+		float ptLow = 3, float ptHigh = 6.5,
 		float yLow = 1.6, float yHigh = 2.4,
 		int cLow = 20, int cHigh = 120,
 		float SiMuPtCut = 0, float massLow = 3.4, float massHigh =4.0, bool dimusign=true, int ibkg_vn_sel = fpol2)
@@ -364,7 +365,7 @@ void a0531_doSimultaneousV2MassFit_pt3_65_y16_24_cent20_120_test(
 
 	//Get yield distribution{{{
 	//TFile* rf = new TFile(Form("/home/deathold/work/CMS/analysis/Upsilon_v2/upsilonV2/plots/MassV2_190506/Ups_%s.root",kineLabel.Data()),"read");
-	TFile* rf = new TFile(Form("../roots/v2mass_hist/Psi2S_Inclusive_%s.root",kineLabel.Data()),"read");
+	TFile* rf = new TFile(Form("../roots/v2mass_hist/Psi2S_Prompt_%s.root",kineLabel.Data()),"read");
 	//TFile* rf = new TFile("../../Outputs/makeV2Hist_RD/Jpsi_pt6.5-30.0_y0.0-2.4_muPt0.0_centrality20-120_m2.6-3.5_OS.root","read");
 	TH1D* h_v2_SplusB = (TH1D*) rf->Get("h_v2_SplusB");  
 	TGraphAsymmErrors* g_mass = (TGraphAsymmErrors*) rf->Get("g_mass");  
@@ -409,23 +410,23 @@ void a0531_doSimultaneousV2MassFit_pt3_65_y16_24_cent20_120_test(
 	//}}}
 
 	//Get fitting parameter{{{
-	Double_t N1_ = 200.00;
-	Double_t Nbkg_ = 20000.00;
+	Double_t N1_ = 200.0;
+	Double_t Nbkg_ = 8500.0;
 	Double_t mean_ = pdgMass.Psi2S;
 	Double_t sigma_ = 6.6827e-02;
 	//Double_t alpha_ = 1.526;
-	Double_t alpha_ = 1.926;
-	Double_t n_ = 1.7;
+	Double_t alpha_ = 1.626;
+	Double_t n_ = 2.0;
 	//Double_t n_ = 2.2;
 	Double_t ratio_ = 0.7750;
 	Double_t frac_ = 0.7;
 	//Double_t Bkgmean_ = 7.99882;
 	//Double_t Bkgsigma_ = 1.12746;
 	Double_t Bkgp0_ = 3.22817;
-	Double_t c_ = 0.012;
-	Double_t c1_ = 0.0004;
-	Double_t c2_ = -0.097;
-	Double_t c3_ = 0.05;
+	Double_t  c_ = 0.00040;
+	Double_t c1_ = 0.00142;
+	Double_t c2_ = 0.00153;
+	Double_t c3_ = 0.15;
 	//Double_t c4_ = -0.11964;
 	//}}}
 
@@ -472,7 +473,7 @@ void a0531_doSimultaneousV2MassFit_pt3_65_y16_24_cent20_120_test(
 	//Double_t parLimitHigh[nParmV] = {N1_*5, Nbkg_*5, mean_ +0.02,  0.08,   9.8,   9.8, 1, 1,      25,       25,    25,  0.3,  5,  5,  4,  4};
 	//                                    N1,      NBkg,   Jpsi mass, sigma, alpha,     n, x, f, Bkgmean, Bkgsigma, Bkgp0,    c, c1, c2, c3, c4;
 	Double_t parLimitLow[nParmV]  = {      0,     0, mean_ -0.02,  0.01,   0.1,   0.1, 0 ,0.,     0,    0, -5, -5, -4};
-	Double_t parLimitHigh[nParmV] = {N1_*5, Nbkg_*5, mean_ +0.02,  0.08,   9.8,   9.9, 1, 1,    25,  0.3,  5,  5,  4};
+	Double_t parLimitHigh[nParmV] = {N1_*1.2, Nbkg_*1.2, mean_ +0.02,  0.08,   15,   15, 1, 1,    25,  0.3,  5,  5,  4};
 	//                                    N1,  NBkg,   Jpsi mass, sigma, alpha,     n, x, f, Bkgp0,    c, c1, c2, c3,;
 	fitter.Config().SetParamsSettings(nParmV_, par0);
 	for(int ipar = 0; ipar<nParmV_; ipar++){
@@ -585,6 +586,7 @@ void a0531_doSimultaneousV2MassFit_pt3_65_y16_24_cent20_120_test(
 	h_v2_SplusB->GetXaxis()->SetLabelOffset(0.011);
 	h_v2_SplusB->GetXaxis()->SetRangeUser(massLow,massHigh);
 	h_v2_SplusB->GetXaxis()->SetLimits(massLow,massHigh);
+	h_v2_SplusB->GetYaxis()->SetRangeUser(-0.05, 0.08);
 	SetHistStyle(h_v2_SplusB,0,0);
 	SetGraphStyle2(g_mass,0,0);
 
@@ -592,7 +594,6 @@ void a0531_doSimultaneousV2MassFit_pt3_65_y16_24_cent20_120_test(
 	g_mass->SetMinimum(0);
 	g_mass->GetXaxis()->SetLimits(massLow,massHigh);
 	g_mass->GetXaxis()->SetRangeUser(massLow,massHigh);
-	g_mass->GetYaxis()->SetRangeUser(5200, 6800);
 	g_mass->GetYaxis()->SetTitleOffset(1.7);
 	g_mass->GetYaxis()->SetTitle("Events/(0.02GeV/c^{2})");
 	g_mass->GetYaxis()->SetLabelSize(0.055);
@@ -601,6 +602,8 @@ void a0531_doSimultaneousV2MassFit_pt3_65_y16_24_cent20_120_test(
 	g_mass->GetYaxis()->SetTitleSize(0.07);
 	g_mass->GetYaxis()->SetTitleOffset(1.2);
 	g_mass->GetXaxis()->SetNdivisions(510);
+	g_mass->GetYaxis()->SetRangeUser(3700, 4450);
+
 
 	double sizeTick = 12;
 
@@ -690,7 +693,7 @@ void a0531_doSimultaneousV2MassFit_pt3_65_y16_24_cent20_120_test(
 	pad1->Draw();
 	pad2->Draw();
 	c_mass_v2->Update();
-	c_mass_v2->SaveAs(Form("../figs/v2mass_fit/Free_para_v2Mass_%s.pdf", kineLabel.Data()));
+	c_mass_v2->SaveAs(Form("../figs/v2mass_fit/v2Mass_Prompt_%s.pdf", kineLabel.Data()));
 	/*
 	   Double_t xmass[200];
 	   Double_t pullmass[200];

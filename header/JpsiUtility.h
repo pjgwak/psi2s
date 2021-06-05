@@ -13,7 +13,7 @@ using namespace std;
     bool bkgfit=true;
     bool sigfit=true;
     bool totfit=true;
-    float massLow = 2.6, massHigh = 3.5;
+    float massLow = 3.4, massHigh = 4.0;
     int   nMassBin  = 36; //(massHigh-massLow)*30;
 
     float ctauLow = -4, ctauHigh = 6.5;
@@ -32,7 +32,7 @@ using namespace std;
     float text_size = 13;
     int text_color = 1;
 
-	int nCPU = 10; // Change to appropriate your cpu
+	int nCPU = 7; // Change to appropriate your cpu
 
 void printChi2(RooWorkspace* myws, TPad* Pad, RooPlot* frame, RooFitResult* fitRes, string varLabel, string dataLabel, string pdfLabel, int nBins, bool useDefaultName=true)
 {

@@ -9,13 +9,13 @@
 #include "TArrow.h"
 #include "TFile.h"
 #include <TMath.h>
-#include "header/commonUtility.h"
-#include "header/cutsAndBin.h"
-#include "header/HiEvtPlaneList.h"
-#include "header/Style.h"
-#include "header/tdrstyle.C"
-#include "header/CMS_lumi_v2mass.C"
-#include "header/rootFitHeaders.h"
+#include "../header/commonUtility.h"
+#include "../header/cutsAndBin.h"
+#include "../header/HiEvtPlaneList.h"
+#include "../header/Style.h"
+#include "../header/tdrstyle.C"
+#include "../header/CMS_lumi_v2mass.C"
+#include "../header/rootFitHeaders.h"
 using namespace std;
 using namespace RooFit;
 
@@ -27,9 +27,9 @@ void GetHistSqrt(TH1D* h1 =0, TH1D* h2=0);
 void GetHistBkg(TH1D* h1 =0, TH1D* h2=0);
 
 void Psi2S_v2mass_hist(
-    double ptLow = 6.5, double ptHigh = 10,
+    double ptLow = 6.5, double ptHigh = 50,
     double yLow = 0, double yHigh = 2.4,
-    int cLow = 20, int cHigh = 120,
+    int cLow = 0, int cHigh = 20,
 	double ctauCut=0.1,
     float massLow = 3.4, float massHigh = 4.0, 
     bool dimusign=true, bool fAccW = false, bool fEffW = false, bool isMC = false, 
@@ -71,7 +71,7 @@ void Psi2S_v2mass_hist(
   TChain *tree = new TChain("mmepevt");
   if(!isMC){
     //TString f1 = "roots/OniaFlowSkim_JpsiTrig_DBAllPD_isMC0_HFNom_201127.root";
-    TString f1 = "roots/OniaFlowSkim_JpsiTrig_DBAllPD_isMC0_HFNom_201127.root";
+    TString f1 = "../primary_input/OniaFlowSkim_JpsiTrig_DBAllPD_isMC0_HFNom_201127.root";
     //TString f1 = "/Users/goni/Downloads/ONIATREESKIMFILE/OniaFlowSkim_JpsiTrig_DBPD_isMC0_HFNom_AddEP_200217.root";
     //TString f2 = "/Users/goni/Downloads/ONIATREESKIMFILE/OniaFlowSkim_JpsiTrig_DBPeriPD_isMC0_HFNom_AddEP_Peri_200217.root";
     tree->Add(f1.Data());
@@ -207,11 +207,25 @@ void Psi2S_v2mass_hist(
   //  else if(ptLow==9&&ptHigh==12)  ctauCut=0.0635;
   //  else if(ptLow==12&&ptHigh==30) ctauCut=0.0495;}
   //  cout<<"pt["<<ptLow<<" - "<<ptHigh<<" GeV/c], "<<"ctau cut: "<<ctauCut<<endl;
+
   
-  const int nMassBin = 8;
-  float massBinDiff[nMassBin+1]={3.4,3.55,3.62,3.66,3.70,3.74,3.78,3.85,4.0};
-  //float massBinDiff[nMassBin+1]={2.6, 2.7, 2.8, 2.9, 3.0, 3.06, 3.09, 3.12, 3.15, 3.2, 3.3, 3.4, 3.5};
-  //float massBinDiff[nMassBin+1]={2.6, 2.75, 2.9, 3.0, 3.06, 3.09, 3.12, 3.15, 3.2,3.5};
+  const int nMassBin = 8; // Default value
+
+  // ptLow = 3.0 && ptHigh = 6.5 && yLow = 1.6 && yHigh = 2.4 && cLow = 20 && cHigh = 120)
+  // float massBinDiff[nMassBin+1]={3.4,3.55,3.62,3.66,3.70,3.74,3.78,3.85,4.0};
+  
+  // ptLow = 6.5 && ptHigh = 10 && yLow = 0 && yHigh = 2.4 && cLow = 20 && cHigh = 120)
+  //float massBinDiff[nMassBin+1]={3.4,3.55,3.62,3.66,3.70,3.74,3.78,3.85,4.0};
+
+  // ptLow = 10 && ptHigh = 50 && yLow = 0 && yHigh = 2.4 && cLow = 20 && cHigh = 120)
+  //float massBinDiff[nMassBin+1]={3.4,3.55,3.62,3.66,3.70,3.74,3.78,3.85,4.0};
+  
+  // ptLow = 6.5 && ptHigh = 50 && yLow = 0 && yHigh = 2.4 && cLow = 0 && cHigh = 20)
+  float massBinDiff[nMassBin+1]={3.4,3.55,3.60,3.64,3.68,3.74,3.80,3.92,4.0};
+  
+  // ptLow = 6.5 && ptHigh = 50 && yLow = 0 && yHigh = 2.4 && cLow = 20 && cHigh = 120)
+  //float massBinDiff[nMassBin+1]={3.4,3.55,3.62,3.66,3.70,3.74,3.78,3.85,4.0};
+  
   float massBin_[nMassBin+1];
 
   kineLabel = kineLabel + Form("_m%.1f-%.1f",massLow,massHigh) + "_" + dimusignString;
@@ -741,7 +755,7 @@ void Psi2S_v2mass_hist(
   c_qq_4->SaveAs(Form("figs/q_vector/Psi2S_Inclusive_c_qbqc_%s_Eff%d_Acc%d_PtW%d_TnP%d.pdf",kineLabel.Data(),fEffW,fAccW,isPtW,isTnP));
 
   TFile *wf; 
-  wf = new TFile(Form("roots/v2mass_hist/%s/Psi2S_Inclusive_%s_Eff%d_Acc%d_PtW%d_TnP%d.root",DATE.Data(),kineLabel.Data(),fEffW,fAccW,isPtW,isTnP),"recreate");
+  wf = new TFile(Form("roots/%s/Psi2S_Inclusive_%s_Eff%d_Acc%d_PtW%d_TnP%d.root",DATE.Data(),kineLabel.Data(),fEffW,fAccW,isPtW,isTnP),"recreate");
   wf->cd();
   h_v2_final->Write();
   h_decayL->Write();

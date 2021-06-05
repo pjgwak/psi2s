@@ -1,0 +1,11 @@
+Drawing_code
+old_codes
+
+# Mac os system file
+.DS_Store
+
+
+# Sensitive data and results
+*.root
+*.pdf
+*.png
