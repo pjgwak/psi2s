@@ -160,6 +160,83 @@ Double_t TotalYieldSig(Double_t* x, Double_t* par)
   return normMin+N1*(fN_1*frac*JPsi_1 + fN_2*(1-frac)*JPsi_2);
 }
 
+Double_t Totalvnpol1JPsi(Double_t* x, Double_t* par)
+{
+  //Double_t N1 = par[0];
+  //Double_t Nbkg = par[1];
+  //Double_t mean = par[2];
+  //Double_t sigma = par[3];
+  //Double_t alpha = par[4];
+  //Double_t n = par[5];
+  //Double_t ratio = par[6];
+  //Double_t frac = par[7];
+  //Double_t Bkgmean = par[8];
+  //Double_t Bkgsigma = par[9];
+  //Double_t Bkgp0 = par[10];
+  //Double_t c = par[11];
+  //Double_t c1 = par[12];
+  //Double_t c2 = par[13];
+  //Double_t c3 = par[14];
+  Double_t N1 = par[0];
+  Double_t Nbkg = par[1];
+  Double_t mean = par[2];
+  Double_t sigma = par[3];
+  Double_t alpha = par[4];
+  Double_t n = par[5];
+  Double_t ratio = par[6];
+  Double_t frac = par[7];
+  Double_t Bkgp0 = par[8];
+  Double_t Bkgp1 = par[9];
+  Double_t Bkgp2 = par[10];
+  Double_t c = par[11];
+  Double_t c1 = par[12];
+  Double_t c2 = par[13];
+  Double_t c3 = par[14];
+
+  Double_t sigma1S_2 = sigma*ratio;
+
+  //t2 > t1
+  Double_t JPsi_t1 = (x[0]-mean)/sigma;
+  Double_t JPsi_t2 = (x[0]-mean)/sigma1S_2;
+  if (alpha < 0)
+  {
+
+    cout << "ERROR ::: alpha variable negative!!!! " << endl;
+    return -1;
+  }
+
+  Double_t absAlpha = fabs((Double_t)alpha);
+  Double_t a = TMath::Power(n/absAlpha,n)*exp(-absAlpha*absAlpha/2.);
+  Double_t b = n/absAlpha - absAlpha;
+
+  Double_t JPsi_1 = -1;
+  Double_t JPsi_2 = -1;
+
+  if(JPsi_t1 > -alpha){
+    JPsi_1 = exp(-JPsi_t1*JPsi_t1/2.);
+  }
+  else if(JPsi_t1 <= -alpha){
+    JPsi_1 = a*TMath::Power((b-JPsi_t1),-n);
+  }
+
+  if(JPsi_t2 > -alpha){
+    JPsi_2 = exp(-JPsi_t2*JPsi_t2/2.);
+  }
+  else if(JPsi_t2 <= -alpha){
+    JPsi_2 = a*TMath::Power((b-JPsi_t2),-n);
+  }
+  Double_t SigM = N1*(frac*JPsi_1 + (1-frac)*JPsi_2);
+  Double_t SigM1s = N1*(JPsi_1);
+  //Double_t BkgM = Nbkg*(TMath::Exp(-x[0]/Bkgp0)*(TMath::Erf((x[0]-Bkgmean)/(TMath::Sqrt(2)*Bkgsigma))+1)/2.);
+  //Double_t BkgM = Nbkg*(TMath::Exp(-x[0]/Bkgp0));
+  //Double_t BkgM = Nbkg*(ROOT::Math::Chebyshev2(x[0],Bkgp0,Bkgp1,Bkgp2));
+  Double_t BkgM = Nbkg*(Bkgp0 + Bkgp1*x[0] + Bkgp2*(2.0*x[0]*x[0] - 1.0));
+
+  //return c*(SigM1s/(SigM+BkgM)) + (1 - SigM/(SigM+BkgM))*(c3 + c2*x[0] + c1*x[0]*x[0]);
+  return c*(SigM/(SigM+BkgM)) + (1 - SigM/(SigM+BkgM))*(c2 + c1*x[0]);
+
+}
+
 //totalvn pol2 bkg Jpsi{{{
 Double_t Totalvnpol2JPsi(Double_t* x, Double_t* par)
 {
@@ -303,6 +380,67 @@ Double_t Totalvnpol3JPsi(Double_t* x, Double_t* par)
 
 }
 //}}}
+
+Double_t vnPol1BkgAlpha(Double_t* x, Double_t* par)
+{
+  Double_t N1 = par[0];
+  Double_t Nbkg = par[1];
+  Double_t mean = par[2];
+  Double_t sigma = par[3];
+  Double_t alpha = par[4];
+  Double_t n = par[5];
+  Double_t ratio = par[6];
+  Double_t frac = par[7];
+  Double_t cheb0 = par[8];
+  Double_t cheb1 = par[9];
+  Double_t cheb2 = par[10];
+  Double_t c1 = par[11];
+  Double_t c2 = par[12];
+  Double_t c3 = par[13];
+
+  Double_t sigma1_2 = sigma*ratio;
+
+  //t2 > t1
+  Double_t JPsi_t1 = (x[0]-mean)/sigma;
+  Double_t JPsi_t2 = (x[0]-mean)/sigma1_2;
+  if (alpha < 0)
+  {
+    cout << "ERROR ::: alpha variable negative!!!! " << endl;
+    return -1;
+  }
+
+  Double_t absAlpha = fabs((Double_t)alpha);
+  Double_t a = TMath::Power(n/absAlpha,n)*exp(-absAlpha*absAlpha/2.);
+  Double_t b = n/absAlpha - absAlpha;
+
+  Double_t JPsi_1 = -1;
+  Double_t JPsi_2 = -1;
+  
+  if(JPsi_t1 > -alpha){
+    JPsi_1 = exp(-JPsi_t1*JPsi_t1/2.);
+  }
+  else if(JPsi_t1 <= -alpha){
+    JPsi_1 = a*TMath::Power((b-JPsi_t1),-n);
+  }
+
+  if(JPsi_t2 > -alpha){
+    JPsi_2 = exp(-JPsi_t2*JPsi_t2/2.);
+  }
+  else if(JPsi_t2 <= -alpha){
+    JPsi_2 = a*TMath::Power((b-JPsi_t2),-n);
+  }
+  Double_t fC = n/absAlpha*1/(n-1)*exp(-absAlpha*absAlpha/2);
+  Double_t fD = TMath::Sqrt(TMath::Pi()/2)*(1+TMath::Erf(absAlpha/TMath::Sqrt(2)));
+  Double_t fN_1 = 1./(sigma*(fC+fD));
+  Double_t fN_2 = 1./(sigma1_2*(fC+fD));
+  Double_t SigM = N1*(fN_1*frac*JPsi_1 + fN_2*(1-frac)*JPsi_2);
+  
+  double shx = (10*x[0]-37)/3;
+  Double_t BkgM = Nbkg*(1+cheb0*shx + cheb1*(2*shx*shx-1) + cheb2*(4*shx*shx*shx-3*shx));
+
+  return (1 - SigM/(SigM+BkgM))*(c2 + c1*x[0]);
+
+}
 
 //totalvn pol2 bkg Jpsi * (1-alpha){{{
 Double_t vnPol2BkgAlpha(Double_t* x, Double_t* par)
@@ -489,6 +627,16 @@ Double_t alphaFunct(Double_t* x, Double_t* par)
 }
 //}}}
 
+//pol1 bkg{{{
+Double_t pol1bkg(Double_t* x, Double_t* par)
+{
+  Double_t c1 = par[0];
+  Double_t c2 = par[1];
+
+  return c1*x[0]+c2;
+}
+//}}}
+
 //pol2 bkg{{{
 Double_t pol2bkg(Double_t* x, Double_t* par)
 {
@@ -512,10 +660,10 @@ Double_t pol3bkg(Double_t* x, Double_t* par)
 }
 //}}}
 
-void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20_test(int cLow = 0, int cHigh = 20,
-    float ptLow =  6.5, float ptHigh = 50,
-    float yLow = 0, float yHigh = 2.4,
-    float SiMuPtCut = 0, float massLow = 3.4, float massHigh =4.0, bool dimusign=true, int ibkg_vn_sel = fpol3, bool fixSigPar=true)
+void doSimultaneousV2MassFit_pt10_50_y0_24_cent20_120_test(int cLow = 20, int cHigh = 120,
+    float ptLow = 10, float ptHigh = 50,
+    float yLow =0, float yHigh = 2.4,
+    float SiMuPtCut = 0, float massLow = 3.4, float massHigh =4.0, bool dimusign=true, int ibkg_vn_sel = fpol1, bool fixSigPar=true)
 {
   setTDRStyle();
   gStyle->SetOptFit(0000);
@@ -538,25 +686,29 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20_test(int cLow = 0, int cHigh
 
   int nParmV_;
   int nParBkg;
-  if(ibkg_vn_sel == fpol2) {nParmV_ = 15; nParBkg = 3;} 
-  else if(ibkg_vn_sel == fpol3) {nParmV_ = 16; nParBkg = 4;}
+  if(ibkg_vn_sel == fpol2) {nParmV_ = 15; nParBkg = 3;} //15 3
+  else if(ibkg_vn_sel == fpol3) {nParmV_ = 16; nParBkg = 4;}//18 4
+  else if(ibkg_vn_sel == fpol1) {nParmV_ = 15, nParBkg = 2;}
   else{
     cout << "ERROR ::: No Selection for v2 background function!!!!" << endl;
     return;
   }
 
   //Get yield distribution{{{
-  TFile* rf = new TFile(Form("../roots/v2mass_hist/Psi2S_Inclusive_%s_Eff1_Acc1_PtW1_TnP1.root",kineLabel.Data()),"read");
+  //TFile* rf = new TFile(Form("../roots/v2mass_hist/210603/Psi2S_Prompt_%s_Eff1_Acc1_PtW1_TnP1.root",kineLabel.Data()),"read");
+  TFile* rf = new TFile(Form("../v2mass_hist/roots/Psi2S_Inclusive_%s_Eff1_Acc1_PtW1_TnP1.root",kineLabel.Data()),"read");
+ 
   TH1D* h_v2_SplusB = (TH1D*) rf->Get("h_v2_SplusB");  
   TGraphAsymmErrors* g_mass = (TGraphAsymmErrors*) rf->Get("g_mass");  
 
-  TFile *wf = new TFile(Form("../roots/sim_fit_result/SimFitResult_Inclusive_%s.root", kineLabel.Data()),"recreate");
+  TFile *wf = new TFile(Form("roots/SimFitResult_Inclusive_%s.root", kineLabel.Data()),"recreate");
 
   //define function for simultaneous fitting{{{
   TF1* fmass_total = new TF1("fmass_total", TotalYield, massLow, massHigh, nParmM);
   TF1* fvn_simul;
   if(ibkg_vn_sel == fpol2) fvn_simul = new TF1("fvn_simul", Totalvnpol2JPsi, massLow, massHigh, nParmV_);
   else if(ibkg_vn_sel == fpol3) fvn_simul = new TF1("fvn_simul", Totalvnpol3JPsi, massLow, massHigh, nParmV_);
+  else if(ibkg_vn_sel == fpol1) fvn_simul = new TF1("fvn_simul", Totalvnpol1JPsi, massLow, massHigh, nParmV_);
   //}}}
 
   //combine functions{{{
@@ -590,12 +742,14 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20_test(int cLow = 0, int cHigh
   //}}}
 
   TString kineLabel_ = getKineLabel (ptLow, ptHigh, yLow, yHigh, SiMuPtCut, cLow, cHigh) ;
-  TFile* f_mass = new TFile(Form("../FromMassFit/MassFitResult_%s_PRw_Effw1_Accw1_PtW1_TnP1.root",kineLabel_.Data()),"read");
+  //###TFile* f_mass = new TFile(Form("../FromMassFit/MassFitResult_%s_PRw_Effw1_Accw1_PtW1_TnP1.root",kineLabel_.Data()),"read");
+  TFile* f_mass = new TFile(Form("../2D_fit_macro/roots/mass/MassFitResult_%s_PRw_Effw1_Accw1_PtW1_TnP1.root",kineLabel_.Data()),"read");
   RooWorkspace *ws = new RooWorkspace("workspace");
   RooDataSet *datasetMass = (RooDataSet*)f_mass->Get("datasetMass");
   ws->import(*datasetMass);
   f_mass->cd();
-  
+
+
   //Get fitting parameter{{{
   Double_t N1_ = ws->var("N_Jpsi")->getVal();
   Double_t Nbkg_ = ws->var("N_Bkg")->getVal();
@@ -605,24 +759,34 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20_test(int cLow = 0, int cHigh
   Double_t n_ = ws->var("n_1_A")->getVal();
   Double_t ratio_ = ws->var("x_A")->getVal();
   Double_t frac_ = ws->var("f")->getVal();
-  Double_t cheb0_ = 0.0030801;
-  Double_t cheb1_ = 0.0020521;
-  Double_t cheb2_ = 0.001023;
-  Double_t c_  = 0.0040011;
-  Double_t c1_ = 0.0020121;
-  Double_t c2_ = 0.0020314;
-  Double_t c3_ = 0.0010103;
-  Double_t c4_ = 0.0030601;
+  Double_t cheb0_ = 0.00001121;
+  Double_t cheb1_ = 0.0002135;
+  Double_t cheb2_ = 0.000226;
+  Double_t c_  = 0.000221;
+  Double_t c1_ = 0.0001210;
+  Double_t c2_ = 0.0023007;
+  Double_t c3_ = 0.000210;
+  Double_t c4_ = 0.0010;
   
+  // Weight best
+  // Double_t cheb0_ = 0.00001121;
+  // Double_t cheb1_ = 0.0002135;
+  // Double_t cheb2_ = 0.000226;
+  // Double_t c_  = 0.000221;
+  // Double_t c1_ = 0.0001210;
+  // Double_t c2_ = 0.0023007;
+  // Double_t c3_ = 0.000210;
+  // Double_t c4_ = 0.0010;
+
   // Without weighting
-  // Double_t cheb0_ = 0.0000001;
-  // Double_t cheb1_ = -.0000021;
-  // Double_t cheb2_ = 0.0000003;
-  // Double_t c_  = 0.0000011;
-  // Double_t c1_ = -.0000021;
-  // Double_t c2_ = -.0000014;
-  // Double_t c3_ = -.0000103;
-  // Double_t c4_ = 0.0000001;
+  // Double_t cheb0_ = 0.0121;
+  // Double_t cheb1_ = -0.0135;
+  // Double_t cheb2_ = -0.0226;
+  // Double_t c_  = 0.0321;
+  // Double_t c1_ = 0.1210;
+  // Double_t c2_ = -0.0707;
+  // Double_t c3_ = -0.0510;
+  // Double_t c4_ = -0.0010;
   //}}}
 
 
@@ -645,23 +809,23 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20_test(int cLow = 0, int cHigh
   par0[15] = c4_;
 
 
-  Double_t parLimitLow[nParmV]  = {    0,       0, mean_ -0.02,   0.01,   1.3,   1.4,    0,     0,  -5, -7, -10,  -0.1, -30, -30, -30,-30};
+  Double_t parLimitLow[nParmV]  = {    0,       0, mean_ -0.02,   0.01,   1.3,   1.4,    0,     0,  -5, -7, -10,  0.0, -30, -30, -30,-30};
   Double_t parLimitHigh[nParmV] = {N1_*3, Nbkg_*4, mean_ +0.02,    0.2,    5.1,   4.4,   1  ,   1,   5,  7,  10, 0.5,  30,  30,  30, 30};
 
   fitter.Config().SetParamsSettings(nParmV_, par0);
   for(int ipar = 0; ipar<nParmV_; ipar++){
-    fitter.Config().ParSettings(ipar).SetLimits(parLimitLow[ipar],parLimitHigh[ipar]);
+	  fitter.Config().ParSettings(ipar).SetLimits(parLimitLow[ipar],parLimitHigh[ipar]);
   }
 
   int parmid_sigi = 3;
   int parmid_sigf = 7;
   if(fixSigPar){
-    for(int iparmsig=parmid_sigi; iparmsig<=parmid_sigf;iparmsig++) fitter.Config().ParSettings(iparmsig).Fix();
+	  for(int iparmsig=parmid_sigi; iparmsig<=parmid_sigf;iparmsig++) fitter.Config().ParSettings(iparmsig).Fix();
   }
   fitter.Config().MinimizerOptions().SetPrintLevel(0);
   fitter.Config().SetMinimizer("Minuit2","Migrad");
   //}}}
-  
+
   fitter.FitFCN(nParmV_, globalChi2, 0, datamass.Size()+datavn.Size(), true);
   ROOT::Fit::FitResult result = fitter.Result();
   result.Print(std::cout);
@@ -671,7 +835,7 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20_test(int cLow = 0, int cHigh
   cout << "	" << "	Upper Limit" << "	" << "Lower Limit" << endl;
   // Print Parameter and Parameter Limits
   for(int i=0; i<nParmV_; i++){
-      cout << "par[" << i << "]	:	" << parLimitHigh[i] << "	" <<"	" << parLimitLow[i] << endl;
+	  cout << "par[" << i << "]	:	" << parLimitHigh[i] << "	" <<"	" << parLimitLow[i] << endl;
   }
   cout << " " << endl;
 
@@ -694,8 +858,8 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20_test(int cLow = 0, int cHigh
   int nprm_sigf      = 8;
   int nprm_bkgf      = 4;
   int nprm_alpha     = 11;
-  double massYMin=600;
-  double massYMax=1200;
+  double massYMin=0;
+  double massYMax=3500;
 
   TF1* fyield_bkg = new TF1("fyield_bkg", TotalYieldBkg, massLow, massHigh,nprm_bkgf);
   fyield_bkg->FixParameter(0, fmass_total->GetParameter(prmid_bkgyield));
@@ -711,8 +875,8 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20_test(int cLow = 0, int cHigh
 
   TF1* fyield_sig = new TF1("fyield_sig",TotalYieldSig, massLow, massHigh, nprm_sigf);
   for(int iparm=0;iparm<nprm_sigf-1; iparm++){
-    if(iparm==0) fyield_sig->FixParameter(iparm, fvn_simul->GetParameter(iparm));
-    else if(iparm!=0) fyield_sig->FixParameter(iparm, fvn_simul->GetParameter(iparm+1));
+	  if(iparm==0) fyield_sig->FixParameter(iparm, fvn_simul->GetParameter(iparm));
+	  else if(iparm!=0) fyield_sig->FixParameter(iparm, fvn_simul->GetParameter(iparm+1));
   }
   fyield_sig->FixParameter(nprm_sigf-1,massYMin);
   g_mass->GetListOfFunctions()->Add(fyield_sig);
@@ -721,7 +885,7 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20_test(int cLow = 0, int cHigh
   //Alpha function{{{
   TF1* fAlpha = new TF1("fAlpha",alphaFunct,massLow,massHigh,nprm_alpha);
   for(int iparm=0;iparm<nprm_alpha; iparm++){
-    fAlpha->FixParameter(iparm,fvn_simul->GetParameter(iparm));
+	  fAlpha->FixParameter(iparm,fvn_simul->GetParameter(iparm));
   }
   h_v2_SplusB->GetListOfFunctions()->Add(fAlpha);
   //}}}
@@ -731,28 +895,40 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20_test(int cLow = 0, int cHigh
   TF1* fvn_bkg;
   TF1* fvn_bkg_alpha;
   if(ibkg_vn_sel == fpol2){
-    fvn_bkg = new TF1("fvn_bkg",pol2bkg, massLow, massHigh, nParBkg);
-    fvn_bkg->FixParameter(0, fvn_simul->GetParameter(prmid_vnbkg1));
-    fvn_bkg->FixParameter(1, fvn_simul->GetParameter(prmid_vnbkg2));
-    fvn_bkg->FixParameter(2, fvn_simul->GetParameter(prmid_vnbkg3));
-    fvn_bkg_alpha = new TF1("fvn_bkg_alpha",vnPol2BkgAlpha,massLow,massHigh,nParmV_ -1);
-    for(int iparm=0;iparm<nParmV_ -1; iparm++){
-      if(iparm<=prmid_v2val) fvn_bkg_alpha->FixParameter(iparm,fvn_simul->GetParameter(iparm));
-      else if(iparm>=prmid_v2val) fvn_bkg_alpha->FixParameter(iparm,fvn_simul->GetParameter(iparm+1));
-    }
+	  fvn_bkg = new TF1("fvn_bkg",pol2bkg, massLow, massHigh, nParBkg);
+	  fvn_bkg->FixParameter(0, fvn_simul->GetParameter(prmid_vnbkg1));
+	  fvn_bkg->FixParameter(1, fvn_simul->GetParameter(prmid_vnbkg2));
+	  fvn_bkg->FixParameter(2, fvn_simul->GetParameter(prmid_vnbkg3));
+	  fvn_bkg_alpha = new TF1("fvn_bkg_alpha",vnPol2BkgAlpha,massLow,massHigh,nParmV_ -1);
+	  for(int iparm=0;iparm<nParmV_ -1; iparm++){
+		  if(iparm<=prmid_v2val) fvn_bkg_alpha->FixParameter(iparm,fvn_simul->GetParameter(iparm));
+		  else if(iparm>=prmid_v2val) fvn_bkg_alpha->FixParameter(iparm,fvn_simul->GetParameter(iparm+1));
+	  }
   }
   else if(ibkg_vn_sel == fpol3){
-    fvn_bkg = new TF1("fvn_bkg",pol3bkg, massLow, massHigh, nParBkg);
-    fvn_bkg->FixParameter(0, fvn_simul->GetParameter(prmid_vnbkg1));
-    fvn_bkg->FixParameter(1, fvn_simul->GetParameter(prmid_vnbkg2));
-    fvn_bkg->FixParameter(2, fvn_simul->GetParameter(prmid_vnbkg3));
-    fvn_bkg->FixParameter(3, fvn_simul->GetParameter(prmid_vnbkg4));
-    fvn_bkg_alpha = new TF1("fvn_bkg_alpha",vnPol3BkgAlpha,massLow,massHigh,nParmV_ -1);
-    for(int iparm=0;iparm<nParmV_ -1; iparm++){
-      if(iparm<=prmid_v2val) fvn_bkg_alpha->FixParameter(iparm,fvn_simul->GetParameter(iparm));
-      else if(iparm>=prmid_v2val) fvn_bkg_alpha->FixParameter(iparm,fvn_simul->GetParameter(iparm+1));
-    }
+	  fvn_bkg = new TF1("fvn_bkg",pol3bkg, massLow, massHigh, nParBkg);
+	  fvn_bkg->FixParameter(0, fvn_simul->GetParameter(prmid_vnbkg1));
+	  fvn_bkg->FixParameter(1, fvn_simul->GetParameter(prmid_vnbkg2));
+	  fvn_bkg->FixParameter(2, fvn_simul->GetParameter(prmid_vnbkg3));
+	  fvn_bkg->FixParameter(3, fvn_simul->GetParameter(prmid_vnbkg4));
+	  fvn_bkg_alpha = new TF1("fvn_bkg_alpha",vnPol3BkgAlpha,massLow,massHigh,nParmV_ -1);
+	  for(int iparm=0;iparm<nParmV_ -1; iparm++){
+		  if(iparm<=prmid_v2val) fvn_bkg_alpha->FixParameter(iparm,fvn_simul->GetParameter(iparm));
+		  else if(iparm>=prmid_v2val) fvn_bkg_alpha->FixParameter(iparm,fvn_simul->GetParameter(iparm+1));
+	  }
   }
+  else if(ibkg_vn_sel == fpol1){
+	  fvn_bkg = new TF1("fvn_bkg",pol1bkg, massLow, massHigh, nParBkg);
+	  fvn_bkg->FixParameter(0, fvn_simul->GetParameter(prmid_vnbkg1));
+	  fvn_bkg->FixParameter(1, fvn_simul->GetParameter(prmid_vnbkg2));
+	  fvn_bkg->FixParameter(2, fvn_simul->GetParameter(prmid_vnbkg3));
+	  fvn_bkg_alpha = new TF1("fvn_bkg_alpha",vnPol1BkgAlpha,massLow,massHigh,nParmV_ -1);
+	  for(int iparm=0;iparm<nParmV_ -1; iparm++){
+		  if(iparm<=prmid_v2val) fvn_bkg_alpha->FixParameter(iparm,fvn_simul->GetParameter(iparm));
+		  else if(iparm>=prmid_v2val) fvn_bkg_alpha->FixParameter(iparm,fvn_simul->GetParameter(iparm+1));
+	  }
+  }
+
   h_v2_SplusB->GetListOfFunctions()->Add(fvn_bkg);
   //}}}
 
@@ -786,7 +962,7 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20_test(int cLow = 0, int cHigh
   fAlpha->SetLineColor(kGreen+2);
   fAlpha->SetLineWidth(2);
 
-  h_v2_SplusB->GetYaxis()->SetRangeUser(-0.05,0.21);
+  h_v2_SplusB->GetYaxis()->SetRangeUser(-0.05,0.3);
   h_v2_SplusB->GetYaxis()->SetTitle("v_{2}^{S+B}");
   h_v2_SplusB->GetXaxis()->SetTitle("m_{#mu^{+}#mu^{-}} (GeV)");
   h_v2_SplusB->GetYaxis()->SetLabelSize(0.055);
@@ -800,10 +976,10 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20_test(int cLow = 0, int cHigh
   h_v2_SplusB->GetXaxis()->SetLimits(massLow,massHigh);
   SetHistStyle(h_v2_SplusB,0,0);
   SetGraphStyle2(g_mass,0,0);
- 
+
   g_mass->SetMarkerSize(1);
-  // g_mass->SetMinimum(massYMin);
-  // g_mass->SetMaximum(massYMax);
+  g_mass->SetMinimum(massYMin);
+  g_mass->SetMaximum(massYMax);
   g_mass->GetXaxis()->SetLimits(massLow,massHigh);
   g_mass->GetXaxis()->SetRangeUser(massLow,massHigh);
   g_mass->GetYaxis()->SetTitleOffset(1.7);
@@ -838,6 +1014,7 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20_test(int cLow = 0, int cHigh
   TPad* pad2 = new TPad("pad2","pad2",0,0.0,1.0,0.5);
   c_mass_v2->cd();
   pad1->SetTicks(1,1);
+  pad1->SetBottomMargin(0);
   pad1->SetLeftMargin(0.19);
   pad1->SetTopMargin(0.08);
   // pad1->SetLogy();
@@ -879,7 +1056,7 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20_test(int cLow = 0, int cHigh
   h_v2_SplusB->Draw("P");
   jumSun(massLow,0,massHigh,0,1,1);
   drawText(Form("v_{2}^{S} = %.3f #pm %.3f",v2,v2e),pos_x_mass,pos_y,text_color,text_size);
-  
+
   TLegend *leg2 = new TLegend(0.73,0.6,0.95,0.8);
   SetLegendStyle(leg2);
   leg2->SetTextSize(0.05);
@@ -895,7 +1072,7 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20_test(int cLow = 0, int cHigh
   pad1->Draw();
   pad2->Draw();
   c_mass_v2->Update();
-  c_mass_v2->SaveAs(Form("../figs/v2mass_fit/v2Mass_Inclusive_%s.pdf", kineLabel.Data()));
+  c_mass_v2->SaveAs(Form("figs/v2Mass_Inclusive_%s.pdf", kineLabel.Data()));
   wf->cd();
   //store individual function{{{
   fyieldtot = (TF1*) fmass_total->Clone();
@@ -912,7 +1089,7 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20_test(int cLow = 0, int cHigh
   fAlpha->Write();
   fvn_bkg_alpha->Write();
   //}}}
-  
+
   //get Chi2{{{
   Double_t ptar = ptHigh+ptLow/2;
   TGraphErrors* v2plot = new TGraphErrors();

@@ -26,10 +26,10 @@ double getEffWeight(TH1D* h = 0, double pt = 0);
 void GetHistSqrt(TH1D* h1 =0, TH1D* h2=0);
 void GetHistBkg(TH1D* h1 =0, TH1D* h2=0);
 
-void Psi2S_v2mass_hist_weight_inclusive(
-    double ptLow = 3.0, double ptHigh = 6.5,
-    double yLow = 1.6, double yHigh = 2.4,
-    int cLow = 20, int cHigh = 120,
+void Psi2S_v2mass_hist_weight(
+    double ptLow = 6.5, double ptHigh = 50,
+    double yLow = 0, double yHigh = 2.4,
+    int cLow = 0, int cHigh = 20,
 	double ctauCut=0.1,
     float massLow = 3.4, float massHigh = 4.0, 
     bool dimusign=true, bool fAccW = true, bool fEffW = true, bool isMC = false, 
@@ -40,7 +40,7 @@ void Psi2S_v2mass_hist_weight_inclusive(
 {
   //Basic Setting
   gStyle->SetOptStat(0);
-  TString DATE="210605";
+  TString DATE="210604";
   //TString DATE="Corr";
   //TString DATE="210503";
   gStyle->SetEndErrorSize(0);
@@ -100,25 +100,26 @@ void Psi2S_v2mass_hist_weight_inclusive(
   //Get Correction histograms
   bool isTnP = true;
   bool isPtW = true;
-  TFile *fEff1 = new TFile(Form("../primary_input/mc_eff_vs_pt_cent_0_to_20_rap_%s_pbpb_psi2S_PtW%d_tnp%d.root",wName.Data(),isPtW,isTnP),"read");
-  TFile *fEff2 = new TFile(Form("../primary_input/mc_eff_vs_pt_cent_20_to_120_rap_%s_pbpb_psi2S_PtW%d_tnp%d.root",wName.Data(),isPtW,isTnP),"read");
-  TH1D* hEffPt1[4];
-  hEffPt1[0] = (TH1D*) fEff1 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy0_1p2",isTnP,isPtW));
-  hEffPt1[1] = (TH1D*) fEff1 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy1p2_1p6",isTnP,isPtW));
-  hEffPt1[2] = (TH1D*) fEff1 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy1p6_1p8",isTnP,isPtW));
-  hEffPt1[3] = (TH1D*) fEff1 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy1p8_2p4",isTnP,isPtW));
 
-  TH1D* hEffPt2[4];
-  hEffPt2[0] = (TH1D*) fEff2 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_20_to_120_absy0_1p2",isTnP,isPtW));
-  hEffPt2[1] = (TH1D*) fEff2 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_20_to_120_absy1p2_1p6",isTnP,isPtW));
-  hEffPt2[2] = (TH1D*) fEff2 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_20_to_120_absy1p6_1p8",isTnP,isPtW));
-  hEffPt2[3] = (TH1D*) fEff2 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_20_to_120_absy1p8_2p4",isTnP,isPtW));
+  TFile *fEff = new TFile(Form("../primary_input/mc_eff_vs_pt_cent_0_to_20_rap_%s_pbpb_psi2S_PtW%d_tnp%d.root",wName.Data(),isPtW,isTnP),"read");
+  TH1D* hEffPt[4];
+  hEffPt[0] = (TH1D*) fEff -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy0_1p2",isTnP,isPtW));
+  hEffPt[1] = (TH1D*) fEff -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy1p2_1p6",isTnP,isPtW));
+  hEffPt[2] = (TH1D*) fEff -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy1p6_1p8",isTnP,isPtW));
+  hEffPt[3] = (TH1D*) fEff -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy1p8_2p4",isTnP,isPtW));
+  
+  // TFile *fEff = new TFile(Form("../primary_input/mc_eff_vs_pt_cent_20_to_120_rap_%s_pbpb_psi2S_PtW%d_tnp%d.root",wName.Data(),isPtW,isTnP),"read");
+  // TH1D* hEffPt[4];
+  // hEffPt[0] = (TH1D*) fEff -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_20_to_120_absy0_1p2",isTnP,isPtW));
+  // hEffPt[1] = (TH1D*) fEff -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_20_to_120_absy1p2_1p6",isTnP,isPtW));
+  // hEffPt[2] = (TH1D*) fEff -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_20_to_120_absy1p6_1p8",isTnP,isPtW));
+  // hEffPt[3] = (TH1D*) fEff -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_20_to_120_absy1p8_2p4",isTnP,isPtW));
   // //  TFile *fAcc = new TFile(Form("/home/deathold/work/CMS/analysis/Upsilon_v2/UpsilonPbPb2018_v2/Acceptance/acceptance_wgt_%dS_pt0_50_20190813_dNdptWeighted.root",state),"read");
-  TFile *fAcc = new TFile("../primary_input/acceptance_Prompt_GenOnly_wgt1_2021Psi2Sv2_20210603.root","read");
-  TH1D* hAccPt[3];
-  hAccPt[0] = (TH1D*) fAcc -> Get("hAccPt_2021_ally");
-  hAccPt[1] = (TH1D*) fAcc -> Get("hAccPt_2021_midy");
-  hAccPt[2] = (TH1D*) fAcc -> Get("hAccPt_2021_Fory");
+   TFile *fAcc = new TFile("../primary_input/acceptance_Prompt_GenOnly_wgt1_2021Psi2Sv2_20210603.root","read");
+   TH1D* hAccPt[3];
+   hAccPt[0] = (TH1D*) fAcc -> Get("hAccPt_2021_ally");
+   hAccPt[1] = (TH1D*) fAcc -> Get("hAccPt_2021_midy");
+   hAccPt[2] = (TH1D*) fAcc -> Get("hAccPt_2021_Fory");
 
 
   //SetBranchAddress
@@ -220,15 +221,9 @@ void Psi2S_v2mass_hist_weight_inclusive(
   //  cout<<"pt["<<ptLow<<" - "<<ptHigh<<" GeV/c], "<<"ctau cut: "<<ctauCut<<endl;
   
   const int nMassBin = 8;
-  // float massBinDiff[nMassBin+1]={3.4,3.55,3.62,3.66,3.70,3.74,3.78,3.85,4.0};
-  float massBinDiff[nMassBin+1]={3.4,3.55,3.60,3.68,3.72,3.74,3.80, 3.88, 4.0}; // pT 3 ~ 6.5
-  // float massBinDiff[nMassBin+1]={3.4,3.45,3.54,3.60,3.66,3.71,3.76,3.87,4.0}; // pT6.5 ~ 50, c0 ~ 10
-  // float massBinDiff[nMassBin+1]={3.4,3.51,3.59,3.65,3.69,3.76,3.87,4.0}; // pT6.5 ~ 50, c0 ~ 10
-  // float massBinDiff[nMassBin+1]={3.4,3.56,3.63,3.68,3.71,3.75,3.80,3.85,4.0}; // pT6.5 ~ 50, c20 ~ 120
-  // float massBinDiff[nMassBin+1]={3.4,3.53,3.60,3.65,3.72,3.76,3.80,3.87,4.0}; // pT 10 ~ 50
-  // float massBinDiff[nMassBin+1]={3.4,3.50,3.56,3.66,3.70,3.76,3.85,4.0}; //pT6.5 ~ 10, massBin7
-  // float massBinDiff[nMassBin+1]={3.4,3.51,3.62,3.69,3.73,3.81,3.85,4.0}; //pT6.5 ~ 10, massBin7, old_version
-  // float massBinDiff[nMassBin+1]={3.4,3.52,3.60,3.69, 3.72, 3.75,3.78,3.82,4.0};
+  float massBinDiff[nMassBin+1]={3.4,3.55,3.62,3.66,3.70,3.74,3.78,3.85,4.0};
+  //float massBinDiff[nMassBin+1]={2.6, 2.7, 2.8, 2.9, 3.0, 3.06, 3.09, 3.12, 3.15, 3.2, 3.3, 3.4, 3.5};
+  //float massBinDiff[nMassBin+1]={2.6, 2.75, 2.9, 3.0, 3.06, 3.09, 3.12, 3.15, 3.2,3.5};
   float massBin_[nMassBin+1];
 
   kineLabel = kineLabel + Form("_m%.1f-%.1f",massLow,massHigh) + "_" + dimusignString;
@@ -366,17 +361,10 @@ void Psi2S_v2mass_hist_weight_inclusive(
               //    weight_eff=hEffPt[0]->GetBinContent(0);
               //  }
               //  else  weight_eff = getEffWeight(hEffPt[0], pt[j]);}
-				if(cBin >= 0 && cBin < 20) {
-					if ( abs((double)y[j])>=0.0 && abs((double)y[j])<1.2 ) { weight_eff = getEffWeight(hEffPt1[0], pt[j]); }
-					else if ( abs((double)y[j])>=1.2 && abs((double)y[j])<1.6 ) { weight_eff = getEffWeight(hEffPt1[1], pt[j]); }
-					else if ( abs((double)y[j])>=1.6 && abs((double)y[j])<1.8 ) { weight_eff = getEffWeight(hEffPt1[2], pt[j]); }
-					else if ( abs((double)y[j])>=1.8 && abs((double)y[j])<2.4 ) { weight_eff = getEffWeight(hEffPt1[3], pt[j]); }
-				}else if(cBin >= 20 && cBin < 120) {
-					if ( abs((double)y[j])>=0.0 && abs((double)y[j])<1.2 ) { weight_eff = getEffWeight(hEffPt2[0], pt[j]); }
-					else if ( abs((double)y[j])>=1.2 && abs((double)y[j])<1.6 ) { weight_eff = getEffWeight(hEffPt2[1], pt[j]); }
-					else if ( abs((double)y[j])>=1.6 && abs((double)y[j])<1.8 ) { weight_eff = getEffWeight(hEffPt2[2], pt[j]); }
-					else if ( abs((double)y[j])>=1.8 && abs((double)y[j])<2.4 ) { weight_eff = getEffWeight(hEffPt2[3], pt[j]); }
-				}
+              if ( abs((double)y[j])>=0.0 && abs((double)y[j])<1.2 ) { weight_eff = getEffWeight(hEffPt[0], pt[j]); }
+              else if ( abs((double)y[j])>=1.2 && abs((double)y[j])<1.6 ) { weight_eff = getEffWeight(hEffPt[1], pt[j]); }
+              else if ( abs((double)y[j])>=1.6 && abs((double)y[j])<1.8 ) { weight_eff = getEffWeight(hEffPt[2], pt[j]); }
+              else if ( abs((double)y[j])>=1.8 && abs((double)y[j])<2.4 ) { weight_eff = getEffWeight(hEffPt[3], pt[j]); }
             }
 			double weight_ = weight * weight_eff * weight_acc;
 			//weight_=1.;

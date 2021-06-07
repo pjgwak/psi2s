@@ -546,11 +546,11 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent20_120_test(int cLow = 20, int cH
   }
 
   //Get yield distribution{{{
-  TFile* rf = new TFile(Form("../roots/v2mass_hist/Psi2S_Inclusive_%s_Eff1_Acc1_PtW1_TnP1.root",kineLabel.Data()),"read");
+  TFile* rf = new TFile(Form("../v2mass_hist/roots/Psi2S_Inclusive_%s_Eff1_Acc1_PtW1_TnP1.root",kineLabel.Data()),"read");
   TH1D* h_v2_SplusB = (TH1D*) rf->Get("h_v2_SplusB");  
   TGraphAsymmErrors* g_mass = (TGraphAsymmErrors*) rf->Get("g_mass");  
 
-  TFile *wf = new TFile(Form("../roots/sim_fit_result/SimFitResult_Inclusive_%s.root", kineLabel.Data()),"recreate");
+  TFile *wf = new TFile(Form("roots/SimFitResult_Inclusive_%s.root", kineLabel.Data()),"recreate");
 
   //define function for simultaneous fitting{{{
   TF1* fmass_total = new TF1("fmass_total", TotalYield, massLow, massHigh, nParmM);
@@ -590,7 +590,7 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent20_120_test(int cLow = 20, int cH
   //}}}
 
   TString kineLabel_ = getKineLabel (ptLow, ptHigh, yLow, yHigh, SiMuPtCut, cLow, cHigh) ;
-  TFile* f_mass = new TFile(Form("../FromMassFit/MassFitResult_%s_PRw_Effw1_Accw1_PtW1_TnP1.root",kineLabel_.Data()),"read");
+  TFile* f_mass = new TFile(Form("../2D_fit_macro/roots/mass/MassFitResult_%s_PRw_Effw1_Accw1_PtW1_TnP1.root",kineLabel_.Data()),"read");
   RooWorkspace *ws = new RooWorkspace("workspace");
   RooDataSet *datasetMass = (RooDataSet*)f_mass->Get("datasetMass");
   ws->import(*datasetMass);
@@ -608,11 +608,11 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent20_120_test(int cLow = 20, int cH
   Double_t cheb0_ = 0.000151;
   Double_t cheb1_ = 0.0003635;
   Double_t cheb2_ = 0.0002316;
-  Double_t c_  = 0.00000135;
+  Double_t c_  = 0.00020135;
   Double_t c1_ = 0.00020210;
-  Double_t c2_ = 0.00000173;
-  Double_t c3_ = 0.00100612;
-  Double_t c4_ = 0.00000510;
+  Double_t c2_ = 0.00020173;
+  Double_t c3_ = 0.00110612;
+  Double_t c4_ = 0.00010510;
   
   // Without weighting
   // Double_t cheb0_ = 0.000051;
@@ -895,7 +895,7 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent20_120_test(int cLow = 20, int cH
   pad1->Draw();
   pad2->Draw();
   c_mass_v2->Update();
-  c_mass_v2->SaveAs(Form("../figs/v2mass_fit/v2Mass_Inclusive_%s.pdf", kineLabel.Data()));
+  c_mass_v2->SaveAs(Form("figs/v2Mass_Inclusive_%s.pdf", kineLabel.Data()));
   wf->cd();
   //store individual function{{{
   fyieldtot = (TF1*) fmass_total->Clone();

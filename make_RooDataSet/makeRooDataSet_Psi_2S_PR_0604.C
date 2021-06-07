@@ -25,7 +25,11 @@ double getAccWeight(TH1D* h = 0, double pt = 0);
 double getEffWeight(TH1D* h = 0, double pt = 0);
 void GetHistSqrt(TH1D* h1 =0, TH1D* h2=0);
 
-void makeRooDataSet_Psi_2S_0604_v3(
+void makeRooDataSet_Psi_2S_PR_0604(
+		double ptLow = 6.5, double ptHigh = 10,
+		double yLow = 0, double yHigh = 2.4,
+		int cLow = 20, int cHigh = 120,
+		float ctauCut=0.1,
 		bool isMC = false, 
 		bool fAccW = true, bool fEffW = true, 
 		int state=1) //state 0: inclusive, state 1: Prompt, state 2: NonPrompt
@@ -61,7 +65,6 @@ void makeRooDataSet_Psi_2S_0604_v3(
 //  TFile *fEff = new TFile(Form("/home/deathold/work/CMS/analysis/Upsilon_v2/UpsilonPbPb2018_v2/Efficiency/mc_eff_vs_pt_TnP%d_PtW1_OfficialMC_Y%dS_muPtCut3.5.root",isTnP,state),"read");
   TFile *fEff1 = new TFile(Form("../primary_input/mc_eff_vs_pt_cent_0_to_20_rap_%s_pbpb_psi2S_PtW%d_tnp%d.root",bCont.Data(),isPtW,isTnP),"read");
   TFile *fEff2 = new TFile(Form("../primary_input/mc_eff_vs_pt_cent_20_to_120_rap_%s_pbpb_psi2S_PtW%d_tnp%d.root",bCont.Data(),isPtW,isTnP),"read");
-  // cout << "File Open : " << Form("../mc_eff_vs_pt_cent_0_to_20_rap_%s_pbpb_psi2S_PtW%d_tnp%d.root",bCont.Data(),isPtW,isTnP) << endl;
   TH1D* hEffPt1[15];
   TH1D* hEffPt2[15];
   hEffPt1[0] = (TH1D*) fEff1 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy0_1p2",isTnP,isPtW));
@@ -72,6 +75,7 @@ void makeRooDataSet_Psi_2S_0604_v3(
   hEffPt2[1] = (TH1D*) fEff2 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_20_to_120_absy1p2_1p6",isTnP,isPtW));
   hEffPt2[2] = (TH1D*) fEff2 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_20_to_120_absy1p6_1p8",isTnP,isPtW));
   hEffPt2[3] = (TH1D*) fEff2 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_20_to_120_absy1p8_2p4",isTnP,isPtW));
+  hEffPt2[3]->Draw();
 
   // TFile *fEff = new TFile(Form("../primary_input/mc_eff_vs_pt_cent_20_to_120_rap_%s_pbpb_psi2S_PtW%d_tnp%d.root",bCont.Data(),isPtW,isTnP),"read");
   // cout << "File Open : " << Form("../primary_input/mc_eff_vs_pt_cent_20_to_120_rap_%s_pbpb_psi2S_PtW%d_tnp%d.root",bCont.Data(),isPtW,isTnP) << endl;
@@ -233,6 +237,9 @@ void makeRooDataSet_Psi_2S_0604_v3(
 
 		  // Fill Dimuon Loop
 		  for(int j=0; j<nDimu; j++){
+			  if(state==1 && ctau3D[j]>ctauCut) continue;
+			  else if(state==2 && ctau3D[j]<ctauCut) continue;
+			  if(!(pt[j] > ptLow && pt[j] < ptHigh && fabs(y[j]) > yLow && fabs(y[j]) < yHigh && cBin > cLow && cBin < cHigh)) continue;
 			  //if(! ((double)pt[j]<50 && abs((double)y[j])<2.4 && (double)pt1[j]>SiMuPtCut&&(double)pt2[j]>SiMuPtCut&&abs((double)eta1[j])<2.4&&abs((double)eta2[j])<2.4)) continue;
 			  if( ((double)pt[j]<50 && abs((double)y[j])<2.4 && IsAcceptanceQQ(pt1[j],eta1[j])&&IsAcceptanceQQ(pt2[j],eta2[j])) ) { 
 			  //if( ((double)pt[j]<50 && abs((double)y[j])<2.4) ) { 
@@ -300,10 +307,14 @@ void makeRooDataSet_Psi_2S_0604_v3(
   cout << "one dimuon : " << nDimu_one << endl;
   
   
-  if (isMC && state==1) {TFile *wf = new TFile(Form("OniaRooDataSet_isMC%d_PR_Psi_2S_20201123.root",isMC),"recreate");  wf->cd();}
-  else if (isMC && state==2) {TFile *wf = new TFile(Form("OniaRooDataSet_isMC%d_BtoPsi_2S_20201123.root",isMC),"recreate");  wf->cd();}
-  else if (!isMC) {TFile *wf = new TFile(Form("../OniaRooDataSet_isMC%d_Psi_2S_%sw_Effw%d_Accw%d_PtW%d_TnP%d_20210604.root",isMC,outName.Data(),fEffW,fAccW,isPtW,isTnP),"recreate");  wf->cd();}
- dataSet->Write();
+  if (isMC && state==1) {TFile *wf = new TFile(Form("roots/OniaRooDataSet_isMC%d_pt_%0.1f_%0.1f_y_%0.1f_%0.1f_Cent_%d_%d_CtauCtu_%0.4f_PR_Psi_2S_20201123.root",isMC,ptLow,ptHigh,yLow,yHigh,cLow,cHigh,ctauCut),"recreate");  wf->cd();}
+  else if (isMC && state==2) {TFile *wf = new TFile(Form("roots/OniaRooDataSet_isMC%d_BtoPsi_2S_20201123.root",isMC),"recreate");  wf->cd();}
+  //else if (!isMC) {TFile *wf = new TFile(Form("OniaRooDataSet_isMC%d_Psi_2S_%sw_Effw%d_Accw%d_PtW%d_TnP%d_20210604.root",isMC,outName.Data(),fEffW,fAccW,isPtW,isTnP),"recreate");  wf->cd();}
+  else if (!isMC) {
+	  TFile *wf = new TFile(Form("roots/OniaRooDataSet_isMC%d_pt_%0.1f_%0.1f_y_%0.1f_%0.1f_Cent_%d_%d_CtauCtu_%0.4f_PR_Psi_2S_20210604.root",isMC,ptLow,ptHigh,yLow,yHigh,cLow,cHigh,ctauCut),"recreate");  
+	  wf->cd();
+  }
+  dataSet->Write();
 }
     
 

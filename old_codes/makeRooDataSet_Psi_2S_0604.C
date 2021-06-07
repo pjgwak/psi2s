@@ -25,10 +25,7 @@ double getAccWeight(TH1D* h = 0, double pt = 0);
 double getEffWeight(TH1D* h = 0, double pt = 0);
 void GetHistSqrt(TH1D* h1 =0, TH1D* h2=0);
 
-void makeRooDataSet_Psi_2S_0604_v3(
-		bool isMC = false, 
-		bool fAccW = true, bool fEffW = true, 
-		int state=1) //state 0: inclusive, state 1: Prompt, state 2: NonPrompt
+void makeRooDataSet_Psi_2S_0604(bool isMC = false, bool fAccW = true, bool fEffW = true, int state=1) //state 0: inclusive, state 1: Prompt, state 2: NonPrompt
 {
   //Basic Setting
   gStyle->SetOptStat(0);
@@ -59,20 +56,14 @@ void makeRooDataSet_Psi_2S_0604_v3(
   bool isTnP = true;
   bool isPtW = true;
 //  TFile *fEff = new TFile(Form("/home/deathold/work/CMS/analysis/Upsilon_v2/UpsilonPbPb2018_v2/Efficiency/mc_eff_vs_pt_TnP%d_PtW1_OfficialMC_Y%dS_muPtCut3.5.root",isTnP,state),"read");
-  TFile *fEff1 = new TFile(Form("../primary_input/mc_eff_vs_pt_cent_0_to_20_rap_%s_pbpb_psi2S_PtW%d_tnp%d.root",bCont.Data(),isPtW,isTnP),"read");
-  TFile *fEff2 = new TFile(Form("../primary_input/mc_eff_vs_pt_cent_20_to_120_rap_%s_pbpb_psi2S_PtW%d_tnp%d.root",bCont.Data(),isPtW,isTnP),"read");
-  // cout << "File Open : " << Form("../mc_eff_vs_pt_cent_0_to_20_rap_%s_pbpb_psi2S_PtW%d_tnp%d.root",bCont.Data(),isPtW,isTnP) << endl;
-  TH1D* hEffPt1[15];
-  TH1D* hEffPt2[15];
-  hEffPt1[0] = (TH1D*) fEff1 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy0_1p2",isTnP,isPtW));
-  hEffPt1[1] = (TH1D*) fEff1 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy1p2_1p6",isTnP,isPtW));
-  hEffPt1[2] = (TH1D*) fEff1 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy1p6_1p8",isTnP,isPtW));
-  hEffPt1[3] = (TH1D*) fEff1 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy1p8_2p4",isTnP,isPtW));
-  hEffPt2[0] = (TH1D*) fEff2 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_20_to_120_absy0_1p2",isTnP,isPtW));
-  hEffPt2[1] = (TH1D*) fEff2 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_20_to_120_absy1p2_1p6",isTnP,isPtW));
-  hEffPt2[2] = (TH1D*) fEff2 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_20_to_120_absy1p6_1p8",isTnP,isPtW));
-  hEffPt2[3] = (TH1D*) fEff2 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_20_to_120_absy1p8_2p4",isTnP,isPtW));
-
+  TFile *fEff = new TFile(Form("../primary_input/mc_eff_vs_pt_cent_0_to_20_rap_%s_pbpb_psi2S_PtW%d_tnp%d.root",bCont.Data(),isPtW,isTnP),"read");
+  cout << "File Open : " << Form("../primary_input/mc_eff_vs_pt_cent_0_to_20_rap_%s_pbpb_psi2S_PtW%d_tnp%d.root",bCont.Data(),isPtW,isTnP) << endl;
+  TH1D* hEffPt[15];
+  hEffPt[0] = (TH1D*) fEff -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy0_1p2",isTnP,isPtW));
+  hEffPt[1] = (TH1D*) fEff -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy1p2_1p6",isTnP,isPtW));
+  hEffPt[2] = (TH1D*) fEff -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy1p6_1p8",isTnP,isPtW));
+  hEffPt[3] = (TH1D*) fEff -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy1p8_2p4",isTnP,isPtW));
+  
   // TFile *fEff = new TFile(Form("../primary_input/mc_eff_vs_pt_cent_20_to_120_rap_%s_pbpb_psi2S_PtW%d_tnp%d.root",bCont.Data(),isPtW,isTnP),"read");
   // cout << "File Open : " << Form("../primary_input/mc_eff_vs_pt_cent_20_to_120_rap_%s_pbpb_psi2S_PtW%d_tnp%d.root",bCont.Data(),isPtW,isTnP) << endl;
   // TH1D* hEffPt[15];
@@ -243,17 +234,10 @@ void makeRooDataSet_Psi_2S_0604_v3(
 					  else if ( abs((double)y[j])>=1.6 && abs((double)y[j])<2.4 ) { weight_acc = getAccWeight(hAccPt[2], pt[j]); }
 				  }
 				  if(fEffW){
-					  if(cBin >= 0 && cBin < 20) {
-						  if ( abs((double)y[j])<1.2) { weight_eff = getEffWeight(hEffPt1[0], pt[j]); }
-						  else if ( abs((double)y[j])>=1.2 && abs((double)y[j])<1.6 ) { weight_eff = getEffWeight(hEffPt1[1], pt[j]); }
-						  else if ( abs((double)y[j])>=1.6 && abs((double)y[j])<1.8 ) { weight_eff = getEffWeight(hEffPt1[2], pt[j]); }
-						  else if ( abs((double)y[j])>=1.8 && abs((double)y[j])<2.4 ) { weight_eff = getEffWeight(hEffPt1[3], pt[j]); }
-					  }else if (cBin >= 20 && cBin < 120) {
-						  if ( abs((double)y[j])<1.2) { weight_eff = getEffWeight(hEffPt2[0], pt[j]); }
-						  else if ( abs((double)y[j])>=1.2 && abs((double)y[j])<1.6 ) { weight_eff = getEffWeight(hEffPt2[1], pt[j]); }
-						  else if ( abs((double)y[j])>=1.6 && abs((double)y[j])<1.8 ) { weight_eff = getEffWeight(hEffPt2[2], pt[j]); }
-						  else if ( abs((double)y[j])>=1.8 && abs((double)y[j])<2.4 ) { weight_eff = getEffWeight(hEffPt2[3], pt[j]); }
-					  }
+					  if ( abs((double)y[j])<1.2) { weight_eff = getEffWeight(hEffPt[0], pt[j]); }
+					  else if ( abs((double)y[j])>=1.2 && abs((double)y[j])<1.6 ) { weight_eff = getEffWeight(hEffPt[1], pt[j]); }
+					  else if ( abs((double)y[j])>=1.6 && abs((double)y[j])<1.8 ) { weight_eff = getEffWeight(hEffPt[2], pt[j]); }
+					  else if ( abs((double)y[j])>=1.8 && abs((double)y[j])<2.4 ) { weight_eff = getEffWeight(hEffPt[3], pt[j]); }
 				  }
 				  //SumEff=+1./weight_eff;
 
@@ -300,9 +284,9 @@ void makeRooDataSet_Psi_2S_0604_v3(
   cout << "one dimuon : " << nDimu_one << endl;
   
   
-  if (isMC && state==1) {TFile *wf = new TFile(Form("OniaRooDataSet_isMC%d_PR_Psi_2S_20201123.root",isMC),"recreate");  wf->cd();}
-  else if (isMC && state==2) {TFile *wf = new TFile(Form("OniaRooDataSet_isMC%d_BtoPsi_2S_20201123.root",isMC),"recreate");  wf->cd();}
-  else if (!isMC) {TFile *wf = new TFile(Form("OniaRooDataSet_isMC%d_Psi_2S_%sw_Effw%d_Accw%d_PtW%d_TnP%d_20210604.root",isMC,outName.Data(),fEffW,fAccW,isPtW,isTnP),"recreate");  wf->cd();}
+  if (isMC && state==1) {TFile *wf = new TFile(Form("roots/OniaRooDataSet_isMC%d_PR_Psi_2S_20201123.root",isMC),"recreate");  wf->cd();}
+  else if (isMC && state==2) {TFile *wf = new TFile(Form("roots/OniaRooDataSet_isMC%d_BtoPsi_2S_20201123.root",isMC),"recreate");  wf->cd();}
+  else if (!isMC) {TFile *wf = new TFile(Form("roots/OniaRooDataSet_isMC%d_Psi_2S_%sw_Effw%d_Accw%d_PtW%d_TnP%d_cent0_20_20210604.root",isMC,outName.Data(),fEffW,fAccW,isPtW,isTnP),"recreate");  wf->cd();}
  dataSet->Write();
 }
     
@@ -327,7 +311,6 @@ double getAccWeight(TH1D* h, double pt){
   return weight_;
 } 
 
-/*
 double getEffWeight(TH1D *h, double pt){
   double binN = h->FindBin(pt);
   TF1 *eff1 = (TF1*)h->FindObject("f1");
@@ -335,9 +318,10 @@ double getEffWeight(TH1D *h, double pt){
   double weight_ = 1./eff;
   return weight_;
 } 
-*/
+/*
 double getEffWeight(TH1D *h, double pt){
   double binN = h->FindBin(pt);
   double weight_ = 1./(h->GetBinContent(binN));
   return weight_;
 } 
+*/

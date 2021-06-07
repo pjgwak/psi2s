@@ -512,8 +512,8 @@ Double_t pol3bkg(Double_t* x, Double_t* par)
 }
 //}}}
 
-void doSimultaneousV2MassFit_pt65_10_y0_24_cent20_120_test(int cLow = 20, int cHigh = 120,
-    float ptLow = 6.5, float ptHigh = 10,
+void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20_test(int cLow = 0, int cHigh = 20,
+    float ptLow =  6.5, float ptHigh = 50,
     float yLow = 0, float yHigh = 2.4,
     float SiMuPtCut = 0, float massLow = 3.4, float massHigh =4.0, bool dimusign=true, int ibkg_vn_sel = fpol3, bool fixSigPar=true)
 {
@@ -546,11 +546,11 @@ void doSimultaneousV2MassFit_pt65_10_y0_24_cent20_120_test(int cLow = 20, int cH
   }
 
   //Get yield distribution{{{
-  TFile* rf = new TFile(Form("../roots/v2mass_hist/Psi2S_Inclusive_%s_Eff1_Acc1_PtW1_TnP1.root",kineLabel.Data()),"read");
+  TFile* rf = new TFile(Form("../v2mass_hist/roots/Psi2S_Inclusive_%s_Eff1_Acc1_PtW1_TnP1.root",kineLabel.Data()),"read");
   TH1D* h_v2_SplusB = (TH1D*) rf->Get("h_v2_SplusB");  
   TGraphAsymmErrors* g_mass = (TGraphAsymmErrors*) rf->Get("g_mass");  
 
-  TFile *wf = new TFile(Form("../roots/sim_fit_result/SimFitResult_Inclusive_%s.root", kineLabel.Data()),"recreate");
+  TFile *wf = new TFile(Form("roots/SimFitResult_Inclusive_%s.root", kineLabel.Data()),"recreate");
 
   //define function for simultaneous fitting{{{
   TF1* fmass_total = new TF1("fmass_total", TotalYield, massLow, massHigh, nParmM);
@@ -590,13 +590,12 @@ void doSimultaneousV2MassFit_pt65_10_y0_24_cent20_120_test(int cLow = 20, int cH
   //}}}
 
   TString kineLabel_ = getKineLabel (ptLow, ptHigh, yLow, yHigh, SiMuPtCut, cLow, cHigh) ;
-  TFile* f_mass = new TFile(Form("../FromMassFit/MassFitResult_%s_PRw_Effw1_Accw1_PtW1_TnP1.root",kineLabel_.Data()),"read");
+  TFile* f_mass = new TFile(Form("../2D_fit_macro/roots/mass/MassFitResult_%s_PRw_Effw1_Accw1_PtW1_TnP1.root",kineLabel_.Data()),"read");
   RooWorkspace *ws = new RooWorkspace("workspace");
   RooDataSet *datasetMass = (RooDataSet*)f_mass->Get("datasetMass");
   ws->import(*datasetMass);
   f_mass->cd();
-  // RooWorkspace *ws = (RooWorkspace*) f_mass->Get("datasetMass");
-
+  
   //Get fitting parameter{{{
   Double_t N1_ = ws->var("N_Jpsi")->getVal();
   Double_t Nbkg_ = ws->var("N_Bkg")->getVal();
@@ -606,24 +605,24 @@ void doSimultaneousV2MassFit_pt65_10_y0_24_cent20_120_test(int cLow = 20, int cH
   Double_t n_ = ws->var("n_1_A")->getVal();
   Double_t ratio_ = ws->var("x_A")->getVal();
   Double_t frac_ = ws->var("f")->getVal();
-  Double_t cheb0_ = 0.04710;
-  Double_t cheb1_ = 0.01818;
-  Double_t cheb2_ = 0.02321;
-  Double_t c_  = 0.00103;
-  Double_t c1_ = 0.05102;
-  Double_t c2_ = 0.04811;
-  Double_t c3_ = 0.01105;
-  Double_t c4_ = 0.02014;
-
-  // Parameters without weighting
-  // Double_t cheb0_ = 0.00010;
-  // Double_t cheb1_ = 0.00018;
-  // Double_t cheb2_ = 0.00021;
-  // Double_t c_  = 0.00503;
-  // Double_t c1_ = 0.00302;
-  // Double_t c2_ = 0.00011;
-  // Double_t c3_ = 0.00005;
-  // Double_t c4_ = 0.00014;
+  Double_t cheb0_ = 0.0030801;
+  Double_t cheb1_ = 0.0020521;
+  Double_t cheb2_ = 0.001023;
+  Double_t c_  = 0.0040011;
+  Double_t c1_ = 0.0020121;
+  Double_t c2_ = 0.0020314;
+  Double_t c3_ = 0.0010103;
+  Double_t c4_ = 0.0030601;
+  
+  // Without weighting
+  // Double_t cheb0_ = 0.0000001;
+  // Double_t cheb1_ = -.0000021;
+  // Double_t cheb2_ = 0.0000003;
+  // Double_t c_  = 0.0000011;
+  // Double_t c1_ = -.0000021;
+  // Double_t c2_ = -.0000014;
+  // Double_t c3_ = -.0000103;
+  // Double_t c4_ = 0.0000001;
   //}}}
 
 
@@ -695,10 +694,8 @@ void doSimultaneousV2MassFit_pt65_10_y0_24_cent20_120_test(int cLow = 20, int cH
   int nprm_sigf      = 8;
   int nprm_bkgf      = 4;
   int nprm_alpha     = 11;
-  double massYMin=1000;
-  double massYMax=2000;
-
-  // and here
+  double massYMin=600;
+  double massYMax=1200;
 
   TF1* fyield_bkg = new TF1("fyield_bkg", TotalYieldBkg, massLow, massHigh,nprm_bkgf);
   fyield_bkg->FixParameter(0, fmass_total->GetParameter(prmid_bkgyield));
@@ -789,7 +786,7 @@ void doSimultaneousV2MassFit_pt65_10_y0_24_cent20_120_test(int cLow = 20, int cH
   fAlpha->SetLineColor(kGreen+2);
   fAlpha->SetLineWidth(2);
 
-  h_v2_SplusB->GetYaxis()->SetRangeUser(0.06,0.21);
+  h_v2_SplusB->GetYaxis()->SetRangeUser(-0.05,0.21);
   h_v2_SplusB->GetYaxis()->SetTitle("v_{2}^{S+B}");
   h_v2_SplusB->GetXaxis()->SetTitle("m_{#mu^{+}#mu^{-}} (GeV)");
   h_v2_SplusB->GetYaxis()->SetLabelSize(0.055);
@@ -803,7 +800,7 @@ void doSimultaneousV2MassFit_pt65_10_y0_24_cent20_120_test(int cLow = 20, int cH
   h_v2_SplusB->GetXaxis()->SetLimits(massLow,massHigh);
   SetHistStyle(h_v2_SplusB,0,0);
   SetGraphStyle2(g_mass,0,0);
-  
+ 
   g_mass->SetMarkerSize(1);
   // g_mass->SetMinimum(massYMin);
   // g_mass->SetMaximum(massYMax);
@@ -841,7 +838,6 @@ void doSimultaneousV2MassFit_pt65_10_y0_24_cent20_120_test(int cLow = 20, int cH
   TPad* pad2 = new TPad("pad2","pad2",0,0.0,1.0,0.5);
   c_mass_v2->cd();
   pad1->SetTicks(1,1);
-  pad1->SetBottomMargin(0);
   pad1->SetLeftMargin(0.19);
   pad1->SetTopMargin(0.08);
   // pad1->SetLogy();
@@ -899,7 +895,7 @@ void doSimultaneousV2MassFit_pt65_10_y0_24_cent20_120_test(int cLow = 20, int cH
   pad1->Draw();
   pad2->Draw();
   c_mass_v2->Update();
-  c_mass_v2->SaveAs(Form("../figs/v2mass_fit/v2Mass_Inclusive_%s.pdf", kineLabel.Data()));
+  c_mass_v2->SaveAs(Form("figs/v2Mass_Inclusive_%s.pdf", kineLabel.Data()));
   wf->cd();
   //store individual function{{{
   fyieldtot = (TF1*) fmass_total->Clone();

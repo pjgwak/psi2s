@@ -33,10 +33,10 @@ void MassFit_weight(
 {
 	massLow = 3.4;
 	massHigh = 4.0;
-	TString DATE = "210604";
+	TString DATE = "210606";
 	gStyle->SetEndErrorSize(0);
-	gSystem->mkdir(Form("roots/2DFit_%s/Mass",DATE.Data()),kTRUE);
-	gSystem->mkdir(Form("figs/2DFit_%s/Mass",DATE.Data()),kTRUE);
+	gSystem->mkdir(Form("roots/mass/%s",DATE.Data()),kTRUE);
+	gSystem->mkdir(Form("figs/mass/%s",DATE.Data()),kTRUE);
 
 	TString fname;
 	if (PRw==1) fname="PR";
@@ -100,8 +100,15 @@ void MassFit_weight(
 	//double paramsupper[8] = {0.4,    1.0,     4.9, 2.9, 1.0,     25.0};
 	//double paramslower[8] = {0.01,   0.0,     1., 1., 0.0,      0.0};//pt3-4.5 m_lambda==-25.0
 	//Cent.10-20
+	
+	// pt6.5 - 50 case
+	// double paramsupper[8] = {0.4,    1.0,     4.9, 7.0, 1.0,     25.0};
+	// double paramslower[8] = {0.01,   0.0,     1.1, 1.1, 0.0,      0.0};//pt3-4.5 m_lambda==-25.0
+
+	// Otherwise
 	double paramsupper[8] = {0.4,    1.0,     4.9, 3.9, 1.0,     25.0};
 	double paramslower[8] = {0.01,   0.0,     1.1, 1.1, 0.0,      0.0};//pt3-4.5 m_lambda==-25.0
+
 	//SIGNAL: initial params
 	double sigma_1_init = 0.04;
 	double x_init = 0.35;
@@ -139,9 +146,9 @@ void MassFit_weight(
 
 	//BACKGROUND
 	RooRealVar m_lambda_A("#lambda_A","m_lambda",  m_lambda_init, paramslower[5], paramsupper[5]);
-	RooRealVar *sl1 = new RooRealVar("sl1","sl1", sl1_mean, -10., 10.);
-	RooRealVar *sl2 = new RooRealVar("sl2","sl2", sl2_mean, -10., 10.);
-	RooRealVar *sl3 = new RooRealVar("sl3","sl3", sl3_mean, -10., 10.);
+	RooRealVar *sl1 = new RooRealVar("sl1","sl1", sl1_mean, -5., 5.);
+	RooRealVar *sl2 = new RooRealVar("sl2","sl2", sl2_mean, -5., 5.);
+	RooRealVar *sl3 = new RooRealVar("sl3","sl3", sl3_mean, -5., 5.);
 
 	//THIS IS THE BACKGROUND FUNCTION
 	RooChebychev *pdfMASS_bkg;
@@ -282,12 +289,14 @@ void MassFit_weight(
 
 
 	TFile* outFile;
-	outFile = new TFile(Form("roots/2DFit_%s/Mass/MassFitResult_%s_%sw_Effw%d_Accw%d_PtW%d_TnP%d.root", DATE.Data(), kineLabel.Data(), fname.Data(), fEffW, fAccW, isPtW, isTnP),"recreate");
-	c_A->SaveAs(Form("figs/2DFit_%s/Mass/Mass_%s_%sw_Effw%d_Accw%d_PtW%d_TnP%d.pdf", DATE.Data(), kineLabel.Data(), fname.Data(), fEffW, fAccW, isPtW, isTnP));
+	outFile = new TFile(Form("roots/mass/%s/MassFitResult_%s_%sw_Effw%d_Accw%d_PtW%d_TnP%d.root", DATE.Data(), kineLabel.Data(), fname.Data(), fEffW, fAccW, isPtW, isTnP),"recreate");
+	c_A->SaveAs(Form("figs/mass/%s/Mass_%s_%sw_Effw%d_Accw%d_PtW%d_TnP%d.pdf", DATE.Data(), kineLabel.Data(), fname.Data(), fEffW, fAccW, isPtW, isTnP));
 	pdfMASS_Tot->Write();
 	datasetMass->Write();
 	outh->Write();
 	outFile->Close();
+
+	fitMass->Print("V");
 
 	// Get # of entries for every bins.
 	// To compare events number point by point

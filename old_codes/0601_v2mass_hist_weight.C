@@ -9,13 +9,13 @@
 #include "TArrow.h"
 #include "TFile.h"
 #include <TMath.h>
-#include "../header/commonUtility.h"
-#include "../header/cutsAndBin.h"
-#include "../header/HiEvtPlaneList.h"
-#include "../header/Style.h"
-#include "../header/tdrstyle.C"
-#include "../header/CMS_lumi_v2mass.C"
-#include "../header/rootFitHeaders.h"
+#include "commonUtility.h"
+#include "cutsAndBin.h"
+#include "HiEvtPlaneList.h"
+#include "Style.h"
+#include "tdrstyle.C"
+#include "CMS_lumi_v2mass.C"
+#include "rootFitHeaders.h"
 using namespace std;
 using namespace RooFit;
 
@@ -26,12 +26,12 @@ double getEffWeight(TH1D* h = 0, double pt = 0);
 void GetHistSqrt(TH1D* h1 =0, TH1D* h2=0);
 void GetHistBkg(TH1D* h1 =0, TH1D* h2=0);
 
-void Psi2S_v2mass_hist_weight(
-    double ptLow = 6.5, double ptHigh = 10,
+void v2mass_hist_weight(
+    double ptLow =  6.5, double ptHigh =  7.5,
     double yLow = 0, double yHigh = 2.4,
     int cLow = 20, int cHigh = 120,
-	double ctauCut=0.1,
-    float massLow = 3.4, float massHigh = 4.0, 
+    int ctauCut = 2, //-1:Left, 0:Central, 1:Right 2:w/o cut
+    float massLow = 2.6, float massHigh =3.5, 
     bool dimusign=true, bool fAccW = true, bool fEffW = true, bool isMC = false, 
     int dtype = 1, 
     int weight_PR = 0, // PR : 0, NP : 1
@@ -40,17 +40,11 @@ void Psi2S_v2mass_hist_weight(
 {
   //Basic Setting
   gStyle->SetOptStat(0);
-  TString DATE="210604";
+  TString DATE="210524";
   //TString DATE="Corr";
   //TString DATE="210503";
   gStyle->SetEndErrorSize(0);
-  gSystem->mkdir(Form("figs"), kTRUE);
-  gSystem->mkdir(Form("roots"), kTRUE);
-  gSystem->mkdir(Form("figs/v2mass_hist"), kTRUE);
-  gSystem->mkdir(Form("figs/decayL"), kTRUE);
-  gSystem->mkdir(Form("figs/mass_dist"), kTRUE);
-  gSystem->mkdir(Form("figs/q_vector"), kTRUE);
-  gSystem->mkdir(Form("roots/v2mass_hist"), kTRUE);
+  gSystem->mkdir(Form("figs/v2mass_hist/%s",DATE.Data()), kTRUE);
   gSystem->mkdir(Form("roots/v2mass_hist/%s",DATE.Data()), kTRUE);
   gStyle->SetOptStat(000000000);
   gROOT->ForceStyle();
@@ -75,8 +69,7 @@ void Psi2S_v2mass_hist_weight(
 
   TChain *tree = new TChain("mmepevt");
   if(!isMC){
-    //TString f1 = "roots/OniaFlowSkim_JpsiTrig_DBAllPD_isMC0_HFNom_201127.root";
-    TString f1 = "../primary_input/OniaFlowSkim_JpsiTrig_DBAllPD_isMC0_HFNom_201127.root";
+    TString f1 = "skimmedFiles/OniaFlowSkim_JpsiTrig_DBAllPD_isMC0_HFNom_201127.root";
     //TString f1 = "/Users/goni/Downloads/ONIATREESKIMFILE/OniaFlowSkim_JpsiTrig_DBPD_isMC0_HFNom_AddEP_200217.root";
     //TString f2 = "/Users/goni/Downloads/ONIATREESKIMFILE/OniaFlowSkim_JpsiTrig_DBPeriPD_isMC0_HFNom_AddEP_Peri_200217.root";
     tree->Add(f1.Data());
@@ -101,27 +94,57 @@ void Psi2S_v2mass_hist_weight(
   //Get Correction histograms
   bool isTnP = true;
   bool isPtW = true;
-
-  // TFile *fEff = new TFile(Form("../primary_input/mc_eff_vs_pt_cent_0_to_20_rap_%s_pbpb_psi2S_PtW%d_tnp%d.root",wName.Data(),isPtW,isTnP),"read");
-  // TH1D* hEffPt[4];
-  // hEffPt[0] = (TH1D*) fEff -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy0_1p2",isTnP,isPtW));
-  // hEffPt[1] = (TH1D*) fEff -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy1p2_1p6",isTnP,isPtW));
-  // hEffPt[2] = (TH1D*) fEff -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy1p6_1p8",isTnP,isPtW));
-  // hEffPt[3] = (TH1D*) fEff -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy1p8_2p4",isTnP,isPtW));
-  
-  TFile *fEff = new TFile(Form("../primary_input/mc_eff_vs_pt_cent_20_to_120_rap_%s_pbpb_psi2S_PtW%d_tnp%d.root",wName.Data(),isPtW,isTnP),"read");
+  //  TFile *fEff = new TFile(Form("/home/deathold/work/CMS/analysis/Upsilon_v2/UpsilonPbPb2018_v2/Efficiency/mc_eff_vs_pt_TnP%d_PtW1_OfficialMC_Y%dS_muPtCut3.5.root",isTnP,state),"read");
+  //TFile *fEff = new TFile(Form("./Eff_Acc/mc_eff_vs_pt_cent_0_to_200_rap_%s_pbpb_Jpsi_PtW%d_tnp%d_drawsame2.root",wName.Data(),isPtW,isTnP),"read");
+  // TFile *fEff = new TFile(Form("./Eff_Acc/mc_eff_vs_pt_cent_20_to_120_rap_%s_pbpb_Jpsi_PtW%d_tnp%d_drawsame2.root",wName.Data(),isPtW,isTnP),"read");
   TH1D* hEffPt[4];
   hEffPt[0] = (TH1D*) fEff -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_20_to_120_absy0_1p2",isTnP,isPtW));
   hEffPt[1] = (TH1D*) fEff -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_20_to_120_absy1p2_1p6",isTnP,isPtW));
   hEffPt[2] = (TH1D*) fEff -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_20_to_120_absy1p6_1p8",isTnP,isPtW));
   hEffPt[3] = (TH1D*) fEff -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_20_to_120_absy1p8_2p4",isTnP,isPtW));
-  // //  TFile *fAcc = new TFile(Form("/home/deathold/work/CMS/analysis/Upsilon_v2/UpsilonPbPb2018_v2/Acceptance/acceptance_wgt_%dS_pt0_50_20190813_dNdptWeighted.root",state),"read");
-   TFile *fAcc = new TFile("../primary_input/acceptance_Prompt_GenOnly_wgt1_2021Psi2Sv2_20210603.root","read");
-   TH1D* hAccPt[3];
-   hAccPt[0] = (TH1D*) fAcc -> Get("hAccPt_2021_ally");
-   hAccPt[1] = (TH1D*) fAcc -> Get("hAccPt_2021_midy");
-   hAccPt[2] = (TH1D*) fAcc -> Get("hAccPt_2021_Fory");
+  //  TFile *fAcc = new TFile(Form("/home/deathold/work/CMS/analysis/Upsilon_v2/UpsilonPbPb2018_v2/Acceptance/acceptance_wgt_%dS_pt0_50_20190813_dNdptWeighted.root",state),"read");
+  TFile *fAcc = new TFile("./Eff_Acc/Acc_WeightVariation_20210426.root","read");
+  TH1D* hAccPt[3];
+  hAccPt[0] = (TH1D*) fAcc -> Get("hAccPt_2021_ally_wt");
+  hAccPt[1] = (TH1D*) fAcc -> Get("hAccPt_2021_midy_wt");
+  hAccPt[2] = (TH1D*) fAcc -> Get("hAccPt_2021_Fory_wt");
 
+  TFile *fFinal; TFile *fCErr;
+  //fCErr = new TFile(Form("Macros/2021_04_22/roots/2DFit_%s/CtauErr/CtauErrResult_%s_%sw_Effw%d_Accw%d_PtW%d_TnP%d.root", DATE.Data(), kineLabel.Data(), "PR", fEffW, fAccW, isPtW, isTnP));
+  fCErr = new TFile(Form("Macros/2021_04_22/roots/2DFit_%s/CtauErr/CtauErrResult_%s_%sw_Effw%d_Accw%d_PtW%d_TnP%d.root", DATE.Data(), kineLabel.Data(), "PR", 1, 1, isPtW, isTnP));
+  fFinal = new TFile(Form("Macros/2021_04_22/roots/2DFit_%s/Final/2DFitResult_%s_%sw_Effw%d_Accw%d_PtW%d_TnP%d.root", DATE.Data(), kineLabel.Data(), "PR", 1, 1, isPtW, isTnP));
+  RooDataSet *dataw_Bkg = (RooDataSet*)fCErr->Get("dataw_Bkg");
+  RooWorkspace *ws = new RooWorkspace("workspace");
+  ws->import(*dataw_Bkg);
+  double ctauErrMin;
+  double ctauErrMax;
+  ctauErrMin = ws->var("ctau3DErr")->getMin();  ctauErrMax = ws->var("ctau3DErr")->getMax();
+  cout<<"CtauErr Min: "<<ctauErrMin<<", Max: "<<ctauErrMax<<endl;
+
+  TH1D *Fraction1 = (TH1D*)fFinal->Get("Fraction1");
+  TH1D *Fraction2 = (TH1D*)fFinal->Get("Fraction2");
+  TH1D *Fraction3 = (TH1D*)fFinal->Get("Fraction3");
+
+  double ctauLo =Fraction1->GetBinLowEdge((double)Fraction1->FindFirstBinAbove(1e-3))+Fraction1->GetBinWidth((double)Fraction1->FindFirstBinAbove(1e-3));
+  double ctauHi =Fraction2->GetBinLowEdge((double)Fraction2->FindFirstBinAbove(1e-3))+Fraction2->GetBinWidth((double)Fraction2->FindFirstBinAbove(1e-3));
+  double bfrac1=Fraction1->GetBinContent((double)Fraction1->FindFirstBinAbove(1e-3));
+  double bfrac2=Fraction2->GetBinContent((double)Fraction2->FindFirstBinAbove(1e-3));
+  double bfrac3=Fraction3->GetBinContent((double)Fraction3->FindFirstBinAbove(1e-3));
+
+	if(cLow==0&&cHigh==20) { ctauLo=0.024; ctauHi=0.072; bfrac1=0.0506621; bfrac2=0.950401; bfrac3=0.301808; }
+	else if(cLow==20&&cHigh==40) { ctauLo=-0.007; ctauHi=0.206; bfrac1=0.0501226; bfrac2=0.950051; bfrac3=0.164328; }
+	else if(cLow==40&&cHigh==60) { ctauLo=-0.009; ctauHi=0.064; bfrac1=0.0501951; bfrac2=0.951196; bfrac3=0.162549; }
+	else if(cLow==60&&cHigh==80) { ctauLo=0.051; ctauHi=0.131; bfrac1=0.0506778; bfrac2=0.95016; bfrac3=0.383119; }
+	else if(cLow==80&&cHigh==100) { ctauLo=0.003; ctauHi=0.068; bfrac1=0.0202883; bfrac2=0.973757; bfrac3=0.4268; }
+	else if(cLow==100&&cHigh==180) { ctauLo=0.035; ctauHi=0.08; bfrac1=0.0257313; bfrac2=0.980737; bfrac3=0.273615; }
+
+  if(ctauCut==-1){
+    cutName="ctauL"; cout<<"Ctau Cut: "<<cutName<<" < "<< ctauLo <<", "<< endl;}
+  else if(ctauCut==0){
+    cutName="ctauC"; cout<<"Ctau Cut: "<<cutName<<", "<< ctauLo <<"-"<< ctauHi<<endl;}
+  else if(ctauCut==1){
+    cutName="ctauR"; cout<<"Ctau Cut: "<<cutName<<" > "<< ctauHi <<", "<< endl;}
+  else cutName="woCut";
 
   //SetBranchAddress
   const int nMaxDimu = 1000;
@@ -220,10 +243,14 @@ void Psi2S_v2mass_hist_weight(
   //  else if(ptLow==9&&ptHigh==12)  ctauCut=0.0635;
   //  else if(ptLow==12&&ptHigh==30) ctauCut=0.0495;}
   //  cout<<"pt["<<ptLow<<" - "<<ptHigh<<" GeV/c], "<<"ctau cut: "<<ctauCut<<endl;
-  
-  const int nMassBin = 8;
-  float massBinDiff[nMassBin+1]={3.4,3.55,3.62,3.66,3.70,3.74,3.78,3.85,4.0};
+
+  const int nMassBin = 5;
+
   //float massBinDiff[nMassBin+1]={2.6, 2.7, 2.8, 2.9, 3.0, 3.06, 3.09, 3.12, 3.15, 3.2, 3.3, 3.4, 3.5};
+  //float massBinDiff[nMassBin+1]={2.6, 3.0, 3.06, 3.09, 3.12, 3.15, 3.2, 3.3, 3.5};
+  //float massBinDiff[nMassBin+1]={2.6, 2.8, 3.0, 3.06, 3.09, 3.12, 3.15, 3.2, 3.3, 3.5};//9
+	float massBinDiff[nMassBin+1]={2.6, 3.0, 3.07, 3.13, 3.2, 3.5}; //5
+	//float massBinDiff[nMassBin+1]={2.6, 3.0, 3.06, 3.15, 3.5}; //4
   //float massBinDiff[nMassBin+1]={2.6, 2.75, 2.9, 3.0, 3.06, 3.09, 3.12, 3.15, 3.2,3.5};
   float massBin_[nMassBin+1];
 
@@ -324,7 +351,7 @@ void Psi2S_v2mass_hist_weight(
   for(int i=0; i<nEvt; i++){
     tree->GetEntry(i);
     nDimuPass=0;
-    if(cBin>=cLow&&cBin<cHigh){ 
+    if(cBin>cLow&&cBin<cHigh){ 
       if(fabs(vz)<15){
         for(int j=0; j<nDimu; j++){
           //if(! ((double)pt[j]<50 && abs((double)y[j])<2.4 && (double)pt1[j]>SiMuPtCut&&(double)pt2[j]>SiMuPtCut&&abs((double)eta1[j])<2.4&&abs((double)eta2[j])<2.4)) continue;
@@ -334,24 +361,25 @@ void Psi2S_v2mass_hist_weight(
         nDimu_all++;
         if(nDimuPass>1) {nDimu_more++; continue;}
         if(nDimuPass==1) nDimu_one++;
-		//if(ctau3D<ctauCut) continue;
         // Fill Dimuon Loop
-
         for(int j=0; j<nDimu; j++){
-          if(pt[j]>ptLow&&pt[j]<ptHigh&&recoQQsign[j]==0&&mass[j]>massLow&&mass[j]<massHigh&&abs(y[j])>yLow&&abs(y[j])<yHigh && IsAcceptanceQQ(pt1[j],eta1[j]) && IsAcceptanceQQ(pt2[j],eta2[j])
+          if(pt[j]>ptLow&&pt[j]<ptHigh&&recoQQsign[j]==0&&mass[j]>massLow&&mass[j]<massHigh&&abs(y[j])>yLow&&abs(y[j])<yHigh&&
+              ctau3DErr[j]>ctauErrMin&&ctau3DErr[j]<ctauErrMax
               //( ((abs(eta1[j]) <= 1.2) && (pt1[j] >=3.5)) || ((abs(eta2[j]) <= 1.2) && (pt2[j] >=3.5)) ||
               //  ((abs(eta1[j]) > 1.2) && (abs(eta1[j]) <= 2.1) && (pt1[j] >= 5.47-1.89*(abs(eta1[j])))) || 
               //  ((abs(eta2[j]) > 1.2)  && (abs(eta2[j]) <= 2.1) && (pt2[j] >= 5.47-1.89*(abs(eta2[j])))) ||
               //  ((abs(eta1[j]) > 2.1) && (abs(eta1[j]) <= 2.4) && (pt1[j] >= 1.5)) || 
               //  ((abs(eta2[j]) > 2.1)  && (abs(eta2[j]) <= 2.4) && (pt2[j] >= 1.5)) )
             ){
+            if (ctauCut==-1 && ctau3D[j]>ctauLo) continue;
+            else if (ctauCut==0 && !(ctau3D[j]>ctauLo && ctau3D[j]<ctauHi)) continue;
+            else if (ctauCut==1 && ctau3D[j]<ctauHi) continue;
             weight_acc=1;
             weight_eff=1;
             if(fAccW){
               //if ( abs((double)y[j])<2.4 ) { weight_acc = getAccWeight(hAccPt[1], pt[j]); }
               if ( abs((double)y[j])<1.6 ) { weight_acc = getAccWeight(hAccPt[1], pt[j]); }
               else if ( abs((double)y[j])>=1.6 && abs((double)y[j])<2.4 ) { weight_acc = getAccWeight(hAccPt[2], pt[j]); }
-			  //cout<<"weight acc : "<<weight_acc<<endl;
               //if (mass[j]>3.0&&mass[j]<3.06) {cout << "Acc Weight : " << (double)1.0/weight_acc << " y : " << y[j] << " pT : " << pt[j] << endl;}
             }
             if(fEffW){
@@ -367,9 +395,8 @@ void Psi2S_v2mass_hist_weight(
               else if ( abs((double)y[j])>=1.6 && abs((double)y[j])<1.8 ) { weight_eff = getEffWeight(hEffPt[2], pt[j]); }
               else if ( abs((double)y[j])>=1.8 && abs((double)y[j])<2.4 ) { weight_eff = getEffWeight(hEffPt[3], pt[j]); }
             }
-			double weight_ = weight * weight_eff * weight_acc;
-			//weight_=1.;
-			for(int imbin=0; imbin<nMassBin; imbin++){
+            double weight_ = weight * weight_eff * weight_acc;
+            for(int imbin=0; imbin<nMassBin; imbin++){
               if(mass[j]>=massBin[imbin] && mass[j]<massBin[imbin+1]){
                 v2_1[imbin][count[imbin]] = (qxa[j]*qxdimu[j] + qya[j]*qydimu[j])*weight_;
                 v2_2[imbin][count[imbin]] = (qxa[j]*qxb[j] + qya[j]*qyb[j])*weight_;
@@ -441,7 +468,7 @@ void Psi2S_v2mass_hist_weight(
   //}
 
   int nMassFrameBin = 36;
-  RooWorkspace *ws = new RooWorkspace("workspace");
+  //RooWorkspace *ws = new RooWorkspace("workspace");
   ws->import(*dataSet);
   ws->data("dataset")->Print();
   RooDataSet *reducedDS = new RooDataSet("reducedDS","A sample",*dataSet->get(),Import(*dataSet),WeightVar(*ws->var("weight")));
@@ -558,8 +585,8 @@ void Psi2S_v2mass_hist_weight(
   h_v2_final->GetYaxis()->SetTitleOffset(1.2);
   h_v2_final->GetXaxis()->SetTitleOffset(1.0);
   h_v2_final->GetXaxis()->SetLabelOffset(0.011);
-  //TLine *l=new TLine(2.6, 0, 3.5, 0);
-  //l->SetLineColor(kBlack);
+  TLine *l=new TLine(2.6, 0, 3.5, 0);
+  l->SetLineColor(kBlack);
 
   float pos_x = 0.43;
   float pos_x_mass = 0.73;
@@ -579,7 +606,7 @@ void Psi2S_v2mass_hist_weight(
   pad1->SetLeftMargin(0.19);
   pad1->SetTopMargin(0.08);
   pad1->cd();
-  // pad1->SetLogy();
+  pad1->SetLogy();
   g_mass->GetXaxis()->SetTitleSize(0);
   g_mass->GetXaxis()->SetLabelSize(0);
   g_mass->Draw("AP");
@@ -597,9 +624,9 @@ void Psi2S_v2mass_hist_weight(
   g_mass->GetXaxis()->SetLimits(massLow,massHigh);
   g_mass->GetXaxis()->SetRangeUser(massLow,massHigh);
 
-  if(ptLow==0) drawText(Form("p_{T}^{#mu#mu} < %.1f GeV/c", ptHigh ),pos_x_mass,pos_y,text_color,text_size);
+  if(ptLow==0) drawText(Form("p_{T}^{#mu#mu} < %.f GeV/c",ptHigh ),pos_x_mass,pos_y,text_color,text_size);
   else if(ptLow ==6.5) drawText(Form("%.1f < p_{T}^{#mu#mu} < %.1f GeV/c",(float)ptLow, ptHigh ),pos_x_mass,pos_y,text_color,text_size);
-  else if(ptHigh==6.5) drawText(Form("%1.f < p_{T}^{#mu#mu} < %.1f GeV/c",(float)ptLow, ptHigh ),pos_x_mass,pos_y,text_color,text_size);
+  else if(ptHigh==6.5) drawText(Form("%.f < p_{T}^{#mu#mu} < %.1f GeV/c",(float)ptLow, ptHigh ),pos_x_mass,pos_y,text_color,text_size);
   else if(ptLow!=0) drawText(Form("%.1f < p_{T}^{#mu#mu} < %.1f GeV/c",(float)ptLow, ptHigh ),pos_x_mass,pos_y,text_color,text_size);
   if(yLow==0) drawText(Form("|y^{#mu#mu}| < %.1f",yHigh ), pos_x_mass,pos_y-pos_y_diff,text_color,text_size);
   else if(yLow!=0) drawText(Form("%.1f < |y^{#mu#mu}| < %.1f",yLow, yHigh ), pos_x_mass,pos_y-pos_y_diff,text_color,text_size);
@@ -607,15 +634,24 @@ void Psi2S_v2mass_hist_weight(
   drawText("|#eta^{#mu}| < 2.4", pos_x_mass,pos_y-pos_y_diff*2,text_color,text_size);
   drawText(Form("Centrality %d-%d%s",cLow/2,cHigh/2,perc.Data()),pos_x_mass,pos_y-pos_y_diff*3,text_color,text_size);
   //    drawText(Form("#font[12]{l}_{J/#psi} < %.4f", ctauCut),pos_x_mass,pos_y-pos_y_diff*5,text_color,text_size);
+  if(ctauCut==-1){
+    drawText(Form("#font[12]{l}_{J/#psi} < %.5f", ctauLo),pos_x_mass,pos_y-pos_y_diff*4,text_color,text_size);
+    drawText(Form("NP J/#psi Frac. %.3f", bfrac1),pos_x_mass,pos_y-pos_y_diff*5,text_color,text_size);}
+  else if(ctauCut==0){
+    drawText(Form("%.5f < #font[12]{l}_{J/#psi} < %.5f", ctauLo, ctauHi),pos_x_mass,pos_y-pos_y_diff*4,text_color,text_size);
+    drawText(Form("NP J/#psi Frac. %.3f", bfrac3),pos_x_mass,pos_y-pos_y_diff*5,text_color,text_size);}
+  else if(ctauCut==1){
+    drawText(Form("#font[12]{l}_{J/#psi} > %.5f", ctauHi),pos_x_mass,pos_y-pos_y_diff*4,text_color,text_size);
+    drawText(Form("NP J/#psi Frac. %.3f", bfrac2),pos_x_mass,pos_y-pos_y_diff*5,text_color,text_size);}
   pad2->SetTopMargin(0);
   pad2->SetBottomMargin(0.17);
   pad2->SetLeftMargin(0.19);
   pad2->SetTicks();
   pad2->cd();
   ////////////pad2//////////
-  // jumSun(massLow,0,massHigh,0,1,1);
+  jumSun(massLow,0,massHigh,0,1,1);
   h_v2_final->Draw("P");
-  // l->Draw("same");
+  l->Draw("same");
 
   //CMS_lumi_v2mass(pad1,iPeriod,iPos,1);  
   CMS_lumi_v2mass(pad1,iPeriod,iPos);  
@@ -625,9 +661,9 @@ void Psi2S_v2mass_hist_weight(
   pad1->Draw();
   pad2->Draw();
   //gSystem->mkdir(Form("figs/q_vector",sample.Data()),1);
-  c_mass_v2->SaveAs(Form("figs/v2mass_hist/Psi2S_Inclusive_v2Mass_%s.pdf", kineLabel.Data()));
-  
-
+  if(ctauCut==0) c_mass_v2->SaveAs(Form("figs/v2mass_hist/v2Mass_%s_ctau_%.5f_%.5f_%s.pdf", kineLabel.Data(),ctauLo,ctauHi,cutName.Data()));
+  else if(ctauCut==-1)c_mass_v2->SaveAs(Form("figs/v2mass_hist/v2Mass_%s_ctau_%.5f_%s.pdf", kineLabel.Data(),ctauLo,cutName.Data()));
+  else if(ctauCut== 1)c_mass_v2->SaveAs(Form("figs/v2mass_hist/v2Mass_%s_ctau_%.5f_%s.pdf", kineLabel.Data(),ctauHi,cutName.Data()));
 
   TCanvas* c_decayL = new TCanvas("c_decayL","",600,600);
   c_decayL->SetLogy();
@@ -641,13 +677,15 @@ void Psi2S_v2mass_hist_weight(
   h_decayL->Draw("P");
   //lcut->Draw("same");
   c_decayL->Update();
-  c_decayL->SaveAs(Form("figs/decayL/Psi2S_Inclusive_decayL_%s.pdf", kineLabel.Data()));
+  if(ctauCut==0) c_decayL->SaveAs(Form("figs/decayL/decayL_%s_ctau_%.5f_%.5f_%s.pdf", kineLabel.Data(),ctauLo,ctauHi,cutName.Data()));
+  else if(ctauCut==-1)c_decayL->SaveAs(Form("figs/decayL/decayL_%s_ctau_%.5f_%s.pdf", kineLabel.Data(),ctauLo,cutName.Data()));
+  else if(ctauCut== 1)c_decayL->SaveAs(Form("figs/decayL/decayL_%s_ctau_%.5f_%s.pdf", kineLabel.Data(),ctauHi,cutName.Data()));
 
   TCanvas* c_mass = new TCanvas("c_mass","",600,600);
   c_mass->cd();
   h_mass->Draw("P");
-  if(ptLow==0) drawText(Form("p_{T}^{#mu#mu} < %.1f GeV/c",ptHigh ),pos_x_mass,pos_y,text_color,text_size);
-  else if(ptLow!=0) drawText(Form("%.1f < p_{T}^{#mu#mu} < %.1f GeV/c",ptLow, ptHigh ),pos_x_mass,pos_y,text_color,text_size);
+  if(ptLow==0) drawText(Form("p_{T}^{#mu#mu} < %.f GeV/c",ptHigh ),pos_x_mass,pos_y,text_color,text_size);
+  else if(ptLow!=0) drawText(Form("%.f < p_{T}^{#mu#mu} < %.f GeV/c",ptLow, ptHigh ),pos_x_mass,pos_y,text_color,text_size);
   if(yLow==0) drawText(Form("|y^{#mu#mu}| < %.1f",yHigh ), pos_x_mass,pos_y-pos_y_diff,text_color,text_size);
   else if(yLow!=0) drawText(Form("%.1f < |y^{#mu#mu}| < %.1f",yLow, yHigh ), pos_x_mass,pos_y-pos_y_diff,text_color,text_size);
   //drawText(Form("p_{T}^{#mu} > %.1f GeV/c", SiMuPtCut ), pos_x_mass,pos_y-pos_y_diff*2,text_color,text_size);
@@ -658,7 +696,9 @@ void Psi2S_v2mass_hist_weight(
   //CMS_lumi_v2mass(c_mass,iPeriod,iPos,0);
   CMS_lumi_v2mass(c_mass,iPeriod,iPos);
   c_mass->Update();
-  c_mass->SaveAs(Form("figs/mass_dist/Psi2S_Inclusive_MassDist_%s.pdf", kineLabel.Data()));
+  if(ctauCut==0)c_mass->SaveAs(Form("figs/mass_dist/MassDist_%s_ctau_%.5f_%.5f_%s.pdf", kineLabel.Data(),ctauLo,ctauHi,cutName.Data()));
+  else if(ctauCut==-1)c_mass->SaveAs(Form("figs/mass_dist/MassDist_%s_ctau_%.5f_%s.pdf", kineLabel.Data(),ctauLo,cutName.Data()));
+  else if(ctauCut==1)c_mass->SaveAs(Form("figs/mass_dist/MassDist_%s_ctau_%.5f_%s.pdf", kineLabel.Data(),ctauHi,cutName.Data()));
 
   TLegend *leg_v2_1 = new TLegend(0.38,0.64,0.77,0.9);
   TLegend *leg_v2_2 = new TLegend(0.38,0.64,0.77,0.9);
@@ -729,7 +769,9 @@ void Psi2S_v2mass_hist_weight(
   h_v2_1[0]->Draw("hist same");
   leg_v2_1->Draw("same");
   leg_v2_1->SetFillStyle(0);
-  c_qq_1->SaveAs(Form("figs/q_vector/Psi2S_Inclusive_c_qqa_%s_Eff%d_Acc%d_PtW%d_TnP%d.pdf",kineLabel.Data(),fEffW,fAccW,isPtW,isTnP));
+  if(ctauCut==0) c_qq_1->SaveAs(Form("figs/q_vector/c_qqa_%s_Eff%d_Acc%d_PtW%d_TnP%d_ctau_%.5f_%.5f_%s.pdf",kineLabel.Data(),fEffW,fAccW,isPtW,isTnP,ctauLo,ctauHi,cutName.Data()));
+  else if(ctauCut==-1)c_qq_1->SaveAs(Form("figs/q_vector/c_qqa_%s_Eff%d_Acc%d_PtW%d_TnP%d_ctau_%.5f_%s.pdf",kineLabel.Data(),fEffW,fAccW,isPtW,isTnP,ctauLo,cutName.Data()));
+  else if(ctauCut==1)c_qq_1->SaveAs(Form("figs/q_vector/c_qqa_%s_Eff%d_Acc%d_PtW%d_TnP%d_ctau_%.5f_%s.pdf",kineLabel.Data(),fEffW,fAccW,isPtW,isTnP,ctauHi,cutName.Data()));
 
   TCanvas *c_qq_2 = new TCanvas("c_qaqb","",600,600);
   c_qq_2->cd();
@@ -737,7 +779,9 @@ void Psi2S_v2mass_hist_weight(
   h_v2_2[1]->Draw("hist same");
   h_v2_2[0]->Draw("hist same");
   leg_v2_2->Draw("same");
-  c_qq_2->SaveAs(Form("figs/q_vector/Psi2S_Inclusive_c_qaqb_%s_Eff%d_Acc%d_PtW%d_TnP%d.pdf",kineLabel.Data(),fEffW,fAccW,isPtW,isTnP));
+  if(ctauCut==0) c_qq_2->SaveAs(Form("figs/q_vector/c_qaqb_%s_Eff%d_Acc%d_PtW%d_TnP%d_ctau_%.5f_%.5f_%s.pdf",kineLabel.Data(),fEffW,fAccW,isPtW,isTnP,ctauLo,ctauHi,cutName.Data()));
+  else if(ctauCut==-1)c_qq_2->SaveAs(Form("figs/q_vector/c_qaqb_%s_Eff%d_Acc%d_PtW%d_TnP%d_ctau_%.5f_%s.pdf",kineLabel.Data(),fEffW,fAccW,isPtW,isTnP,ctauLo,cutName.Data()));
+  else if(ctauCut==1)c_qq_2->SaveAs(Form("figs/q_vector/c_qaqb_%s_Eff%d_Acc%d_PtW%d_TnP%d_ctau_%.5f_%s.pdf",kineLabel.Data(),fEffW,fAccW,isPtW,isTnP,ctauHi,cutName.Data()));
 
   TCanvas *c_qq_3 = new TCanvas("c_qaqc","",600,600);
   c_qq_3->cd();
@@ -745,7 +789,9 @@ void Psi2S_v2mass_hist_weight(
   h_v2_3[1]->Draw("hist same");
   h_v2_3[0]->Draw("hist same");
   leg_v2_3->Draw("same");
-  c_qq_3->SaveAs(Form("figs/q_vector/Psi2S_Inclusive_c_qaqc_%s_Eff%d_Acc%d_PtW%d_TnP%d.pdf",kineLabel.Data(),fEffW,fAccW,isPtW,isTnP));
+  if(ctauCut==0) c_qq_3->SaveAs(Form("figs/q_vector/c_qaqc_%s_Eff%d_Acc%d_PtW%d_TnP%d_ctau_%.5f_%.5f_%s.pdf",kineLabel.Data(),fEffW,fAccW,isPtW,isTnP,ctauLo,ctauHi,cutName.Data()));
+  else if(ctauCut==-1)c_qq_3->SaveAs(Form("figs/q_vector/c_qaqc_%s_Eff%d_Acc%d_PtW%d_TnP%d_ctau_%.5f_%s.pdf",kineLabel.Data(),fEffW,fAccW,isPtW,isTnP,ctauLo,cutName.Data()));
+  else if(ctauCut== 1)c_qq_3->SaveAs(Form("figs/q_vector/c_qaqc_%s_Eff%d_Acc%d_PtW%d_TnP%d_ctau_%.5f_%s.pdf",kineLabel.Data(),fEffW,fAccW,isPtW,isTnP,ctauHi,cutName.Data()));
 
   TCanvas *c_qq_4 = new TCanvas("c_qbqc","",600,600);
   c_qq_4->cd();
@@ -753,23 +799,19 @@ void Psi2S_v2mass_hist_weight(
   h_v2_4[1]->Draw("hist same");
   h_v2_4[0]->Draw("hist same");
   leg_v2_4->Draw("same");
-  c_qq_4->SaveAs(Form("figs/q_vector/Psi2S_Inclusive_c_qbqc_%s_Eff%d_Acc%d_PtW%d_TnP%d.pdf",kineLabel.Data(),fEffW,fAccW,isPtW,isTnP));
+  if(ctauCut==0) c_qq_4->SaveAs(Form("figs/q_vector/c_qbqc_%s_Eff%d_Acc%d_PtW%d_TnP%d_ctau_%.5f_%.5f_%s.pdf",kineLabel.Data(),fEffW,fAccW,isPtW,isTnP,ctauLo,ctauHi,cutName.Data()));
+  else if(ctauCut==-1)c_qq_4->SaveAs(Form("figs/q_vector/c_qbqc_%s_Eff%d_Acc%d_PtW%d_TnP%d_ctau_%.5f_%s.pdf",kineLabel.Data(),fEffW,fAccW,isPtW,isTnP,ctauLo,cutName.Data()));
+  else if(ctauCut==1)c_qq_4->SaveAs(Form("figs/q_vector/c_qbqc_%s_Eff%d_Acc%d_PtW%d_TnP%d_ctau_%.5f_%s.pdf",kineLabel.Data(),fEffW,fAccW,isPtW,isTnP,ctauHi,cutName.Data()));
 
   TFile *wf; 
-  wf = new TFile(Form("roots/%s/Psi2S_Inclusive_%s_Eff%d_Acc%d_PtW%d_TnP%d.root",DATE.Data(),kineLabel.Data(),fEffW,fAccW,isPtW,isTnP),"recreate");
+  if(ctauCut==0) wf = new TFile(Form("roots/v2mass_hist/%s/Jpsi_%s_Eff%d_Acc%d_PtW%d_TnP%d_ctau_%.5f_%.5f_%s.root",DATE.Data(),kineLabel.Data(),fEffW,fAccW,isPtW,isTnP,ctauLo,ctauHi,cutName.Data()),"recreate");
+  else if(ctauCut==-1) wf = new TFile(Form("roots/v2mass_hist/%s/Jpsi_%s_Eff%d_Acc%d_PtW%d_TnP%d_ctau_%.5f_%s.root",DATE.Data(),kineLabel.Data(),fEffW,fAccW,isPtW,isTnP,ctauLo,cutName.Data()),"recreate");
+  else if(ctauCut==1) wf = new TFile(Form("roots/v2mass_hist/%s/Jpsi_%s_Eff%d_Acc%d_PtW%d_TnP%d_ctau_%.5f_%s.root",DATE.Data(),kineLabel.Data(),fEffW,fAccW,isPtW,isTnP,ctauHi,cutName.Data()),"recreate");
   wf->cd();
   h_v2_final->Write();
   h_decayL->Write();
   g_mass->Write();
   h_mass->Write();
-
-  // Get # of entries for every bins.
-  // To compare events number point by point
-  // Due to there was events number issue
-  // ofstream fout(Form("entry_check_v2mass_hist_Psi2S_Inclusive_%s.txt", kineLabel.Data()));
-  // for (int i = 1; i <= h_mass->GetNbinsX(); i++)
-	  // fout << h_mass->GetBinContent(i) << endl;
-
 }
 
 void GetHistSqrt(TH1D* h1, TH1D* h2){
@@ -808,8 +850,7 @@ double getEffWeight(TH1D *h, double pt){
   double binN = h->FindBin(pt);
   TF1 *eff1 = (TF1*)h->FindObject("f1");
   double eff = eff1->Eval(pt);
-  double weight_ = 1./h->GetBinContent(binN);;
-  //double weight_ = 1./eff;
+  double weight_ = 1./eff;
   return weight_;
 }
 
