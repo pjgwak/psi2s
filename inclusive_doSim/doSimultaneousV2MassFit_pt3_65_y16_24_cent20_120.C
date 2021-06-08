@@ -731,7 +731,7 @@ void doSimultaneousV2MassFit_pt3_65_y16_24_cent20_120(int cLow = 20, int cHigh =
 
 	TString kineLabel_ = getKineLabel (ptLow, ptHigh, yLow, yHigh, SiMuPtCut, cLow, cHigh) ;
 	//###TFile* f_mass = new TFile(Form("../FromMassFit/MassFitResult_%s_PRw_Effw1_Accw1_PtW1_TnP1.root",kineLabel_.Data()),"read");
-	TFile* f_mass = new TFile(Form("../2D_fit_macro/roots/mass/MassFitResult_%s_PRw_Effw1_Accw1_PtW1_TnP1.root",kineLabel_.Data()),"read");
+	TFile* f_mass = new TFile(Form("../inclusive_2D_fit/roots/mass/MassFitResult_%s_PRw_Effw1_Accw1_PtW1_TnP1.root",kineLabel_.Data()),"read");
 	RooWorkspace *ws = new RooWorkspace("workspace");
 	RooDataSet *datasetMass = (RooDataSet*)f_mass->Get("datasetMass");
 	ws->import(*datasetMass);

@@ -648,9 +648,9 @@ Double_t pol3bkg(Double_t* x, Double_t* par)
 }
 //}}}
 
-void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20,
-		float ptLow = 6.5, float ptHigh = 50,
-		float yLow = 0, float yHigh = 2.4,
+void doSimultaneousV2MassFit_pt40_65_y16_24_cent20_120(int cLow = 20, int cHigh = 120,
+		float ptLow =  4.0, float ptHigh = 6.5,
+		float yLow = 1.6, float yHigh = 2.4,
 		float SiMuPtCut = 0, float massLow = 3.4, float massHigh =4.0, bool dimusign=true, int ibkg_vn_sel = fpol1, bool fixSigPar=true)
 {
 	setTDRStyle();
@@ -683,13 +683,12 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20
 	}
 
 	//Get yield distribution{{{
-	//TFile* rf = new TFile(Form("../roots/v2mass_hist/210603/Psi2S_Prompt_%s_Eff1_Acc1_PtW1_TnP1.root",kineLabel.Data()),"read");
-	TFile* rf = new TFile(Form("../v2mass_hist/roots/Psi2S_Inclusive_%s_Eff1_Acc1_PtW1_TnP1.root",kineLabel.Data()),"read");
-
+	//TFile* rf = new TFile(Form("roots/v2mass_hist/Psi2S_NonPrompt_%s.root",kineLabel.Data()),"read");
+	TFile* rf = new TFile(Form("../v2mass_hist/roots/Psi2S_Prompt_%s_Eff1_Acc1_PtW1_TnP1.root",kineLabel.Data()),"read");
 	TH1D* h_v2_SplusB = (TH1D*) rf->Get("h_v2_SplusB");
 	TGraphAsymmErrors* g_mass = (TGraphAsymmErrors*) rf->Get("g_mass");
 
-	TFile *wf = new TFile(Form("roots/SimFitResult_Inclusive_%s.root", kineLabel.Data()),"recreate");
+	TFile *wf = new TFile(Form("roots/SimFitResult_Prompt_%s.root", kineLabel.Data()),"recreate");
 
 	//define function for simultaneous fitting{{{
 	TF1* fmass_total = new TF1("fmass_total", TotalYield, massLow, massHigh, nParmM);
@@ -729,15 +728,14 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20
 	ROOT::Fit::Fitter fitter;
 	//}}}
 
-	TString kineLabel_ = getKineLabel (ptLow, ptHigh, yLow, yHigh, SiMuPtCut, cLow, cHigh) ;
-	//###TFile* f_mass = new TFile(Form("../FromMassFit/MassFitResult_%s_PRw_Effw1_Accw1_PtW1_TnP1.root",kineLabel_.Data()),"read");
-	TFile* f_mass = new TFile(Form("../2D_fit_macro/roots/mass/MassFitResult_%s_PRw_Effw1_Accw1_PtW1_TnP1.root",kineLabel_.Data()),"read");
+	TString kineLabel_ = getKineLabel (ptLow, ptHigh, yLow, yHigh, SiMuPtCut, cLow, cHigh) ;    TFile* f_mass = new TFile(Form("../prompt_2D_fit/roots/mass/MassFitResult_%s_PRw_Effw1_Accw1_PtW1_TnP1.root",kineLabel_.Data()),"read");
 	RooWorkspace *ws = new RooWorkspace("workspace");
 	RooDataSet *datasetMass = (RooDataSet*)f_mass->Get("datasetMass");
 	ws->import(*datasetMass);
 	f_mass->cd();
 
-	//Get fitting parameter
+
+	//Get fitting parameter{{{
 	Double_t N1_ = ws->var("N_Jpsi")->getVal();
 	Double_t Nbkg_ = ws->var("N_Bkg")->getVal();
 	Double_t mean_ = pdgMass.Psi2S;
@@ -746,33 +744,29 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20
 	Double_t n_ = ws->var("n_1_A")->getVal();
 	Double_t ratio_ = ws->var("x_A")->getVal();
 	Double_t frac_ = ws->var("f")->getVal();
-	Double_t cheb0_ = 0.504262;
-	Double_t cheb1_ = 1.006351;
-	Double_t cheb2_ = 1.002231;
-	Double_t c_  = 0.056;
-	Double_t c1_ = 2.0013;
-	Double_t c2_ = 0.0061;
+	Double_t cheb0_ = 0.5321;
+	Double_t cheb1_ = 0.1135;
+	Double_t cheb2_ = 2.7226;
+	Double_t c_  = 0.042;
+	Double_t c1_ = 2.1210;
+	Double_t c2_ = 2.0006;
+	//}}}
+	// Double_t cheb0_ = 0.0321;
+	// Double_t cheb1_ = 0.0135;
+	// Double_t cheb2_ = 0.0226;
+	// Double_t c_  = 0.41021;
+	// Double_t c1_ = 4.1210;
+	// Double_t c2_ = 9.0006;
 
-	// Weight best
-	// Double_t cheb0_ = 0.504262;
-	// Double_t cheb1_ = 1.006351;
-	// Double_t cheb2_ = 1.002231;
-	// Double_t c_  = 0.056;
-	// Double_t c1_ = 2.0013;
-	// Double_t c2_ = 0.0061;
+	// Double_t cheb0_ = 0.5321;
+	// Double_t cheb1_ = 0.1135;
+	// Double_t cheb2_ = 2.7226;
+	// Double_t c_  = 0.042;
+	// Double_t c1_ = 2.1210;
+	// Double_t c2_ = 2.0006;
 
-	// Without weighting
-	// Double_t cheb0_ = 0.0000001;
-	// Double_t cheb1_ = -.0000021;
-	// Double_t cheb2_ = 0.0000003;
-	// Double_t c_  = 0.0000011;
-	// Double_t c1_ = -.0000021;
-	// Double_t c2_ = -.0000014;
-	// Double_t c3_ = -.0000103;
-	// Double_t c4_ = 0.0000001;
-	
-	Double_t c3_ = 0.0021;
-	Double_t c4_ = 0.003;
+	Double_t c3_ = 0.0210;
+	Double_t c4_ = -0.0010;
 
 	std::cout << "----- OK? ------" << std::endl;
 	Double_t par0[nParmV];
@@ -793,13 +787,8 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20
 	par0[14] = c3_;
 	par0[15] = c4_;
 
-
-	Double_t parLimitLow[nParmV]  = {    0,       0, mean_ -0.02,   0.01,   1.3,   1.4,    0,     0,  -15, -15, -15,  0.0, -30, -30, -30,-30};
-	Double_t parLimitHigh[nParmV] = {N1_*3, Nbkg_*4, mean_ +0.02,    0.2,    5.1,   4.4,   1  ,   1,   15,  15,  14, 0.5,  30,  30,  30, 30};
-
-
-    // Double_t parLimitLow[nParmV]  = {    0,       0, mean_ -0.02,   0.01,   1.3,   1.4,    0,     0,  -5, -7, -10,  0.0, -30, -30, -30,-30};
-    // Double_t parLimitHigh[nParmV] = {N1_*3, Nbkg_*4, mean_ +0.02,    0.2,    5.1,   4.4,   1  ,   1,   5,  7,  10, 0.5,  30,  30,  30, 30};
+	Double_t parLimitLow[nParmV]  = {    0,       0, mean_ -0.02,     0.01,   1.3,   1.4,    0,     0,  -15, -15, -15,  0, -30, -30, -  30,-30};
+	Double_t parLimitHigh[nParmV] = {N1_*3, Nbkg_*4, mean_ +0.02,      0.2,    5.1,   4.4,   1  ,   1,   15,  15,  15, 0.5,  30,  30,    30, 30};
 
 
 	fitter.Config().SetParamsSettings(nParmV_, par0);
@@ -848,8 +837,8 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20
 	int nprm_sigf      = 8;
 	int nprm_bkgf      = 4;
 	int nprm_alpha     = 11;
-	double massYMin=4000;//0
-	double massYMax=7000;//1000
+	double massYMin=0;//0
+	// double massYMax=7000;//1000
 
 	TF1* fyield_bkg = new TF1("fyield_bkg", TotalYieldBkg, massLow, massHigh,nprm_bkgf);
 	fyield_bkg->FixParameter(0, fmass_total->GetParameter(prmid_bkgyield));
@@ -1063,7 +1052,7 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20
 	pad1->Draw();
 	pad2->Draw();
 	c_mass_v2->Update();
-	c_mass_v2->SaveAs(Form("figs/v2Mass_Inclusive_%s.pdf", kineLabel.Data()));
+	c_mass_v2->SaveAs(Form("figs/v2Mass_Prompt_%s.pdf", kineLabel.Data()));
 	wf->cd();
 	//store individual function{{{
 	fyieldtot = (TF1*) fmass_total->Clone();

@@ -648,8 +648,8 @@ Double_t pol3bkg(Double_t* x, Double_t* par)
 }
 //}}}
 
-void doSimultaneousV2MassFit_pt10_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
-		float ptLow = 10, float ptHigh = 50,
+void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20,
+		float ptLow = 6.5, float ptHigh = 50,
 		float yLow = 0, float yHigh = 2.4,
 		float SiMuPtCut = 0, float massLow = 3.4, float massHigh =4.0, bool dimusign=true, int ibkg_vn_sel = fpol1, bool fixSigPar=true)
 {
@@ -731,7 +731,7 @@ void doSimultaneousV2MassFit_pt10_50_y0_24_cent20_120(int cLow = 20, int cHigh =
 
 	TString kineLabel_ = getKineLabel (ptLow, ptHigh, yLow, yHigh, SiMuPtCut, cLow, cHigh) ;
 	//###TFile* f_mass = new TFile(Form("../FromMassFit/MassFitResult_%s_PRw_Effw1_Accw1_PtW1_TnP1.root",kineLabel_.Data()),"read");
-	TFile* f_mass = new TFile(Form("../2D_fit_macro/roots/mass/MassFitResult_%s_PRw_Effw1_Accw1_PtW1_TnP1.root",kineLabel_.Data()),"read");
+	TFile* f_mass = new TFile(Form("../inclusive_2D_fit/roots/mass/MassFitResult_%s_PRw_Effw1_Accw1_PtW1_TnP1.root",kineLabel_.Data()),"read");
 	RooWorkspace *ws = new RooWorkspace("workspace");
 	RooDataSet *datasetMass = (RooDataSet*)f_mass->Get("datasetMass");
 	ws->import(*datasetMass);
@@ -746,49 +746,33 @@ void doSimultaneousV2MassFit_pt10_50_y0_24_cent20_120(int cLow = 20, int cHigh =
 	Double_t n_ = ws->var("n_1_A")->getVal();
 	Double_t ratio_ = ws->var("x_A")->getVal();
 	Double_t frac_ = ws->var("f")->getVal();
-	Double_t cheb0_ = 2.00001121;
-	Double_t cheb1_ = 3.0002135;
-	Double_t cheb2_ = 0.000226;
-	Double_t c_  = 0.020221;
-	Double_t c1_ = 4.0001210;
-	Double_t c2_ = 1.0023007;
+	Double_t cheb0_ = 0.504262;
+	Double_t cheb1_ = 1.006351;
+	Double_t cheb2_ = 1.002231;
+	Double_t c_  = 0.056;
+	Double_t c1_ = 2.0013;
+	Double_t c2_ = 0.0061;
 
 	// Weight best
-	// Double_t cheb0_ = 2.00001121;
-	// Double_t cheb1_ = 3.0002135;
-	// Double_t cheb2_ = 0.000226;
-	// Double_t c_  = 0.020221;
-	// Double_t c1_ = 4.0001210;
-	// Double_t c2_ = 1.0023007;
-	
-	// Double_t cheb0_ = 0.00001121;
-	// Double_t cheb1_ = 0.0002135;
-	// Double_t cheb2_ = 0.000226;
-	// Double_t c_  = 0.000221;
-	// Double_t c1_ = 0.0001210;
-	// Double_t c2_ = 0.0023007;
-	// Double_t c3_ = 0.000210;
-	// Double_t c4_ = 0.0010;
-	
-	// Double_t cheb0_ = 0.00001121;
-	// Double_t cheb1_ = 0.0002135;
-	// Double_t cheb2_ = 0.000226;
-	// Double_t c_  = 0.000221;
-	// Double_t c1_ = 0.0001210;
-	// Double_t c2_ = 0.0023007;
+	// Double_t cheb0_ = 0.504262;
+	// Double_t cheb1_ = 1.006351;
+	// Double_t cheb2_ = 1.002231;
+	// Double_t c_  = 0.056;
+	// Double_t c1_ = 2.0013;
+	// Double_t c2_ = 0.0061;
 
 	// Without weighting
-	// Double_t cheb0_ = 0.0121;
-	// Double_t cheb1_ = -0.0135;
-	// Double_t cheb2_ = -0.0226;
-	// Double_t c_  = 0.0321;
-	// Double_t c1_ = 0.1210;
-	// Double_t c2_ = -0.0707;
-	// Double_t c3_ = -0.0510;
-	// Double_t c4_ = -0.0010;
+	// Double_t cheb0_ = 0.0000001;
+	// Double_t cheb1_ = -.0000021;
+	// Double_t cheb2_ = 0.0000003;
+	// Double_t c_  = 0.0000011;
+	// Double_t c1_ = -.0000021;
+	// Double_t c2_ = -.0000014;
+	// Double_t c3_ = -.0000103;
+	// Double_t c4_ = 0.0000001;
 	
-	Double_t c3_ = 0.000210;
-	Double_t c4_ = 0.0010;
+	Double_t c3_ = 0.0021;
+	Double_t c4_ = 0.003;
 
 	std::cout << "----- OK? ------" << std::endl;
 	Double_t par0[nParmV];
@@ -809,11 +793,13 @@ void doSimultaneousV2MassFit_pt10_50_y0_24_cent20_120(int cLow = 20, int cHigh =
 	par0[14] = c3_;
 	par0[15] = c4_;
 
-	Double_t parLimitLow[nParmV]  = {    0,       0, mean_ -0.02,   0.01,   1.3,   1.4,    0,     0,      -15, -15, -15,  0.0, -30, -30, -30,-30};
-	Double_t parLimitHigh[nParmV] = {N1_*3, Nbkg_*4, mean_ +0.02,    0.2,    5.1,   4.4,   1  ,   1,       15,  15,  14, 0.5,  30,  30,  30, 30};
 
-	// Double_t parLimitLow[nParmV]  = {    0,       0, mean_ -0.02,   0.01,   1.3,   1.4,    0,     0,  -5, -7, -10,  0.0, -30, -30, -30,-30};
-	// Double_t parLimitHigh[nParmV] = {N1_*3, Nbkg_*4, mean_ +0.02,    0.2,    5.1,   4.4,   1  ,   1,   5,  7,  10, 0.5,  30,  30,  30, 30};
+	Double_t parLimitLow[nParmV]  = {    0,       0, mean_ -0.02,   0.01,   1.3,   1.4,    0,     0,  -15, -15, -15,  0.0, -30, -30, -30,-30};
+	Double_t parLimitHigh[nParmV] = {N1_*3, Nbkg_*4, mean_ +0.02,    0.2,    5.1,   4.4,   1  ,   1,   15,  15,  14, 0.5,  30,  30,  30, 30};
+
+
+    // Double_t parLimitLow[nParmV]  = {    0,       0, mean_ -0.02,   0.01,   1.3,   1.4,    0,     0,  -5, -7, -10,  0.0, -30, -30, -30,-30};
+    // Double_t parLimitHigh[nParmV] = {N1_*3, Nbkg_*4, mean_ +0.02,    0.2,    5.1,   4.4,   1  ,   1,   5,  7,  10, 0.5,  30,  30,  30, 30};
 
 
 	fitter.Config().SetParamsSettings(nParmV_, par0);
@@ -862,8 +848,8 @@ void doSimultaneousV2MassFit_pt10_50_y0_24_cent20_120(int cLow = 20, int cHigh =
 	int nprm_sigf      = 8;
 	int nprm_bkgf      = 4;
 	int nprm_alpha     = 11;
-	double massYMin= 0;//0
-	// double massYMax=7000;//1000
+	double massYMin=4000;//0
+	double massYMax=7000;//1000
 
 	TF1* fyield_bkg = new TF1("fyield_bkg", TotalYieldBkg, massLow, massHigh,nprm_bkgf);
 	fyield_bkg->FixParameter(0, fmass_total->GetParameter(prmid_bkgyield));
