@@ -27,8 +27,8 @@ void GetHistSqrt(TH1D* h1 =0, TH1D* h2=0);
 double GetHistBkg(TH1D* h1 =0, TH1D* h2=0);
 
 void Psi2S_v2mass_hist_weight_PR(
-		double ptLow = 4.0, double ptHigh = 6.5,
-		double yLow = 1.6, double yHigh = 2.4,
+		double ptLow = 6.5, double ptHigh = 50,
+		double yLow = 0, double yHigh = 2.4,
 		int cLow = 20, int cHigh = 120,
 		int PR=0, //PR 0: PR, 1: NP, 2: Inc.
 		float ctauCut=0.1,
@@ -227,11 +227,12 @@ void Psi2S_v2mass_hist_weight_PR(
 
 	const int nMassBin = 8;
 	// float massBinDiff[nMassBin+1]={3.4,3.47,3.58,3.62,3.66,3.72,3.80,3.90,4.0};
-	float massBinDiff[nMassBin+1]={3.4,3.47,3.56,3.64,3.67,3.73,3.82,3.90,4.0}; //pT 4 ~ 6.5
+	// float massBinDiff[nMassBin+1]={3.4,3.47,3.56,3.64,3.67,3.73,3.82,3.90,4.0}; // pT 4.0 ~ 6.5
+	// float massBinDiff[nMassBin+1]={3.4,3.46,3.56,3.62, 3.66,3.73,3.80,3.95,4.0}; // pT 4.5 ~ 6.5
 	// float massBinDiff[nMassBin+1]={3.4,3.47,3.59,3.64,3.69,3.73,3.77,3.89,4.0}; //6.5 ~ 50, c  0~ 20
 	// float massBinDiff[nMassBin+1]={3.4,3.50,3.59,3.64,3.70,3.74,3.78,3.85,4.0}; //6.5 ~ 50, c0~ 20
 	// float massBinDiff[nMassBin+1]={3.4,3.55,3.60,3.68,3.72,3.74,3.80, 3.88, 4.0}; // pT 3 ~ 6.5
-	// float massBinDiff[nMassBin+1]={3.4,3.56,3.63,3.68,3.71,3.75,3.80,3.85,4.0}; // pT6.5 ~ 50, c20 ~ 120
+	float massBinDiff[nMassBin+1]={3.4,3.56,3.63,3.68,3.71,3.75,3.80,3.85,4.0}; // pT6.5 ~ 50, c20 ~ 120
 	// float massBinDiff[nMassBin+1]={3.4,3.48,3.54,3.61,3.71,3.77,3.82,3.90,4.0}; // pT 10 ~ 50
 	// float massBinDiff[nMassBin+1]={3.4,3.50,3.56,3.66,3.70,3.76,3.85,4.0}; //pT6.5 ~ 10, massBin7
 	// float massBinDiff[nMassBin+1]={3.4,3.51,3.62,3.69,3.73,3.81,3.85,4.0}; //pT6.5 ~ 10, massBin7, old_version

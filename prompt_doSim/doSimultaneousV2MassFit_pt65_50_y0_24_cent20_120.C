@@ -763,20 +763,20 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh =
 	Double_t n_ = ws->var("n_1_A")->getVal();
 	Double_t ratio_ = ws->var("x_A")->getVal();
 	Double_t frac_ = ws->var("f")->getVal();
+	Double_t cheb0_ = 1.0126;
+	Double_t cheb1_ = 2.2035;
+	Double_t cheb2_ = 0.7226;
+	Double_t c_  = 0.05021;
+	Double_t c1_ = 2.0210;
+	Double_t c2_ = 1.0006;
 	//}}}
-	// Double_t cheb0_ = 0.0121;
-	// Double_t cheb1_ = 0.0135;
-	// Double_t cheb2_ = 0.0226;
-	// Double_t c_  = 0.02021;
-	// Double_t c1_ = 0.1210;
-	// Double_t c2_ = 0.0006;
+	// Double_t cheb0_ = 1.0126;
+	// Double_t cheb1_ = 2.2035;
+	// Double_t cheb2_ = 0.7226;
+	// Double_t c_  = 0.05021;
+	// Double_t c1_ = 2.0210;
+	// Double_t c2_ = 1.0006;
 	
-	Double_t cheb0_ = 3.0121;
-	Double_t cheb1_ = 2.0035;
-	Double_t cheb2_ = 3.0226;
-	Double_t c_  = 0.03021;
-	Double_t c1_ = 3.0210;
-	Double_t c2_ = 3.0006;
 
 	Double_t c3_ = 0.0210;
 	Double_t c4_ = -0.0010;
@@ -955,7 +955,7 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh =
 	fAlpha->SetLineColor(kGreen+2);
 	fAlpha->SetLineWidth(2);
 
-	h_v2_SplusB->GetYaxis()->SetRangeUser(-0.05,0.26);
+	h_v2_SplusB->GetYaxis()->SetRangeUser(0.08,0.23);
 	h_v2_SplusB->GetYaxis()->SetTitle("v_{2}^{S+B}");
 	h_v2_SplusB->GetXaxis()->SetTitle("m_{#mu^{+}#mu^{-}} (GeV)");
 	h_v2_SplusB->GetYaxis()->SetLabelSize(0.055);
