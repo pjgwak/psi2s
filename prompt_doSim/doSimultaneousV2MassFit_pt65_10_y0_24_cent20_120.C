@@ -651,7 +651,8 @@ Double_t pol3bkg(Double_t* x, Double_t* par)
 void doSimultaneousV2MassFit_pt65_10_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
 		float ptLow =  6.5, float ptHigh = 10.0,
 		float yLow = 0.0, float yHigh = 2.4,
-		float SiMuPtCut = 0, float massLow = 3.4, float massHigh =4.0, bool dimusign=true, int ibkg_vn_sel = fpol1, bool fixSigPar=true)
+		float SiMuPtCut = 0, float massLow = 3.4, float massHigh =4.0, bool dimusign=true, 
+		int ibkg_vn_sel = fpol1, bool fixSigPar=true)
 {
 	setTDRStyle();
 	gStyle->SetOptFit(0000);
@@ -743,12 +744,20 @@ void doSimultaneousV2MassFit_pt65_10_y0_24_cent20_120(int cLow = 20, int cHigh =
 	Double_t n_ = ws->var("n_1_A")->getVal();
 	Double_t ratio_ = ws->var("x_A")->getVal();
 	Double_t frac_ = ws->var("f")->getVal();
-	Double_t cheb0_ = 0.0121;
-	Double_t cheb1_ = 0.0135;
-	Double_t cheb2_ = 0.4226;
-	Double_t c_  = 0.00921;
-	Double_t c1_ = 9.1210;
-	Double_t c2_ = 3.4006;
+	Double_t cheb0_ = ws->var("sl1")->getVal();
+	Double_t cheb1_ = ws->var("sl2")->getVal();
+	Double_t cheb2_ = ws->var("sl3")->getVal();
+	// Double_t cheb0_ = 0.0121;
+	// Double_t cheb1_ = 0.1035;
+	// Double_t cheb2_ = 0.2126;
+	Double_t c_  = 0.063;
+	Double_t c1_ = 2.0210;
+	Double_t c2_ = 3.2706;
+	Double_t c3_ = 4.0410;
+	
+
+
+	Double_t c4_ = -0.0010;
 
 	// Double_t cheb0_ = 0.0121;
 	// Double_t cheb1_ = 0.0135;
@@ -764,8 +773,6 @@ void doSimultaneousV2MassFit_pt65_10_y0_24_cent20_120(int cLow = 20, int cHigh =
 	// Double_t c1_ = 2.1210;
 	// Double_t c2_ = 3.4006;
 	//
-	Double_t c3_ = 0.0210;
-	Double_t c4_ = -0.0010;
 
 	std::cout << "----- OK? ------" << std::endl;
 	Double_t par0[nParmV];
@@ -942,7 +949,7 @@ void doSimultaneousV2MassFit_pt65_10_y0_24_cent20_120(int cLow = 20, int cHigh =
 	fAlpha->SetLineColor(kGreen+2);
 	fAlpha->SetLineWidth(2);
 
-	h_v2_SplusB->GetYaxis()->SetRangeUser(-0.05,0.26);
+	h_v2_SplusB->GetYaxis()->SetRangeUser(0.05,0.26);
 	h_v2_SplusB->GetYaxis()->SetTitle("v_{2}^{S+B}");
 	h_v2_SplusB->GetXaxis()->SetTitle("m_{#mu^{+}#mu^{-}} (GeV)");
 	h_v2_SplusB->GetYaxis()->SetLabelSize(0.055);
@@ -999,7 +1006,7 @@ void doSimultaneousV2MassFit_pt65_10_y0_24_cent20_120(int cLow = 20, int cHigh =
 	pad1->SetTopMargin(0.08);
 	pad1->Draw();
 	pad1->cd();
-	pad1->SetLogy(1);
+	// pad1->SetLogy(1);
 	double pad1W = pad1->GetWw()*pad1->GetAbsWNDC();
 	double pad1H = pad1->GetWh()*pad1->GetAbsHNDC();
 	double tickScaleX = (pad1->GetUxmax() - pad1->GetUxmin())/(pad1->GetX2()-pad1->GetX1())*pad1H;

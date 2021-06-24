@@ -746,12 +746,24 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh =
 	Double_t n_ = ws->var("n_1_A")->getVal();
 	Double_t ratio_ = ws->var("x_A")->getVal();
 	Double_t frac_ = ws->var("f")->getVal();
-	Double_t cheb0_ = 3.0011151;
-	Double_t cheb1_ = 5.00123635;
-	Double_t cheb2_ = 1.00842316;
-	Double_t c_  = 3.052;
-	Double_t c1_ = 4.0610;
-	Double_t c2_ = 1.0573;
+	// Double_t cheb0_ = ws->var("sl1")->getVal();
+	// Double_t cheb1_ = ws->var("sl2")->getVal();
+	// Double_t cheb2_ = ws->var("sl3")->getVal();
+	// Double_t c_  = 0.085;
+	// Double_t c1_ = 0.0010;
+	// Double_t c2_ = 0.0073;
+	Double_t cheb0_ = 0.000051;
+	Double_t cheb1_ = 0.0000635;
+	Double_t cheb2_ = 0.0000316;
+	Double_t c_  = 0.00500135;
+	Double_t c1_ = 0.00120210;
+	Double_t c2_ = 0.05000173;
+
+    // weighting, manually input cheb0,1,2
+	// None
+	// Double_t c_  = 0.00500135;
+	// Double_t c1_ = 4.0610;
+	// Double_t c2_ = 1.0573;
 
 	// Without weighting
 	// Double_t cheb0_ = 0.000051;
@@ -1000,7 +1012,7 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh =
 	pad1->SetTopMargin(0.08);
 	pad1->Draw();
 	pad1->cd();
-	pad1->SetLogy(1);
+	// pad1->SetLogy(1);
 	double pad1W = pad1->GetWw()*pad1->GetAbsWNDC();
 	double pad1H = pad1->GetWh()*pad1->GetAbsHNDC();
 	double tickScaleX = (pad1->GetUxmax() - pad1->GetUxmin())/(pad1->GetX2()-pad1->GetX1())*pad1H;

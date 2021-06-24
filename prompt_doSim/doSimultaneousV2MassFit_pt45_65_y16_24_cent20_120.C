@@ -651,7 +651,8 @@ Double_t pol3bkg(Double_t* x, Double_t* par)
 void doSimultaneousV2MassFit_pt45_65_y16_24_cent20_120(int cLow = 20, int cHigh = 120,
     float ptLow =  4.5, float ptHigh = 6.5,
     float yLow = 1.6, float yHigh = 2.4,
-    float SiMuPtCut = 0, float massLow = 3.4, float massHigh =4.0, bool dimusign=true, int ibkg_vn_sel = fpol1, bool fixSigPar=true)
+    float SiMuPtCut = 0, float massLow = 3.4, float massHigh =4.0, bool dimusign=true, 
+	int ibkg_vn_sel = fpol1, bool fixSigPar=true)
 {
   setTDRStyle();
   gStyle->SetOptFit(0000);
@@ -762,12 +763,18 @@ void doSimultaneousV2MassFit_pt45_65_y16_24_cent20_120(int cLow = 20, int cHigh 
     Double_t n_ = ws->var("n_1_A")->getVal();
     Double_t ratio_ = ws->var("x_A")->getVal();
     Double_t frac_ = ws->var("f")->getVal();
-    Double_t cheb0_ = 0.0321;
-    Double_t cheb1_ = 0.0135;
-    Double_t cheb2_ = 4.5226;
-    Double_t c_  = 0.13;
-    Double_t c1_ = 4.42;
-    Double_t c2_ = 2.00;
+	// Double_t cheb0_ = ws->var("sl1")->getVal();
+	// Double_t cheb1_ = ws->var("sl2")->getVal();
+	// Double_t cheb2_ = ws->var("sl3")->getVal();
+	Double_t cheb0_ = 2.0121;
+	Double_t cheb1_ = 1.2135;
+	Double_t cheb2_ = 2.0226;
+	Double_t c_  = 0.1023;
+	Double_t c1_ = 0.5002;
+	Double_t c2_ = 0.01;
+    
+	Double_t c3_ = 0.0110;
+    Double_t c4_ = -0.0010;
  //}}}
     // Double_t cheb0_ = 0.0321;
     // Double_t cheb1_ = 0.0135;
@@ -776,8 +783,6 @@ void doSimultaneousV2MassFit_pt45_65_y16_24_cent20_120(int cLow = 20, int cHigh 
     // Double_t c1_ = 4.42;
     // Double_t c2_ = 2.00;
 
-    Double_t c3_ = 0.0210;
-    Double_t c4_ = -0.0010;
     
 	std::cout << "----- OK? ------" << std::endl;
   Double_t par0[nParmV];

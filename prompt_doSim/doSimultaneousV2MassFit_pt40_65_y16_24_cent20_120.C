@@ -651,7 +651,8 @@ Double_t pol3bkg(Double_t* x, Double_t* par)
 void doSimultaneousV2MassFit_pt40_65_y16_24_cent20_120(int cLow = 20, int cHigh = 120,
 		float ptLow =  4.0, float ptHigh = 6.5,
 		float yLow = 1.6, float yHigh = 2.4,
-		float SiMuPtCut = 0, float massLow = 3.4, float massHigh =4.0, bool dimusign=true, int ibkg_vn_sel = fpol1, bool fixSigPar=true)
+		float SiMuPtCut = 0, float massLow = 3.4, float massHigh =4.0, bool dimusign=true, 
+		int ibkg_vn_sel = fpol2, bool fixSigPar=true)
 {
 	setTDRStyle();
 	gStyle->SetOptFit(0000);
@@ -744,28 +745,18 @@ void doSimultaneousV2MassFit_pt40_65_y16_24_cent20_120(int cLow = 20, int cHigh 
 	Double_t n_ = ws->var("n_1_A")->getVal();
 	Double_t ratio_ = ws->var("x_A")->getVal();
 	Double_t frac_ = ws->var("f")->getVal();
-	Double_t cheb0_ = 0.5321;
-	Double_t cheb1_ = 0.1135;
-	Double_t cheb2_ = 2.7226;
-	Double_t c_  = 0.042;
-	Double_t c1_ = 2.1210;
-	Double_t c2_ = 2.0006;
+	// Double_t cheb0_ = ws->var("sl1")->getVal();
+	// Double_t cheb1_ = ws->var("sl2")->getVal();
+	// Double_t cheb2_ = ws->var("sl3")->getVal();
+	Double_t cheb0_ = 0.0121;
+	Double_t cheb1_ = 0.0135;
+	Double_t cheb2_ = 0.0226;
+	Double_t c_  = 0.080;
+	Double_t c1_ = 0.1410;
+	Double_t c2_ = 0.5106;
+	Double_t c3_ = 0.0110;
+	
 	//}}}
-	// Double_t cheb0_ = 0.0321;
-	// Double_t cheb1_ = 0.0135;
-	// Double_t cheb2_ = 0.0226;
-	// Double_t c_  = 0.41021;
-	// Double_t c1_ = 4.1210;
-	// Double_t c2_ = 9.0006;
-
-	// Double_t cheb0_ = 0.5321;
-	// Double_t cheb1_ = 0.1135;
-	// Double_t cheb2_ = 2.7226;
-	// Double_t c_  = 0.042;
-	// Double_t c1_ = 2.1210;
-	// Double_t c2_ = 2.0006;
-
-	Double_t c3_ = 0.0210;
 	Double_t c4_ = -0.0010;
 
 	std::cout << "----- OK? ------" << std::endl;
@@ -999,7 +990,7 @@ void doSimultaneousV2MassFit_pt40_65_y16_24_cent20_120(int cLow = 20, int cHigh 
 	pad1->SetTopMargin(0.08);
 	pad1->Draw();
 	pad1->cd();
-	pad1->SetLogy(1);
+	// pad1->SetLogy(1);
 	double pad1W = pad1->GetWw()*pad1->GetAbsWNDC();
 	double pad1H = pad1->GetWh()*pad1->GetAbsHNDC();
 	double tickScaleX = (pad1->GetUxmax() - pad1->GetUxmin())/(pad1->GetX2()-pad1->GetX1())*pad1H;

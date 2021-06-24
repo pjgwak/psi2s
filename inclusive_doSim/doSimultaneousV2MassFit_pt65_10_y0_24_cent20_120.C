@@ -651,7 +651,8 @@ Double_t pol3bkg(Double_t* x, Double_t* par)
 void doSimultaneousV2MassFit_pt65_10_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
 		float ptLow = 6.5, float ptHigh = 10,
 		float yLow = 0, float yHigh = 2.4,
-		float SiMuPtCut = 0, float massLow = 3.4, float massHigh =4.0, bool dimusign=true, int ibkg_vn_sel = fpol1, bool fixSigPar=true)
+		float SiMuPtCut = 0, float massLow = 3.4, float massHigh =4.0, bool dimusign=true, 
+		int ibkg_vn_sel = fpol1, bool fixSigPar=true)
 {
 	setTDRStyle();
 	gStyle->SetOptFit(0000);
@@ -746,12 +747,26 @@ void doSimultaneousV2MassFit_pt65_10_y0_24_cent20_120(int cLow = 20, int cHigh =
 	Double_t n_ = ws->var("n_1_A")->getVal();
 	Double_t ratio_ = ws->var("x_A")->getVal();
 	Double_t frac_ = ws->var("f")->getVal();
+    // Double_t cheb0_ = ws->var("sl1")->getVal();
+    // Double_t cheb1_ = ws->var("sl2")->getVal();
+    // Double_t cheb2_ = ws->var("sl3")->getVal();
+    // Double_t c_  = 0.0241;
+    // Double_t c1_ = 0.0210;
+    // Double_t c2_ = 0.0006;
 	Double_t cheb0_ = 3.0121;
 	Double_t cheb1_ = 1.0135;
 	Double_t cheb2_ = 1.0226;
 	Double_t c_  = 0.3241;
 	Double_t c1_ = 3.2210;
 	Double_t c2_ = 1.1006;
+    
+    // weighting, manually input cheb0,1,2
+    // Double_t cheb0_ = 3.0121;
+	// Double_t cheb1_ = 1.0135;
+	// Double_t cheb2_ = 1.0226;
+	// Double_t c_  = 0.3241;
+	// Double_t c1_ = 3.2210;
+	// Double_t c2_ = 1.1006;
 
 	// Parameters without weighting
 	// Small v2
@@ -1009,7 +1024,7 @@ void doSimultaneousV2MassFit_pt65_10_y0_24_cent20_120(int cLow = 20, int cHigh =
 	pad1->SetTopMargin(0.08);
 	pad1->Draw();
 	pad1->cd();
-	pad1->SetLogy(1);
+	// pad1->SetLogy(1);
 	double pad1W = pad1->GetWw()*pad1->GetAbsWNDC();
 	double pad1H = pad1->GetWh()*pad1->GetAbsHNDC();
 	double tickScaleX = (pad1->GetUxmax() - pad1->GetUxmin())/(pad1->GetX2()-pad1->GetX1())*pad1H;

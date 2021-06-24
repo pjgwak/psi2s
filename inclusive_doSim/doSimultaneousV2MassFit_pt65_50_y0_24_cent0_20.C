@@ -651,7 +651,8 @@ Double_t pol3bkg(Double_t* x, Double_t* par)
 void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20,
 		float ptLow = 6.5, float ptHigh = 50,
 		float yLow = 0, float yHigh = 2.4,
-		float SiMuPtCut = 0, float massLow = 3.4, float massHigh =4.0, bool dimusign=true, int ibkg_vn_sel = fpol1, bool fixSigPar=true)
+		float SiMuPtCut = 0, float massLow = 3.4, float massHigh =4.0, bool dimusign=true, 
+		int ibkg_vn_sel = fpol1, bool fixSigPar=true)
 {
 	setTDRStyle();
 	gStyle->SetOptFit(0000);
@@ -753,10 +754,25 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20
 	Double_t c1_ = 2.0013;
 	Double_t c2_ = 0.0061;
 
-	// Weight best
+	// weighting, manually input cheb0,1,2
 	// Double_t cheb0_ = 0.504262;
 	// Double_t cheb1_ = 1.006351;
 	// Double_t cheb2_ = 1.002231;
+	// Double_t c_  = 0.056;
+	// Double_t c1_ = 2.0013;
+	// Double_t c2_ = 0.0061;
+
+	// Double_t cheb0_ = 0.504262;
+	// Double_t cheb1_ = 1.006351;
+	// Double_t cheb2_ = 1.002231;
+	// Double_t c_  = 0.056;
+	// Double_t c1_ = 2.0013;
+	// Double_t c2_ = 0.0061;
+
+	// pol1, bkg mass
+	// Double_t cheb0_ = ws->var("sl1")->getVal();
+	// Double_t cheb1_ = ws->var("sl2")->getVal();
+	// Double_t cheb2_ = ws->var("sl3")->getVal();
 	// Double_t c_  = 0.056;
 	// Double_t c1_ = 2.0013;
 	// Double_t c2_ = 0.0061;
@@ -770,7 +786,7 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20
 	// Double_t c2_ = -.0000014;
 	// Double_t c3_ = -.0000103;
 	// Double_t c4_ = 0.0000001;
-	
+
 	Double_t c3_ = 0.0021;
 	Double_t c4_ = 0.003;
 
@@ -798,8 +814,8 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20
 	Double_t parLimitHigh[nParmV] = {N1_*3, Nbkg_*4, mean_ +0.02,    0.2,    5.1,   4.4,   1  ,   1,   15,  15,  14, 0.5,  30,  30,  30, 30};
 
 
-    // Double_t parLimitLow[nParmV]  = {    0,       0, mean_ -0.02,   0.01,   1.3,   1.4,    0,     0,  -5, -7, -10,  0.0, -30, -30, -30,-30};
-    // Double_t parLimitHigh[nParmV] = {N1_*3, Nbkg_*4, mean_ +0.02,    0.2,    5.1,   4.4,   1  ,   1,   5,  7,  10, 0.5,  30,  30,  30, 30};
+	// Double_t parLimitLow[nParmV]  = {    0,       0, mean_ -0.02,   0.01,   1.3,   1.4,    0,     0,  -5, -7, -10,  0.0, -30, -30, -30,-30};
+	// Double_t parLimitHigh[nParmV] = {N1_*3, Nbkg_*4, mean_ +0.02,    0.2,    5.1,   4.4,   1  ,   1,   5,  7,  10, 0.5,  30,  30,  30, 30};
 
 
 	fitter.Config().SetParamsSettings(nParmV_, par0);
@@ -1010,7 +1026,7 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20
 	pad1->SetTopMargin(0.08);
 	pad1->Draw();
 	pad1->cd();
-	pad1->SetLogy(1);
+	// pad1->SetLogy(1);
 	double pad1W = pad1->GetWw()*pad1->GetAbsWNDC();
 	double pad1H = pad1->GetWh()*pad1->GetAbsHNDC();
 	double tickScaleX = (pad1->GetUxmax() - pad1->GetUxmin())/(pad1->GetX2()-pad1->GetX1())*pad1H;
