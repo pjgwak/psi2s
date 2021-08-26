@@ -40,7 +40,7 @@ void Psi2S_v2mass_hist_weight_inclusive(
 {
 	//Basic Setting
 	gStyle->SetOptStat(0);
-	TString DATE="210621";
+	TString DATE="210625";
 	//TString DATE="Corr";
 	//TString DATE="210503";
 	gStyle->SetEndErrorSize(0);
@@ -220,9 +220,8 @@ void Psi2S_v2mass_hist_weight_inclusive(
 	//  cout<<"pt["<<ptLow<<" - "<<ptHigh<<" GeV/c], "<<"ctau cut: "<<ctauCut<<endl;
 	
 
-	// here
 	// vector<float> massBinDiff;
-	vector<float> massBinDiff = {3.4,3.444,3.488,3.532,3.576,3.62,3.634,3.658,3.689,3.752,3.796,3.84,3.884,3.928,3.972,4};
+	// vector<float> massBinDiff = {3.4,3.444,3.488,3.532,3.576,3.62,3.634,3.658,3.689,3.752,3.796,3.84,3.884,3.928,3.972,4};
 	// for (auto i = 3.4; i <= 3.98; i += 0.064) {
 		// massBinDiff.push_back(i);
 		// // cout << i << endl;
@@ -235,17 +234,20 @@ void Psi2S_v2mass_hist_weight_inclusive(
 		// cout << ele << ",";
 	// cout << endl;
 
-	const int nMassBin = massBinDiff.size() - 1;
+
+	// here
 	// const int nMassBin = 7;
-	// float massBinDiff[nMassBin+1]={3.4,3.55,3.62,3.66,3.70,3.74,3.78,3.85,4.0};
-	// float massBinDiff[nMassBin+1]={3.4,3.55,3.60,3.68,3.72,3.74,3.80, 3.88, 4.0}; // pT 3 ~ 6.5
-	// float massBinDiff[nMassBin+1]={3.4,3.45,3.54,3.60,3.66,3.71,3.76,3.87,4.0}; // pT6.5 ~ 50, c0 ~ 10
-	// float massBinDiff[nMassBin+1]={3.4,3.51,3.59,3.65,3.69,3.76,3.87,4.0}; // pT6.5 ~ 50, c0 ~ 10, massBin7
-	// float massBinDiff[nMassBin+1]={3.4,3.56,3.63,3.68,3.71,3.75,3.80,3.85,4.0}; // pT6.5 ~ 50, c20 ~ 120
-	// float massBinDiff[nMassBin+1]={3.4,3.53,3.60,3.65,3.72,3.76,3.80,3.87,4.0}; // pT 10 ~ 50
-	// float massBinDiff[nMassBin+1]={3.4,3.50,3.56,3.66,3.70,3.76,3.85,4.0}; //pT6.5 ~ 10, massBin7
-	// float massBinDiff[nMassBin+1]={3.4,3.51,3.62,3.69,3.73,3.81,3.85,4.0}; //pT6.5 ~ 10, massBin7, old_version
-	// float massBinDiff[nMassBin+1]={3.4,3.52,3.60,3.69, 3.72, 3.75,3.78,3.82,4.0};
+	// vector<float> massBinDiff = {3.4,3.55,3.62,3.66,3.70,3.74,3.78,3.85,4.0};
+	vector<float> massBinDiff = {3.4,3.55,3.60,3.68,3.70,3.74,3.80, 3.88, 4.0}; // pT 3 ~ 6.5
+	// vector<float> massBinDiff={3.4,3.45,3.54,3.60,3.66,3.71,3.76,3.87,4.0}; // pT6.5 ~ 50, c0 ~ 10
+	// vector<float> massBinDiff = {3.4,3.5,3.58,3.65,3.70,3.74,3.81,3.85,4.0}; // pT6.5 ~ 50, c0 ~ 10
+	// vector<float> massBinDiff = {3.4,3.56,3.63,3.68,3.71,3.75,3.80,3.85,4.0}; // pT6.5 ~ 50, c20 ~ 120
+	// vector<float> massBinDiff = {3.4,3.53,3.60,3.65,3.72,3.76,3.80,3.87,4.0}; // pT 10 ~ 50
+	// vector<float> massBinDiff = {3.4,3.50,3.56,3.66,3.70,3.76,3.85,4.0}; //pT6.5 ~ 10, massBin7
+	// vector<float> massBinDiff = {3.4,3.51,3.62,3.69,3.73,3.81,3.85,4.0}; //pT6.5 ~ 10, massBin7, old_version
+	// vector<float> massBinDiff = {3.4,3.52,3.60,3.69, 3.72, 3.75,3.78,3.82,4.0};
+	
+	const int nMassBin = massBinDiff.size() - 1;
 	float massBin_[nMassBin+1];
 
 	kineLabel = kineLabel + Form("_m%.1f-%.1f",massLow,massHigh) + "_" + dimusignString;

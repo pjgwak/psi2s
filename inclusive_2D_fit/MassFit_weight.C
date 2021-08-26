@@ -33,7 +33,7 @@ void MassFit_weight(
 {
 	massLow = 3.4;
 	massHigh = 4.0;
-	TString DATE = "210606";
+	TString DATE = "210625";
 	gStyle->SetEndErrorSize(0);
 	gSystem->mkdir(Form("roots/mass/%s",DATE.Data()),kTRUE);
 	gSystem->mkdir(Form("figs/mass/%s",DATE.Data()),kTRUE);

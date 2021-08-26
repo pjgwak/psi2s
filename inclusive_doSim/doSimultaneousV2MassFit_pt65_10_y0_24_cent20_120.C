@@ -747,37 +747,21 @@ void doSimultaneousV2MassFit_pt65_10_y0_24_cent20_120(int cLow = 20, int cHigh =
 	Double_t n_ = ws->var("n_1_A")->getVal();
 	Double_t ratio_ = ws->var("x_A")->getVal();
 	Double_t frac_ = ws->var("f")->getVal();
-    // Double_t cheb0_ = ws->var("sl1")->getVal();
-    // Double_t cheb1_ = ws->var("sl2")->getVal();
-    // Double_t cheb2_ = ws->var("sl3")->getVal();
-    // Double_t c_  = 0.0241;
-    // Double_t c1_ = 0.0210;
-    // Double_t c2_ = 0.0006;
-	Double_t cheb0_ = 3.0121;
-	Double_t cheb1_ = 1.0135;
-	Double_t cheb2_ = 1.0226;
-	Double_t c_  = 0.3241;
-	Double_t c1_ = 3.2210;
-	Double_t c2_ = 1.1006;
+	Double_t cheb0_ = 0.0021;
+	Double_t cheb1_ = 0.0035;
+	Double_t cheb2_ = 0.0026;
+	Double_t c_  = 0.0041;
+	Double_t c1_ = 0.2210;
+	Double_t c2_ = 0.1006;
     
     // weighting, manually input cheb0,1,2
-    // Double_t cheb0_ = 3.0121;
+	// Double_t cheb0_ = 3.0121;
 	// Double_t cheb1_ = 1.0135;
 	// Double_t cheb2_ = 1.0226;
 	// Double_t c_  = 0.3241;
 	// Double_t c1_ = 3.2210;
 	// Double_t c2_ = 1.1006;
 
-	// Parameters without weighting
-	// Small v2
-	// Double_t cheb0_ = 3.0121;
-	// Double_t cheb1_ = 14.0135;
-	// Double_t cheb2_ = 13.0226;
-	// Double_t c_  = 0.3241;
-	// Double_t c1_ = 27.2210;
-	// Double_t c2_ = 13.1006;
-
-	// Big v2
 	// Double_t cheb0_ = 3.0121;
 	// Double_t cheb1_ = 1.0135;
 	// Double_t cheb2_ = 1.0226;

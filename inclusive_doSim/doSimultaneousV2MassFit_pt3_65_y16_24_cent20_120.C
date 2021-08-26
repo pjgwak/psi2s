@@ -652,7 +652,7 @@ void doSimultaneousV2MassFit_pt3_65_y16_24_cent20_120(int cLow = 20, int cHigh =
 		float ptLow = 3, float ptHigh = 6.5,
 		float yLow = 1.6, float yHigh = 2.4,
 		float SiMuPtCut = 0, float massLow = 3.4, float massHigh =4.0, bool dimusign=true, 
-		int ibkg_vn_sel = fpol1, bool fixSigPar=true)
+		int ibkg_vn_sel = fpol2, bool fixSigPar=true)
 {
 	setTDRStyle();
 	gStyle->SetOptFit(0000);
@@ -747,68 +747,33 @@ void doSimultaneousV2MassFit_pt3_65_y16_24_cent20_120(int cLow = 20, int cHigh =
 	Double_t n_ = ws->var("n_1_A")->getVal();
 	Double_t ratio_ = ws->var("x_A")->getVal();
 	Double_t frac_ = ws->var("f")->getVal();
-    // Double_t cheb0_ = ws->var("sl1")->getVal();
-    // Double_t cheb1_ = ws->var("sl2")->getVal();
-    // Double_t cheb2_ = ws->var("sl3")->getVal();
-	// Double_t c_  = 0.22;
-	// Double_t c1_ = 1.80;
-	// Double_t c2_ = 0.40;
 	
-	// Double_t cheb0_ = 8.021121;
-	// Double_t cheb1_ = 5.051135;
-	// Double_t cheb2_ = 12.031226;
-	// Double_t c_  = 0.18;
-	// Double_t c1_ = 0.80;
-	// Double_t c2_ = 2.50;
-    
-	Double_t cheb0_ = 2.021121;
-	Double_t cheb1_ = 3.051135;
-	Double_t cheb2_ = 2.031226;
-	Double_t c_  = 0.18;
-	Double_t c1_ = 2.80;
-	Double_t c2_ = 2.50;
+	// pol1, nominal?
+	// Double_t cheb0_ = 3.20121;
+	// Double_t cheb1_ = 5.20135;
+	// Double_t cheb2_ = 4.3126;
+	// Double_t c_  = 0.0307;
+	// Double_t c1_ = 4.0020;
+	// Double_t c2_ = 2.0040;
 
 
+	// pol2
+	Double_t cheb0_ = 0.0421;
+	Double_t cheb1_ = 0.0335;
+	Double_t cheb2_ = 0.0226;
+	Double_t c_  = 0.162;
+	Double_t c1_ = 0.1220;
+	Double_t c2_ = 0.3340;
+	Double_t c3_ = 0.6010;
+	
 	// weighting, manually input cheb0,1,2
-    // Double_t cheb0_ = 8.521121;
-    // Double_t cheb1_ = 9.251135;
-    // Double_t cheb2_ = 4.931226;
-    // Double_t c_  = 0.22;
-    // Double_t c1_ = 7.80;
-    // Double_t c2_ = 4.40;
-    
-	// Double_t cheb0_ = 1.521121;
-	// Double_t cheb1_ = 4.651135;
-	// Double_t cheb2_ = 6.131226;
-	// Double_t c_  = 1.22;
-	// Double_t c1_ = 1.60;
-	// Double_t c2_ = 2.40;
-	
-	// Double_t cheb0_ = 8.521121;
-	// Double_t cheb1_ = 9.251135;
-	// Double_t cheb2_ = 4.931226;
-	// Double_t c_  = 0.22;
-	// Double_t c1_ = 7.80;
-	// Double_t c2_ = 4.40;
-	
-	// Double_t cheb0_ = 3.521121;
-	// Double_t cheb1_ = 7.651135;
-	// Double_t cheb2_ = 2.131226;
-	// Double_t c_  = 2.220023121;
-	// Double_t c1_ = 2.600022510;
-	// Double_t c2_ = 5.4000213147;
-	
-	// Without weighting
-	// Double_t cheb0_ = 0.0121;
-	// Double_t cheb1_ = -0.0135;
-	// Double_t cheb2_ = -0.0226;
-	// Double_t c_  = 0.0321;
-	// Double_t c1_ = 0.1210;
-	// Double_t c2_ = -0.0707;
-	// Double_t c3_ = -0.0510;
-	// Double_t c4_ = -0.0010;
+	// Double_t cheb0_ = 3.021121;
+	// Double_t cheb1_ = 5.051135;
+	// Double_t cheb2_ = 1.031226;
+	// Double_t c_  = 0.05;
+	// Double_t c1_ = -5.480;
+	// Double_t c2_ = 8.150;
 
-	Double_t c3_ = 0.0000262010;
 	Double_t c4_ = 6.000510;
 	std::cout << "----- OK? ------" << std::endl;
 	Double_t par0[nParmV];

@@ -751,7 +751,7 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20
 	Double_t cheb1_ = 1.006351;
 	Double_t cheb2_ = 1.002231;
 	Double_t c_  = 0.056;
-	Double_t c1_ = 2.0013;
+	Double_t c1_ = 2.0014;
 	Double_t c2_ = 0.0061;
 
 	// weighting, manually input cheb0,1,2
@@ -761,7 +761,7 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20
 	// Double_t c_  = 0.056;
 	// Double_t c1_ = 2.0013;
 	// Double_t c2_ = 0.0061;
-
+	
 	// Double_t cheb0_ = 0.504262;
 	// Double_t cheb1_ = 1.006351;
 	// Double_t cheb2_ = 1.002231;
@@ -769,23 +769,12 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20
 	// Double_t c1_ = 2.0013;
 	// Double_t c2_ = 0.0061;
 
-	// pol1, bkg mass
-	// Double_t cheb0_ = ws->var("sl1")->getVal();
-	// Double_t cheb1_ = ws->var("sl2")->getVal();
-	// Double_t cheb2_ = ws->var("sl3")->getVal();
+	// Double_t cheb0_ = 0.504262;
+	// Double_t cheb1_ = 1.006351;
+	// Double_t cheb2_ = 1.002231;
 	// Double_t c_  = 0.056;
 	// Double_t c1_ = 2.0013;
 	// Double_t c2_ = 0.0061;
-
-	// Without weighting
-	// Double_t cheb0_ = 0.0000001;
-	// Double_t cheb1_ = -.0000021;
-	// Double_t cheb2_ = 0.0000003;
-	// Double_t c_  = 0.0000011;
-	// Double_t c1_ = -.0000021;
-	// Double_t c2_ = -.0000014;
-	// Double_t c3_ = -.0000103;
-	// Double_t c4_ = 0.0000001;
 
 	Double_t c3_ = 0.0021;
 	Double_t c4_ = 0.003;

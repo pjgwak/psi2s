@@ -747,12 +747,13 @@ void doSimultaneousV2MassFit_pt10_50_y0_24_cent20_120(int cLow = 20, int cHigh =
 	Double_t n_ = ws->var("n_1_A")->getVal();
 	Double_t ratio_ = ws->var("x_A")->getVal();
 	Double_t frac_ = ws->var("f")->getVal();
-	Double_t cheb0_ = 0.42001121;
-	Double_t cheb1_ = 0.2302135;
-	Double_t cheb2_ = 0.540226;
-	Double_t c_  = 0.030221;
-	Double_t c1_ = 0.1001210;
-	Double_t c2_ = 0.0023007;
+	Double_t cheb0_ = 0.22001121;
+	Double_t cheb1_ = 0.5302135;
+	Double_t cheb2_ = 0.340226;
+	Double_t c_  = 0.110221;
+	Double_t c1_ = 5.5501210;
+	Double_t c2_ = 6.0023007;
+
 	// Double_t cheb0_ = 0.02001121;
 	// Double_t cheb1_ = 0.4302135;
 	// Double_t cheb2_ = 0.040226;
@@ -760,47 +761,6 @@ void doSimultaneousV2MassFit_pt10_50_y0_24_cent20_120(int cLow = 20, int cHigh =
 	// Double_t c1_ = 0.4001210;
 	// Double_t c2_ = 0.2023007;
 
-    // weighting, manual
-    // Double_t cheb0_ = 2.00001121;
-    // Double_t cheb1_ = 3.0002135;
-    // Double_t cheb2_ = 0.000226;
-    // Double_t c_  = 0.020221;
-    // Double_t c1_ = 4.0001210;
-    // Double_t c2_ = 1.0023007;
-    
-	// Double_t cheb0_ = 0.00001121;
-	// Double_t cheb1_ = 0.0002135;
-	// Double_t cheb2_ = 0.000226;
-	// Double_t c_  = 0.000221;
-	// Double_t c1_ = 0.0001210;
-	// Double_t c2_ = 0.0023007;
-	// Double_t c3_ = 0.000210;
-	// Double_t c4_ = 0.0010;
-	
-	// Double_t cheb0_ = 0.00001121;
-	// Double_t cheb1_ = 0.0002135;
-	// Double_t cheb2_ = 0.000226;
-	// Double_t c_  = 0.000221;
-	// Double_t c1_ = 0.0001210;
-	// Double_t c2_ = 0.0023007;
-    
-	// pol1, bkg mass
-	// Double_t cheb0_ = ws->var("sl1")->getVal();
-    // Double_t cheb1_ = ws->var("sl2")->getVal();
-    // Double_t cheb2_ = ws->var("sl3")->getVal();
-	// Double_t c_  = 0.013221;
-	// Double_t c1_ = 9.0001210;
-	// Double_t c2_ = 4.0023007;
-
-	// Without weighting
-	// Double_t cheb0_ = 0.0121;
-	// Double_t cheb1_ = -0.0135;
-	// Double_t cheb2_ = -0.0226;
-	// Double_t c_  = 0.0321;
-	// Double_t c1_ = 0.1210;
-	// Double_t c2_ = -0.0707;
-	// Double_t c3_ = -0.0510;
-	// Double_t c4_ = -0.0010;
 	
 	Double_t c3_ = 0.000210;
 	Double_t c4_ = 0.0010;

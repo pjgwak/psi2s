@@ -746,12 +746,6 @@ void doSimultaneousV2MassFit_pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh =
 	Double_t n_ = ws->var("n_1_A")->getVal();
 	Double_t ratio_ = ws->var("x_A")->getVal();
 	Double_t frac_ = ws->var("f")->getVal();
-	// Double_t cheb0_ = ws->var("sl1")->getVal();
-	// Double_t cheb1_ = ws->var("sl2")->getVal();
-	// Double_t cheb2_ = ws->var("sl3")->getVal();
-	// Double_t c_  = 0.085;
-	// Double_t c1_ = 0.0010;
-	// Double_t c2_ = 0.0073;
 	Double_t cheb0_ = 0.000051;
 	Double_t cheb1_ = 0.0000635;
 	Double_t cheb2_ = 0.0000316;
