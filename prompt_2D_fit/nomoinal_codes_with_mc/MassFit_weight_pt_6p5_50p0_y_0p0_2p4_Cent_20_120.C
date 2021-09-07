@@ -26,16 +26,15 @@ void MassFit_weight_pt_6p5_50p0_y_0p0_2p4_Cent_20_120(
 		float ptLow=6.5, float ptHigh=50.0,
 		float yLow=0.0, float yHigh=2.4,
 		int cLow=20, int cHigh=120,
-//		double sl1_mean = 0.10, double sl2_mean = 0.03, double sl3_mean = 0.02,
+        double sl1_mean = 0.03, double sl2_mean = -0.03, double sl3_mean = -0.02,
 		// 0.512, 0.369, 0.32
-		double sl1_mean = 0.212, double sl2_mean = 0.369, double sl3_mean = 0.32,
 //		2738, 19520 // 65000, 700000
-		double N_Jpsi_high = 20000, double N_Bkg_high = 800000,
+		double N_Jpsi_high = 17000, double N_Bkg_high = 380000,
 		int PR=0, //0=PR, 1=NP, 2=Inc.
 		int PRw=1, bool fEffW = true, bool fAccW = true, bool isPtW = true, bool isTnP = true
 		)
 {
-    TString DATE = "210628";
+    TString DATE = "210901";
     gStyle->SetEndErrorSize(0);
     gSystem->mkdir(Form("roots/mass/%s",DATE.Data()),kTRUE);
     gSystem->mkdir(Form("figs/mass/%s",DATE.Data()),kTRUE);
@@ -65,7 +64,7 @@ void MassFit_weight_pt_6p5_50p0_y_0p0_2p4_Cent_20_120(
 	RooMsgService::instance().setGlobalKillBelow(ERROR);
 	RooMsgService::instance().setSilentMode(true);
 
-	TFile* f1 = new TFile("../make_RooDataSet/roots/OniaRooDataSet_isMC0_pt_6.5_50.0_y_0.0_2.4_Cent_20_120_CtauCtu_0.0195_PR_Psi_2S_20210607.root","read");
+	TFile* f1 = new TFile("../make_RooDataSet/roots/OniaRooDataSet_isMC0_pt_6.5_50.0_y_0.0_2.4_Cent_20_120_CtauCtu_0.0195_wPt1_wAccPt1_wTnPPR1_Psi_2S_20210831.root","read");
 	//###TFile* f1 = new TFile(Form("../make_RooDataSet/roots/OniaRooDataSet_isMC0_Psi2S_PRw_Effw1_Accw1_PtW1_TnP1_20210604.root"));
 	// TFile* f1 = new TFile(Form("../data/OniaRooDataSet_isMC0_JPsi_%sw_Effw%d_Accw%d_PtW%d_TnP%d_20210111.root",fname.Data(),fEffW,fAccW,isPtW,isTnP));
 
@@ -108,28 +107,29 @@ void MassFit_weight_pt_6p5_50p0_y_0p0_2p4_Cent_20_120(
 	//double paramsupper[8] = {0.4,    1.0,     4.9, 2.9, 1.0,     25.0};
 	//double paramslower[8] = {0.01,   0.0,     1., 1., 0.0,      0.0};//pt3-4.5 m_lambda==-25.0
 	//Cent.10-20
-	double paramsupper[8] = {0.4,    1.0,     5, 5, 1.0,     25.0};
-	double paramslower[8] = {0.01,   0.0,     -5, -5, 0.0,     -10.0};
+    double paramsupper[8] = {0.4,    5.,     5, 5, 1.0,     25.0};
+    double paramslower[8] = {0.0001,   0.0001,     0.0001, 0.0001, 0.0,      0.0};
+    
 	//SIGNAL: initial params
-	double sigma_1_init = 0.04;
-	double x_init = 0.35;
-	double alpha_1_init = 2.1;
-	double n_1_init = 1.4;
-	double f_init = 0.4;
-	double m_lambda_init = 5;
+	double sigma_1_init = 0.03;
+    double x_init = 0.5574;
+    double alpha_1_init = 1.8489;
+    double n_1_init = 1.8988;
+	double f_init = 0.68;
+	double m_lambda_init = 6;
 
-	double psi_2S_mass = 3.686;
+	double psi_2S_mass = 3.686097;
 
 	//SIGNAL
-	RooRealVar    mean("m_{J/#Psi}","mean of the signal gaussian mass PDF",psi_2S_mass, psi_2S_mass -0.1, psi_2S_mass + 0.1 ) ;
-	RooRealVar   *x_A = new RooRealVar("x_A","sigma ratio ", x_init, paramslower[1], paramsupper[1]);
-	RooRealVar    sigma_1_A("sigma_1_A","width/sigma of the signal gaussian mass PDF",sigma_1_init, paramslower[0], paramsupper[0]);
-	RooFormulaVar sigma_2_A("sigma_2_A","@0*@1",RooArgList(sigma_1_A, *x_A) );
-	RooRealVar    alpha_1_A("alpha_1_A","tail shift", alpha_1_init, paramslower[2], paramsupper[2]);
-	RooFormulaVar alpha_2_A("alpha_2_A","1.0*@0",RooArgList(alpha_1_A) );
-	RooRealVar    n_1_A("n_1_A","power order", n_1_init , paramslower[3], paramsupper[3]);
-	RooFormulaVar n_2_A("n_2_A","1.0*@0",RooArgList(n_1_A) );
-	RooRealVar   *f = new RooRealVar("f","cb fraction", f_init, paramslower[4], paramsupper[4]);
+    RooRealVar    mean("m_{J/#Psi}","mean of the signal gaussian mass PDF",psi_2S_mass, psi_2S_mass -0.1, psi_2S_mass + 0.1 ) ;
+    RooRealVar   *x_A = new RooRealVar("x_A","sigma ratio ", x_init, x_init, x_init);
+    RooRealVar    sigma_1_A("sigma_1_A","width/sigma of the signal gaussian mass PDF",sigma_1_init, paramslower[0], paramsupper[0]);
+    RooFormulaVar sigma_2_A("sigma_2_A","@0*@1",RooArgList(sigma_1_A, *x_A) );
+    RooRealVar    alpha_1_A("alpha_1_A","tail shift", alpha_1_init, alpha_1_init, alpha_1_init);
+    RooFormulaVar alpha_2_A("alpha_2_A","1.0*@0",RooArgList(alpha_1_A) );
+    RooRealVar    n_1_A("n_1_A","power order", n_1_init, n_1_init, n_1_init);
+    RooFormulaVar n_2_A("n_2_A","1.0*@0",RooArgList(n_1_A) );
+    RooRealVar   *f = new RooRealVar("f","cb fraction", f_init, paramslower[4], paramsupper[4]);
 
 	//Set up crystal ball shapes
 	RooCBShape* cb_1_A = new RooCBShape("cball_1_A", "cystal Ball", *(ws->var("mass")), mean, sigma_1_A, alpha_1_A, n_1_A);
@@ -174,7 +174,7 @@ void MassFit_weight_pt_6p5_50p0_y_0p0_2p4_Cent_20_120(
 	ws->data("dsAB")->plotOn(myPlot_A,Name("dataHist_A"));
 
 	pad_A_1->cd();
-	// gPad->SetLogy();
+	gPad->SetLogy();
 	RooPlot* myPlot2_A = (RooPlot*)myPlot_A->Clone();
 	dsAB->plotOn(myPlot2_A,Name("dataOS"),MarkerSize(.8));
 	bool isWeighted = ws->data("dsAB")->isWeighted();
@@ -211,12 +211,42 @@ void MassFit_weight_pt_6p5_50p0_y_0p0_2p4_Cent_20_120(
 	myPlot2_A->GetXaxis()->SetTitle("m_{#mu^{+}#mu^{-}} (GeV/c^{2})");
 	myPlot2_A->Draw();
 
-	drawText(Form("%.1f < p_{T}^{#mu#mu} < %.1f GeV/c",ptLow, ptHigh ),text_x,text_y,text_color,text_size);
-	if(yLow==0)drawText(Form("|y^{#mu#mu}| < %.1f",yHigh), text_x,text_y-y_diff,text_color,text_size);
-	else if(yLow!=0)drawText(Form("%.1f < |y^{#mu#mu}| < %.1f",yLow, yHigh), text_x,text_y-y_diff,text_color,text_size);
-	drawText(Form("Cent. %d - %d%s", cLow/2, cHigh/2, "%"),text_x,text_y-y_diff*2,text_color,text_size);
-	drawText(Form("n_{J/#psi} = %.f #pm %.f",ws->var("N_Jpsi")->getVal(),ws->var("N_Jpsi")->getError()),text_x,text_y-y_diff*3,text_color,text_size);
-	drawText(Form("n_{Bkg} = %.f #pm %.f",ws->var("N_Bkg")->getVal(),ws->var("N_Bkg")->getError()),text_x,text_y-y_diff*4,text_color,text_size);
+    // Check and get fitted parameters
+    const RooArgList & fitParams = fitMass->floatParsFinal();
+    
+    auto & fitAlpha = (RooRealVar &) fitParams[2];
+    auto & fitFraction = (RooRealVar &) fitParams[3];
+    auto & fitMean = (RooRealVar &) fitParams[4];
+    auto & fitN_1 = (RooRealVar &) fitParams[5];
+    auto & fitSigma_1 = (RooRealVar &) fitParams[6];
+    auto & fitSl1 = (RooRealVar &) fitParams[7];
+    auto & fitSl2 = (RooRealVar &) fitParams[8];
+    auto & fitSl3 = (RooRealVar &) fitParams[9];
+    auto & fitX = (RooRealVar &) fitParams[10];
+    // cout << fitN_Jpsi.getVal() << endl;
+
+    /*
+    for ( int i = 0; i < fitParams.getSize(); ++i)
+    {
+      auto & fitPar = (RooRealVar &) fitParams[i];
+      std::cout << fitPar.GetName() << " " << fitPar.getVal() << " +- " << fitPar.getError() << std::endl;
+    }
+    */
+    
+    // myPlot2_A->SetMinimum(2*10);
+    //myPlot2_A->SetMaximum(35000);
+    // myPlot2_A->GetYaxis()->SetRangeUser(0,340000);
+    
+    drawText(Form("%.1f < p_{T}^{#mu#mu} < %.1f GeV/c; Cent. %d - %d%s",ptLow, ptHigh, cLow/2, cHigh/2, "%"),text_x,text_y,text_color,text_size);
+    if(yLow==0)drawText(Form("|y^{#mu#mu}| < %.1f",yHigh), text_x,text_y-y_diff,text_color,text_size);
+    else if(yLow!=0)drawText(Form("%.1f < |y^{#mu#mu}| < %.1f",yLow, yHigh), text_x,text_y-y_diff,text_color,text_size);
+    drawText(Form("n_{J/#psi} = %.f #pm %.f \t n_{Bkg} = %.f #pm %.f",ws->var("N_Jpsi")->getVal(),ws->var("N_Jpsi")->getError(),ws->var("N_Bkg")->getVal(),ws->var("N_Bkg")->getError())
+             ,text_x,text_y-y_diff*2,text_color,text_size);
+    drawText(Form("#alpha = %.4f   f = %.4f #pm %.4f   n_{1} = %.4f", ws->var("alpha_1_A")->getVal(), fitFraction.getVal(),fitFraction.getError(), fitN_1.getVal()),text_x,text_y-y_diff*3,text_color,text_size);
+    drawText(Form("#sigma_{1} = %.4f #pm %.4f   #sigma_{2} / #sigma_{1} = %.4f ",fitSigma_1.getVal(),fitSigma_1.getError(),fitX.getVal()),text_x,text_y-y_diff*4,text_color,text_size);
+    drawText(Form("sl1 = %.4f #pm %.4f \t sl2 = %.4f #pm %.4f \t sl3 = %.4f #pm %.4f"
+                  ,fitSl1.getVal(),fitSl1.getError(),fitSl2.getVal(),fitSl2.getError(),fitSl3.getVal(),fitSl3.getError())
+             ,text_x,text_y-y_diff*5,text_color,text_size);
 
 	TPad *pad_A_2 = new TPad("pad_A_2", "pad_A_2", 0, 0.006, 0.98, 0.227);
 	c_A->cd();

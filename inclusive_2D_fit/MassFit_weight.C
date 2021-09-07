@@ -22,6 +22,9 @@
 using namespace std;
 using namespace RooFit;
 
+#include <time.h>
+
+
 void MassFit_weight(
 		float ptLow=6.5, float ptHigh=50,
 		float yLow=0, float yHigh=2.4,
@@ -33,7 +36,7 @@ void MassFit_weight(
 {
 	massLow = 3.4;
 	massHigh = 4.0;
-	TString DATE = "210625";
+	TString DATE = "210831";
 	gStyle->SetEndErrorSize(0);
 	gSystem->mkdir(Form("roots/mass/%s",DATE.Data()),kTRUE);
 	gSystem->mkdir(Form("figs/mass/%s",DATE.Data()),kTRUE);
@@ -60,8 +63,7 @@ void MassFit_weight(
 	TFile* f1 = new TFile(Form("../make_RooDataSet/roots/OniaRooDataSet_isMC0_Psi_2S_PRw_Effw1_Accw1_PtW1_TnP1_20210604.root"));
 	// TFile* f1 = new TFile(Form("../make_RooDataSet/roots/OniaRooDataSet_isMC0_Psi_2S_PRw_Effw1_Accw1_PtW1_TnP1_cent0_20_20210604.root"));
 	// TFile* f1 = new TFile(Form("../data/OniaRooDataSet_isMC0_JPsi_%sw_Effw%d_Accw%d_PtW%d_TnP%d_20210111.root",fname.Data(),fEffW,fAccW,isPtW,isTnP));
-
-
+    
 	// cout << "Input file: "
 	// << Form("../data/OniaRooDataSet_isMC0_JPsi_%sw_Effw%d_Accw%d_PtW%d_TnP%d_20210111.root",
 	// fname.Data(),fEffW,fAccW,isPtW,isTnP) << endl;
@@ -89,37 +91,29 @@ void MassFit_weight(
 	ws->import(*dsAB);
 	ws->var("mass")->setRange(massLow, massHigh);
 	ws->var("mass")->Print();
+
 	//***********************************************************************
 	//****************************** MASS FIT *******************************
 	//***********************************************************************
 
 	//         The order is {sigma_1,  x, alpha_1, n_1,   f, m_lambda}
-	//pt3-4.5
-	//double paramsupper[8] = {0.4,    1.0,     4.9, 3.9, 1.0,     25.0};
-	//double paramslower[8] = {0.01,   0.0,     1.1, 1.1, 0.0,    -25.0};//pt3-4.5 m_lambda==-25.0
-	//double paramsupper[8] = {0.4,    1.0,     4.9, 2.9, 1.0,     25.0};
-	//double paramslower[8] = {0.01,   0.0,     1., 1., 0.0,      0.0};//pt3-4.5 m_lambda==-25.0
-	//Cent.10-20
-	
-	// pt6.5 - 50 case
-	// double paramsupper[8] = {0.4,    1.0,     4.9, 7.0, 1.0,     25.0};
-	// double paramslower[8] = {0.01,   0.0,     1.1, 1.1, 0.0,      0.0};//pt3-4.5 m_lambda==-25.0
+    
+	// otherwise
+    //double paramsupper[8] = {0.4,    1.0,     4.9, 3.9, 1.0,     25.0};
+    //double paramslower[8] = {0.01,   0.0,     0, 0, 0.0,      0.0};//pt3-4.5 m_lambda==-25.0
 
-	// Otherwise
-	double paramsupper[8] = {0.4,    1.0,     4.9, 3.9, 1.0,     25.0};
-	double paramslower[8] = {0.01,   0.0,     1.1, 1.1, 0.0,      0.0};//pt3-4.5 m_lambda==-25.0
+	// forward
+	double paramsupper[8] = {0.4,    5,     4.9, 3.9, 1.0,     25.0};
+	double paramslower[8] = {0.001,   0.0,     0, 0, 0.0,      -5.0};//pt3-4.5 m_lambda==-25.0
 
 	//SIGNAL: initial params
 	double sigma_1_init = 0.04;
-	double x_init = 0.35;
+	double x_init = 1.2;
 	double alpha_1_init = 2.1;
 	double n_1_init = 1.4;
 	// double alpha_1_init = 2.1;
 	// double n_1_init = 1.4;
-	double f_init = 0.4;
-
-
-
+	double f_init = 0.6;
 
 	double m_lambda_init = 5;
 	double psi_2S_mass = 3.686;
@@ -176,13 +170,14 @@ void MassFit_weight(
 	RooPlot* myPlot2_A = (RooPlot*)myPlot_A->Clone();
 	dsAB->plotOn(myPlot2_A,Name("dataOS"),MarkerSize(.8));
 	bool isWeighted = ws->data("dsAB")->isWeighted();
+    
 	cout << endl << "********* Starting Mass Dist. Fit **************" << endl << endl;
 	RooFitResult* fitMass = ws->pdf("pdfMASS_Tot")->fitTo(*dsAB,Save(), Hesse(kTRUE), Range(massLow,massHigh), Timer(kTRUE), Extended(kTRUE), SumW2Error(isWeighted), NumCPU(nCPU));
 	cout << endl << "********* Finished Mass Dist. Fit **************" << endl << endl;
 	ws->pdf("pdfMASS_Tot")->plotOn(myPlot2_A,Name("pdfMASS_tot"), LineColor(kBlack));
 	//ws->pdf("pdfMASS_Tot")->plotOn(myPlot2_A,Name("Sig_A"),Components(RooArgSet(*pdfMASS_Jpsi)),LineColor(kOrange+7),LineWidth(2),LineStyle(2));
 	ws->pdf("pdfMASS_Tot")->plotOn(myPlot2_A,Name("pdfMASS_Bkg"),Components(RooArgSet(*pdfMASS_bkg)),LineColor(kBlue),LineStyle(kDashed),LineWidth(2));
-
+    
 	//make a pretty plot
 	myPlot2_A->SetFillStyle(4000);
 	myPlot2_A->GetYaxis()->SetTitleOffset(1.43);

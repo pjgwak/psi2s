@@ -652,7 +652,7 @@ void doSim_pt40_65_y16_24_cent20_120(int cLow = 20, int cHigh = 120,
 		float ptLow =  4.0, float ptHigh = 6.5,
 		float yLow = 1.6, float yHigh = 2.4,
 		float SiMuPtCut = 0, float massLow = 3.4, float massHigh =4.0, bool dimusign=true, 
-		int ibkg_vn_sel = fpol2, bool fixSigPar=true)
+		int ibkg_vn_sel = fpol1, bool fixSigPar=true)
 {
 	setTDRStyle();
 	gStyle->SetOptFit(0000);
@@ -745,22 +745,28 @@ void doSim_pt40_65_y16_24_cent20_120(int cLow = 20, int cHigh = 120,
 	Double_t n_ = ws->var("n_1_A")->getVal();
 	Double_t ratio_ = ws->var("x_A")->getVal();
 	Double_t frac_ = ws->var("f")->getVal();
-	Double_t cheb0_ = 0.3121;
-	Double_t cheb1_ = 0.2135;
-	Double_t cheb2_ = 0.1226;
-	Double_t c_  = 0.070;
-	Double_t c1_ = 0.2410;
-	Double_t c2_ = 0.2106;
-	
-	// Double_t cheb0_ = 0.3121;
-	// Double_t cheb1_ = 0.2135;
-	// Double_t cheb2_ = 0.1226;
-	// Double_t c_  = 0.070;
-	// Double_t c1_ = 0.2410;
-	// Double_t c2_ = 0.2106;
-	//}}}
-	Double_t c3_ = 0.0110;
-	Double_t c4_ = -0.0010;
+    Double_t cheb0_ = ws->var("sl1")->getVal();
+    Double_t cheb1_ = ws->var("sl2")->getVal();
+    Double_t cheb2_ = ws->var("sl3")->getVal();
+    Double_t c_  = .3211657;
+    Double_t c1_ = 6.2022056;
+    Double_t c2_ = 5.020328;
+    
+    Double_t c3_ = 0.0300220041210;
+    //}}}
+	Double_t c4_ = 0.02110;
+    
+    /*
+     Double_t c_  = .03462116586;
+     Double_t c1_ = 3.02220529;
+     Double_t c2_ = 0.1201232628;
+     
+     // fol2
+     Double_t c_  = .000025262116586;
+     Double_t c1_ = 0.0020002220529;
+     Double_t c2_ = 0.001201232628;
+     Double_t c3_ = 0.0200220041210;
+     */
 
 	std::cout << "----- OK? ------" << std::endl;
 	Double_t par0[nParmV];
@@ -781,8 +787,8 @@ void doSim_pt40_65_y16_24_cent20_120(int cLow = 20, int cHigh = 120,
 	par0[14] = c3_;
 	par0[15] = c4_;
 
-	Double_t parLimitLow[nParmV]  = {    0,       0, mean_ -0.02,     0.01,   1.3,   1.4,    0,     0,  -15, -15, -15,  0, -30, -30, -  30,-30};
-	Double_t parLimitHigh[nParmV] = {N1_*3, Nbkg_*4, mean_ +0.02,      0.2,    5.1,   4.4,   1  ,   1,   15,  15,  15, 0.5,  30,  30,    30, 30};
+    Double_t parLimitLow[nParmV]  = {    0,       0, mean_ -0.04,     0,   0.,   0.,    0,     0,  -10, -10, -10,  0, -20, -20, -20,-1};
+    Double_t parLimitHigh[nParmV] = {N1_*1.4, Nbkg_*1.2, mean_ +0.04,      0.4,    5.,   5.,  5.,  1.,   10,  10,  10, 0.25,  20,  20,  20, 20};
 
 
 	fitter.Config().SetParamsSettings(nParmV_, par0);

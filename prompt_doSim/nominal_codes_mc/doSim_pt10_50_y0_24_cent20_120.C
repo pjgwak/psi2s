@@ -156,8 +156,6 @@ Double_t TotalYieldSig(Double_t* x, Double_t* par)
   Double_t fD = TMath::Sqrt(TMath::Pi()/2)*(1+TMath::Erf(absAlpha/TMath::Sqrt(2)));
   Double_t fN_1 = 1./(sigma*(fC+fD));
   Double_t fN_2 = 1./(sigma1_2*(fC+fD));
-    cout << "Total Yield Sig normMin: " << normMin << endl;
-    cout << "Par[7]" << par[7] << endl;
   return normMin+N1*(fN_1*frac*JPsi_1 + fN_2*(1-frac)*JPsi_2);
 }
 
@@ -653,7 +651,7 @@ void doSim_pt10_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
     float ptLow = 10.0 , float ptHigh = 50.0,
     float yLow = 0.0, float yHigh = 2.4,
     float SiMuPtCut = 0, float massLow = 3.4, float massHigh =4.0, bool dimusign=true, 
-	int ibkg_vn_sel = fpol2, bool fixSigPar=true)
+	int ibkg_vn_sel = fpol1, bool fixSigPar=true)
 {
   setTDRStyle();
   gStyle->SetOptFit(0000);
@@ -740,6 +738,7 @@ void doSim_pt10_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
     
   //Get fitting parameter{{{
     Double_t N1_ = ws->var("N_Jpsi")->getVal();
+    cout << "===============\n" << N1_ << "\n===================" << endl;
     Double_t Nbkg_ = ws->var("N_Bkg")->getVal();
     Double_t mean_ = pdgMass.Psi2S;
     Double_t sigma_ = ws->var("sigma_1_A")->getVal();
@@ -747,20 +746,23 @@ void doSim_pt10_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
     Double_t n_ = ws->var("n_1_A")->getVal();
     Double_t ratio_ = ws->var("x_A")->getVal();
     Double_t frac_ = ws->var("f")->getVal();
-	// Double_t cheb0_ = ws->var("sl1")->getVal();
-	// Double_t cheb1_ = ws->var("sl2")->getVal();
-	// Double_t cheb2_ = ws->var("sl3")->getVal();
-	Double_t cheb0_ = 0.0321;
-	Double_t cheb1_ = 0.0235;
-	Double_t cheb2_ = 0.0226;
-    // Double_t cheb0_ = 0.0321;
-    // Double_t cheb1_ = 0.1135;
-    // Double_t cheb2_ = 0.0226;
-	Double_t c_  = 0.131;
+	Double_t cheb0_ = ws->var("sl1")->getVal();
+	Double_t cheb1_ = ws->var("sl2")->getVal();
+	Double_t cheb2_ = ws->var("sl3")->getVal();
+	Double_t c_  = 0.0131;
 	Double_t c1_ = 0.0210;
 	Double_t c2_ = 0.0506;
 	Double_t c3_ = 0.0210;
  //}}}
+    
+    /*
+     pol2
+     Double_t c_  = 0.131;
+     Double_t c1_ = 0.0210;
+     Double_t c2_ = 0.0506;
+     Double_t c3_ = 0.0210;
+     */
+
     // Double_t cheb0_ = 0.0121;
     // Double_t cheb1_ = 0.0135;
     // Double_t cheb2_ = 1.0226;
@@ -789,8 +791,8 @@ void doSim_pt10_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
   par0[15] = c4_;
 
     
-  Double_t parLimitLow[nParmV]  = {    0,       0, mean_ -0.02,   0.01,   1.3,   1.4,    0,     0,  -15, -15, -15,  0, -30, -30, -30,-30};
-  Double_t parLimitHigh[nParmV] = {N1_*3, Nbkg_*4, mean_ +0.02,    0.2,    5.1,   4.4,   1  ,   1,   15,  15,  15, 0.5,  30,  30,  30, 30};
+    Double_t parLimitLow[nParmV]  = {    0,       0, mean_ -0.02,     0.0001,   0.,   0.,    0,     0,  -10, -10, -10,  0, -30, -30, -30,-30};
+    Double_t parLimitHigh[nParmV] = {N1_*3, Nbkg_*4, mean_ +0.02,      0.4,    5.,   5.,  5.,  1.,   10,  10,  10, 5,  30,  30,  30, 30};
 
   fitter.Config().SetParamsSettings(nParmV_, par0);
   for(int ipar = 0; ipar<nParmV_; ipar++){

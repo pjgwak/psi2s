@@ -40,7 +40,7 @@ void PR_pT65_50_y0_24_c0_20(
 {
 	//Basic Setting
 	gStyle->SetOptStat(0);
-	TString DATE="210702";
+	TString DATE="210901";
 	//TString DATE="Corr";
 	//TString DATE="210503";
 	gStyle->SetEndErrorSize(0);
@@ -120,7 +120,7 @@ void PR_pT65_50_y0_24_c0_20(
 	hEffPt2[2] = (TH1D*) fEff2 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_20_to_120_absy1p6_1p8",isTnP,isPtW));
 	hEffPt2[3] = (TH1D*) fEff2 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_20_to_120_absy1p8_2p4",isTnP,isPtW));
 
-	TFile *fAcc = new TFile("../primary_input/acceptance_Prompt_GenOnly_wgt1_2021Psi2Sv2_20210603.root","read");
+	TFile *fAcc = new TFile("../primary_input/acceptance_Prompt_GenOnly_wgt1_2021Psi2Sv2_20210601.root","read");
 	TH1D* hAccPt[3];
 	hAccPt[0] = (TH1D*) fAcc -> Get("hAccPt_2021_ally");
 	hAccPt[1] = (TH1D*) fAcc -> Get("hAccPt_2021_midy");
