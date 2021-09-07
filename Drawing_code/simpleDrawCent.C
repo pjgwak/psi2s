@@ -1,12 +1,12 @@
 void simpleDrawCent(){
-	gROOT->Macro("~/rootlogon.C");
+	gROOT->Macro("./rootlogon.C");
 
 	double xbin[] = {5, 35.0};
-	double ybin1[] = {0.000, 0.064}; // inclusive
-	double ybin2[] = {0.156, 0.165}; // prompt 
+	double ybin1[] = {0.000, 0}; // inclusive
+	double ybin2[] = {0.156, 0.196}; // prompt
 	double xerr[] = {0.0, 0.0};
-	double yerr1[] = {0.193, 0.025}; // inclusive
-	double yerr2[] = {0.054, 0.077}; // prompt
+	double yerr1[] = {0, 0}; // inclusive
+	double yerr2[] = {0.125, 0.108}; // prompt
 
 	TGraphErrors *v2cent = new TGraphErrors(2, xbin, ybin1, xerr, yerr1);
 	TGraphErrors *v2centPrp = new TGraphErrors(2, xbin, ybin2, xerr, yerr2);

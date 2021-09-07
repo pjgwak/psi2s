@@ -3,15 +3,15 @@ void simpleDrawPt(){
 
 	double xbin[] = {4.75, 8.25, 30.0};
 	double xerr[] = {0.0, 0.0, 0.0};
-	double ybin[] = {-0.1, 0.084, 0.042}; // inclusive
-	double yerr[] = {0.022, 0.062, 0.032}; // inclusive
-	double ybin1[] = {0.0, 0.073, 0.014}; // prompt
-	double yerr2[] = {0.048, 0.043, 0.020}; // prompt 
+	double ybin[] = {0, 0, 0}; // inclusive
+	double yerr[] = {0, 0, 0}; // inclusive
+	double ybin1[] = {0.154, 0.230, 0.139}; // prompt
+	double yerr2[] = {0.150, 0.118, 0.072}; // prompt
 
 	TGraphErrors *v2pt = new TGraphErrors(3, xbin, ybin, xerr, yerr);
-	TGraphErrors *v2ptPrp = new TGraphErrors(3, xbin, ybin, xerr, yerr);
+	TGraphErrors *v2ptPrp = new TGraphErrors(3, xbin, ybin1, xerr, yerr2);
 	TH1F *hPad = new TH1F("hPad",";p_{T} (GeV/c);v_{2}", 10, 0.0, 50.0);
-	hPad->SetMaximum(0.25);
+	hPad->SetMaximum(0.5);
 	hPad->SetMinimum(-0.15);
 	hPad->GetXaxis()->CenterTitle();
 	hPad->GetYaxis()->CenterTitle();
@@ -28,7 +28,7 @@ void simpleDrawPt(){
 	v2ptPrp->SetMarkerColor(kYellow+2);
 	v2ptPrp->SetLineColor(kYellow+2);
 	v2ptPrp->SetMarkerSize(2.2);
-	//v2ptPrp->Draw("pz same");
+	v2ptPrp->Draw("pz same");
 
 	TLatex *lt1 = new TLatex();
 	lt1->SetNDC();
