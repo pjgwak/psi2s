@@ -650,7 +650,7 @@ void pt40_65_y16_24_cent20_120(int cLow = 20, int cHigh = 120,
 		float SiMuPtCut = 0, float massLow = 3.3, float massHigh =4.1, bool dimusign=true, 
 		int ibkg_vn_sel = fpol2, bool fixSigPar=true)
 {
-    TString DATE = "210920";
+    TString DATE = "210928";
     gSystem->mkdir(Form("roots/%s",DATE.Data()),kTRUE);
     gSystem->mkdir(Form("figs/%s",DATE.Data()),kTRUE);
     
@@ -749,33 +749,18 @@ void pt40_65_y16_24_cent20_120(int cLow = 20, int cHigh = 120,
 	Double_t cheb0_ = ws->var("sl1")->getVal();
 	Double_t cheb1_ = ws->var("sl2")->getVal();
 	Double_t cheb2_ = ws->var("sl3")->getVal();
-    Double_t c_  = 0.0125535661210;
-    Double_t c1_ = 7.0423465401113;
-    Double_t c2_ = 4.0105430056215;
-    Double_t c3_ = 5.0040702040706;
+    Double_t c_  = 0.011439;
+    Double_t c1_ = 2.421159;
+    Double_t c2_ = 3.021587;
+    Double_t c3_ = 1.270628;
 	//}}}
 	Double_t c4_ = 0.00010;
 
 	/*
-     Double_t c_  = 0.0125535661210;
-     Double_t c1_ = 7.0423465401113;
-     Double_t c2_ = 4.0105430056215;
-     Double_t c3_ = 5.0040702040706;
-     
-     Double_t c_  = 0.0125535661210;
-     Double_t c1_ = 7.0423465401113;
-     Double_t c2_ = 4.0105430056219;
-     Double_t c3_ = 5.0040702040706;
-     
-     Double_t c_  = 0.000123384;
-     Double_t c1_ = 0.002133589;
-     Double_t c2_ = 0.000123428;
-     Double_t c3_ = 0.00011006;
-     
-     Double_t c_  = -.000123384;
-     Double_t c1_ = -.002133589;
-     Double_t c2_ = -2.000123428;
-     Double_t c3_ = 0.00011006;
+     Double_t c_  = 0.011433;
+     Double_t c1_ = 2.421151;
+     Double_t c2_ = 3.021585;
+     Double_t c3_ = 1.270624;
 	   */
 
 	std::cout << "----- OK? ------" << std::endl;
@@ -798,7 +783,7 @@ void pt40_65_y16_24_cent20_120(int cLow = 20, int cHigh = 120,
 	par0[15] = c4_;
 
     Double_t parLimitLow[nParmV]  = {    0,       0, mean_-0.005,     0,   0.,   0.,    0,     0,  -10, -10, -10,  0, -20, -20, -20,-20};
-    Double_t parLimitHigh[nParmV] = {N1_*1.2, Nbkg_*1.2, mean_+0.005,      0.4,    5.,   5.,  5.,  1.,   10,  10,  10, 0.3,  20,  20,  20, 20};
+    Double_t parLimitHigh[nParmV] = {N1_*1.2, Nbkg_*1.2, mean_+0.005,      0.4,    5.,   5.,  5.,  1.,   10,  10,  10, 0.25,  20,  20,  20, 20};
 
 
 	fitter.Config().SetParamsSettings(nParmV_, par0);

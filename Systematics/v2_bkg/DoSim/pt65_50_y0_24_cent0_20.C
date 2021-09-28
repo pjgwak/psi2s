@@ -650,7 +650,7 @@ void pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20,
 		float SiMuPtCut = 0, float massLow = 3.3, float massHigh =4.1, bool dimusign=true, 
 		int ibkg_vn_sel = fpol2, bool fixSigPar=true)
 {
-    TString DATE = "210920";
+    TString DATE = "210928";
     gSystem->mkdir(Form("roots/%s",DATE.Data()),kTRUE);
     gSystem->mkdir(Form("figs/%s",DATE.Data()),kTRUE);
     
@@ -749,30 +749,15 @@ void pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20,
 	Double_t cheb0_ = ws->var("sl1")->getVal();
 	Double_t cheb1_ = ws->var("sl2")->getVal();
 	Double_t cheb2_ = ws->var("sl3")->getVal();
-	Double_t c_  = 0.000001111168;
-	Double_t c1_ = 0.000003112149;
-	Double_t c2_ = 0.000002110267;
-	Double_t c3_ = 0.000002111237;
+    Double_t c_  = 0.1745123;
+    Double_t c1_ = 5.1944451;
+    Double_t c2_ = 1.1068951;
+    Double_t c3_ = 2.1405451;
 	/*
-	Double_t c_  = 0.000001111168;
-	Double_t c1_ = 0.000003112149;
-	Double_t c2_ = 0.000002110267;
-	Double_t c3_ = 0.000002111237;
-
-	   Double_t c_  = 0.101108116;
-	   Double_t c1_ = 4.001231435;
-	   Double_t c2_ = 2.001303348;
-	   Double_t c3_ = 2.021131535;
-
-	   Double_t c_  = 0.313201034;
-	   Double_t c1_ = .11001660210;
-	   Double_t c2_ = .01300810;
-	   Double_t c3_ = .300300410;
-
-	   Double_t c_  = 0.22531034;
-	   Double_t c1_ = 0.00310210;
-	   Double_t c2_ = 0.000810;
-	   Double_t c3_ = 0.52210;
+     Double_t c_  = 0.1745123;
+     Double_t c1_ = 5.1944451;
+     Double_t c2_ = 1.1068951;
+     Double_t c3_ = 2.1405451;
 	   */
 	Double_t c4_ = 0.0010;
 	std::cout << "----- OK? ------" << std::endl;
@@ -796,7 +781,7 @@ void pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20,
 
 
     Double_t parLimitLow[nParmV]  = {    0,       0, mean_-0.005,     0,   0.,   0.,    0,     0,  -10, -10, -10,  0, -20, -20, -20,-20};
-    Double_t parLimitHigh[nParmV] = {N1_*1.2, Nbkg_*1.2, mean_+0.005,      0.4,    5.,   5.,  5.,  1.,   10,  10,  10, 0.3,  20,  20,  20, 20};
+    Double_t parLimitHigh[nParmV] = {N1_*1.3, Nbkg_*1.3, mean_+0.005,      0.4,    5.,   5.,  5.,  1.,   10,  10,  10, 0.2,  20,  20,  20, 20};
 
 
 	fitter.Config().SetParamsSettings(nParmV_, par0);
