@@ -30,7 +30,7 @@ void MassFit_weight_pt_6p5_50p0_y_0p0_2p4_cent_0_20(
 		int PRw=1, bool fEffW = true, bool fAccW = true, bool isPtW = true, bool isTnP = true
 		)
 {
-    TString DATE = "210922_with_MC_mass_fixed";
+    TString DATE = "210928";
     gStyle->SetEndErrorSize(0);
     gSystem->mkdir(Form("roots/%s",DATE.Data()),kTRUE);
     gSystem->mkdir(Form("figs/%s",DATE.Data()),kTRUE);
@@ -60,7 +60,7 @@ void MassFit_weight_pt_6p5_50p0_y_0p0_2p4_cent_0_20(
 	RooMsgService::instance().setGlobalKillBelow(ERROR);
 	RooMsgService::instance().setSilentMode(true);
 
-	TFile* f1 = new TFile("../../make_RooDataSet/roots/OniaRooDataSet_isMC0_pt_6.5_50.0_y_0.0_2.4_Cent_0_20_CtauCtu_0.0205_wPt1_wAccPt1_wTnPPR1_Psi_2S_20210831.root","read");
+	TFile* f1 = new TFile("../../make_RooDataSet/roots/OniaRooDataSet_isMC0_pt_6.5_50.0_y_0.0_2.4_Cent_0_20_CtauCtu_0.0205_wPt1_wAccPt1_wTnPPR1_Psi_2S_210928.root","read");
 	//###TFile* f1 = new TFile(Form("../make_RooDataSet/roots/OniaRooDataSet_isMC0_Psi2S_PRw_Effw1_Accw1_PtW1_TnP1_20210604.root"));
 	// TFile* f1 = new TFile(Form("../data/OniaRooDataSet_isMC0_JPsi_%sw_Effw%d_Accw%d_PtW%d_TnP%d_20210111.root",fname.Data(),fEffW,fAccW,isPtW,isTnP));
 
@@ -70,8 +70,10 @@ void MassFit_weight_pt_6p5_50p0_y_0p0_2p4_cent_0_20(
 	// fname.Data(),fEffW,fAccW,isPtW,isTnP) << endl;
 	// exit(0);
 
-	TString kineCut;
-	kineCut = Form("pt>%.2f && pt<%.2f && abs(y)>%.2f && abs(y)<%.2f && mass>3.4 && mass<4.0 && cBin>=%d && cBin<%d",ptLow, ptHigh, yLow, yHigh, cLow, cHigh);
+    double massLow = 3.3;
+    double massHigh = 4.1;
+    TString kineCut;
+    kineCut = Form("pt>%.2f && pt<%.2f && abs(y)>%.2f && abs(y)<%.2f && mass>%.2f && mass<%.2f && cBin>=%d && cBin<%d",ptLow, ptHigh, yLow, yHigh,massLow,massHigh,cLow, cHigh);
 
 	TString accCut = "( ((abs(eta1) <= 1.2) && (pt1 >=3.5)) || ((abs(eta2) <= 1.2) && (pt2 >=3.5)) || ((abs(eta1) > 1.2) && (abs(eta1) <= 2.1) && (pt1 >= 5.47-1.89*(abs(eta1)))) || ((abs(eta2) > 1.2)  && (abs(eta2) <= 2.1) && (pt2 >= 5.47-1.89*(abs(eta2)))) || ((abs(eta1) > 2.1) && (abs(eta1) <= 2.4) && (pt1 >= 1.5)) || ((abs(eta2) > 2.1)  && (abs(eta2) <= 2.4) && (pt2 >= 1.5)) ) &&";//2018 acceptance cut
 
@@ -96,24 +98,44 @@ void MassFit_weight_pt_6p5_50p0_y_0p0_2p4_cent_0_20(
 	//****************************** MASS FIT *******************************
 	//***********************************************************************
 
+    /*
+     double sigma_1_init = 0.0681;
+     double x_init = 1.7961;
+     double alpha_1_init = 1.8582;
+     double n_1_init = 1.8503;
+     double f_init = 0.32586;
+     double m_lambda_init = 5.5;
+     double sl1_mean = 0.18, sl2_mean = 0.423, sl3_mean = 0.11;
+     double N_Jpsi_high = 11000, N_Bkg_high = 414000;
+     
+     
+     double sigma_1_init = 0.00323;
+     double x_init = 1.7961;
+     double alpha_1_init = 1.8582;
+     double n_1_init = 1.8503;
+     double f_init = 0.02377;
+     double m_lambda_init = 7;
+     double sl1_mean = -.08, sl2_mean = 0.68, sl3_mean = -.08;
+     double N_Jpsi_high = 50000, N_Bkg_high = 800000;
+     */
 	//         The order is {sigma_1,  x, alpha_1, n_1,   f, lambda
-    double paramsupper[8] = {0.1,  3.,   3, 3, 1.0,     25.0};
-    double paramslower[8] = {0,   0,     0, 0, 0.0,     -5.0};
+    double paramsupper[8] = {0.1,  3.,   3, 3, 1,     25.0};
+    double paramslower[8] = {0,   0,     0, 0, 0,     0.0};
     
 	//SIGNAL: initial params
-    double sigma_1_init = 0.023;
-    double x_init = 1.7774;
+    double sigma_1_init = 0.0238;
+    double x_init = 1.7961;
     double alpha_1_init = 1.8582;
     double n_1_init = 1.8503;
-	double f_init = 0.48;
-	double sl1_mean = 0.38, sl2_mean = 0.24, sl3_mean = 0.44;
-	double N_Jpsi_high = 15000, N_Bkg_high = 350000;
-	double m_lambda_init = 3.2;
+    double f_init = 0.02377;
+    double m_lambda_init = 7;
+    double sl1_mean = -.002, sl2_mean = 0.68, sl3_mean = -.05;
+    double N_Jpsi_high = 50000, N_Bkg_high = 500000;
 
 	double psi_2S_mass = pdgMass.Psi2S;
 
 	//SIGNAL
-    RooRealVar mean("m_{J/#Psi}","mean of the signal gaussian mass PDF",psi_2S_mass, psi_2S_mass-0.005, psi_2S_mass+0.005);
+    RooRealVar mean("m_{J/#Psi}","mean of the signal gaussian mass PDF",psi_2S_mass, psi_2S_mass-0.01, psi_2S_mass+0.01);
 	RooRealVar   *x_A = new RooRealVar("x_A","sigma ratio ", x_init, x_init, x_init);
 	RooRealVar    sigma_1_A("sigma_1_A","width/sigma of the signal gaussian mass PDF",sigma_1_init, paramslower[0], paramsupper[0]);
 	RooFormulaVar sigma_2_A("sigma_2_A","@0*@1",RooArgList(sigma_1_A, *x_A) );
@@ -149,8 +171,8 @@ void MassFit_weight_pt_6p5_50p0_y_0p0_2p4_cent_0_20(
 	pdfMASS_bkg = new RooChebychev("pdfMASS_bkg","Background",*(ws->var("mass")),RooArgList(*sl1, *sl2, *sl3));
 
 	//Build the model
-	RooRealVar *N_Jpsi= new RooRealVar("N_Jpsi","inclusive Jpsi signals",N_Jpsi_high*0.8, 0, N_Jpsi_high);
-	RooRealVar *N_Bkg = new RooRealVar("N_Bkg","fraction of component 1 in bkg",N_Bkg_high*0.8, 0, N_Bkg_high);
+	RooRealVar *N_Jpsi= new RooRealVar("N_Jpsi","inclusive Jpsi signals",N_Jpsi_high*0.8,0, N_Jpsi_high);
+	RooRealVar *N_Bkg = new RooRealVar("N_Bkg","fraction of component 1 in bkg",0, N_Bkg_high);
 	RooAddPdf* pdfMASS_Tot = new RooAddPdf("pdfMASS_Tot","Jpsi + Bkg",RooArgList(*pdfMASS_Jpsi, *pdfMASS_bkg),RooArgList(*N_Jpsi,*N_Bkg));
 	//pdfMASS_Tot = new RooAddPdf("pdfMASS_Tot","Jpsi + Bkg",RooArgList(*pdfMASS_Jpsi, *bkg_1order),RooArgList(*N_Jpsi,*N_Bkg));
 	//pdfMASS_Tot = new RooAddPdf("pdfMASS_Tot","PR Jpsi + NP Jpsi + Bkg",RooArgList(*cb_1_A, *cb_2_A, *bkg),RooArgList(*N_JpsiPR,*N_JpsiNP,*N_Bkg));
@@ -195,7 +217,6 @@ void MassFit_weight_pt_6p5_50p0_y_0p0_2p4_cent_0_20(
 	Yup = YMax*TMath::Power((YMax/YMin), (0.4/(1.0-0.1-0.4)));
 	myPlot2_A->GetYaxis()->SetRangeUser(Ydown,Yup);
 
-	//myPlot2_A->SetMinimum(2*10);
 	myPlot2_A->GetXaxis()->SetLabelSize(0);
 	myPlot2_A->GetXaxis()->SetTitleSize(0);
 	myPlot2_A->GetXaxis()->CenterTitle();
@@ -226,7 +247,7 @@ void MassFit_weight_pt_6p5_50p0_y_0p0_2p4_cent_0_20(
 	   */
 
 	// myPlot2_A->SetMinimum(2*10);
-	//myPlot2_A->SetMaximum(35000);
+	myPlot2_A->SetMaximum(28000);
 	// myPlot2_A->GetYaxis()->SetRangeUser(0,340000);
 
 	drawText(Form("%.1f < p_{T}^{#mu#mu} < %.1f GeV/c; Cent. %d - %d%s",ptLow, ptHigh, cLow/2, cHigh/2, "%"),text_x,text_y,text_color,text_size);

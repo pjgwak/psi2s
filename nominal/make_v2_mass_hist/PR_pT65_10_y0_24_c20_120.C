@@ -32,7 +32,7 @@ void PR_pT65_10_y0_24_c20_120(
 		int cLow = 20, int cHigh = 120,
 		int PR=0, // 0: PR, 1: NP, 2: Inc.
 		float ctauCut=0.0285,
-		float massLow = 3.4, float massHigh = 4.0, 
+		float massLow = 3.3, float massHigh = 4.3, 
 		bool dimusign=true, bool fAccW = true, bool fEffW = true, bool isMC = false, 
 		int dtype = 1, 
 		int weight_PR = 0 // PR : 0, NP : 1
@@ -40,7 +40,7 @@ void PR_pT65_10_y0_24_c20_120(
 {
 	//Basic Setting
 	gStyle->SetOptStat(0);
-    TString DATE="210920";
+    TString DATE="210928";
     gStyle->SetEndErrorSize(0);
     gSystem->mkdir(Form("figs/%s",DATE.Data()), kTRUE);
     gSystem->mkdir(Form("roots/%s",DATE.Data()), kTRUE);
@@ -99,8 +99,8 @@ void PR_pT65_10_y0_24_c20_120(
 	//Get Correction histograms
 	bool isTnP = true;
 	bool isPtW = true;
-	TFile *fEff1 = new TFile(Form("../../primary_inputs/mc_eff_vs_pt_cent_0_to_20_rap_%s_pbpb_psi2S_PtW%d_tnp%d.root",wName.Data(),isPtW,isTnP),"read");
-	TFile *fEff2 = new TFile(Form("../../primary_inputs/mc_eff_vs_pt_cent_20_to_120_rap_%s_pbpb_psi2S_PtW%d_tnp%d.root",wName.Data(),isPtW,isTnP),"read");
+	TFile *fEff1 = new TFile(Form("../../primary_inputs/mc_eff_vs_pt_cent_0_to_20_rap_%s_pbpb_psi2S_PtW%d_tnp%d_2107.root",wName.Data(),isPtW,isTnP),"read");
+	TFile *fEff2 = new TFile(Form("../../primary_inputs/mc_eff_vs_pt_cent_20_to_120_rap_%s_pbpb_psi2S_PtW%d_tnp%d_2107.root",wName.Data(),isPtW,isTnP),"read");
 	TH1D* hEffPt1[4];
 	hEffPt1[0] = (TH1D*) fEff1 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy0_1p2",isTnP,isPtW));
 	hEffPt1[1] = (TH1D*) fEff1 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy1p2_1p6",isTnP,isPtW));
@@ -248,7 +248,7 @@ void PR_pT65_10_y0_24_c20_120(
 
 
 	// here
-	vector<float> massBinDiff={3.4,3.5,3.60,3.65, 3.7, 3.75,3.82,3.9,4.0};
+	vector<float> massBinDiff={3.3,3.35,3.4,3.5,3.60,3.65, 3.7, 3.75,3.82,3.9,4.0,4.1,4.2,4.3};
 	// vector<float> massBinDiff={3.4,3.51,3.62,3.69,3.73,3.81,3.90,4.0};
 	// vector<float> massBinDiff={3.4,3.51,3.62,3.69,3.73,3.81,3.85,4.0};
 	// vector<float> massBinDiff={3.4,3.52,3.60,3.69, 3.72, 3.75,3.78,3.82,4.0};

@@ -19,13 +19,12 @@
 #include <Fit/Chi2FCN.h>
 #include <Math/WrappedMultiTF1.h>
 #include <HFitInterface.h>
-#include "../../headers/commonUtility.h"
-#include "../../headers/cutsAndBin.h"
-#include "../../headers/HiEvtPlaneList.h"
-#include "../../headers/Style.h"
-#include "../../headers/tdrstyle.C"
-#include "../../headers/CMS_lumi_v2mass.C"
-
+#include "../../../headers/commonUtility.h"
+#include "../../../headers/cutsAndBin.h"
+#include "../../../headers/HiEvtPlaneList.h"
+#include "../../../headers/Style.h"
+#include "../../../headers/tdrstyle.C"
+#include "../../../headers/CMS_lumi_v2mass.C"
 using namespace std;
 
 const int nParmM = 11;
@@ -645,13 +644,13 @@ Double_t pol3bkg(Double_t* x, Double_t* par)
 }
 //}}}
 
-void doSim_pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
+void pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
 		float ptLow =  6.5, float ptHigh = 50.0,
 		float yLow = 0.0, float yHigh = 2.4,
-		float SiMuPtCut = 0, float massLow = 3.3, float massHigh =4.3, bool dimusign=true, 
-		int ibkg_vn_sel = fpol1, bool fixSigPar=true)
+		float SiMuPtCut = 0, float massLow = 3.3, float massHigh =4.1, bool dimusign=true, 
+		int ibkg_vn_sel = fpol2, bool fixSigPar=true)
 {
-    TString DATE = "210927";
+    TString DATE = "210920";
     gSystem->mkdir(Form("roots/%s",DATE.Data()),kTRUE);
     gSystem->mkdir(Form("figs/%s",DATE.Data()),kTRUE);
     
@@ -686,11 +685,11 @@ void doSim_pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
 
 	//Get yield distribution{{{
 	//TFile* rf = new TFile(Form("roots/v2mass_hist/Psi2S_NonPrompt_%s.root",kineLabel.Data()),"read");
-	TFile* rf = new TFile(Form("../make_v2_mass_hist/roots/Psi2S_Prompt_%s_Eff1_Acc1_PtW1_TnP1.root",kineLabel.Data()),"read");
+    TFile* rf = new TFile(Form("../make_v2_mass_hist/roots/Psi2S_Prompt_%s_Eff1_Acc1_PtW1_TnP1.root",kineLabel.Data()),"read");
 	TH1D* h_v2_SplusB = (TH1D*) rf->Get("h_v2_SplusB");
 	TGraphAsymmErrors* g_mass = (TGraphAsymmErrors*) rf->Get("g_mass");
 
-	TFile *wf = new TFile(Form("roots/%s/SimFitResult_Prompt_%s.root",DATE.Data(),kineLabel.Data()),"recreate");
+    TFile *wf = new TFile(Form("roots/%s/SimFitResult_Prompt_%s.root",DATE.Data(),kineLabel.Data()),"recreate");
 
 	//define function for simultaneous fitting{{{
 	TF1* fmass_total = new TF1("fmass_total", TotalYield, massLow, massHigh, nParmM);
@@ -731,7 +730,7 @@ void doSim_pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
 	//}}}
 
 	TString kineLabel_ = getKineLabel (ptLow, ptHigh, yLow, yHigh, SiMuPtCut, cLow, cHigh) ;
-	TFile* f_mass = new TFile(Form("../MassFit/data_fit/roots/MassFitResult_%s_PRw_Effw1_Accw1_PtW1_TnP1.root",kineLabel_.Data()),"read");
+    TFile* f_mass = new TFile(Form("../MassFit/data_fit/roots/MassFitResult_%s_PRw_Effw1_Accw1_PtW1_TnP1.root",kineLabel_.Data()),"read");
 	RooWorkspace *ws = new RooWorkspace("workspace");
 	RooDataSet *datasetMass = (RooDataSet*)f_mass->Get("datasetMass");
 	ws->import(*datasetMass);
@@ -867,7 +866,7 @@ void doSim_pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
 	for(int iparm=0;iparm<nprm_alpha; iparm++){
 		fAlpha->FixParameter(iparm,fvn_simul->GetParameter(iparm));
 	}
-	h_v2_SplusB->GetListOfFunctions()->Add(fAlpha);
+	//h_v2_SplusB->GetListOfFunctions()->Add(fAlpha);
 	//}}}
 
 
@@ -1043,7 +1042,7 @@ void doSim_pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
 	leg2->SetTextSize(0.05);
 	leg2->AddEntry(fvn_simul,"v_{2}^{S+B}","l");
 	leg2->AddEntry(fvn_bkg,"v_{2}^{B}","l");
-	leg2->AddEntry(fAlpha,"#alpha","l");
+	//leg2->AddEntry(fAlpha,"#alpha","l");
 	leg2->Draw("same");
 
 	CMS_lumi_v2mass(pad1,iPeriod,iPos);  
@@ -1053,8 +1052,8 @@ void doSim_pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
 	pad1->Draw();
 	pad2->Draw();
 	c_mass_v2->Update();
-	c_mass_v2->SaveAs(Form("figs/%s/v2Mass_Prompt_%s.pdf",DATE.Data(),kineLabel.Data()));
-	wf->cd();
+    c_mass_v2->SaveAs(Form("figs/%s/v2Mass_Prompt_%s.pdf",DATE.Data(),kineLabel.Data()));
+    wf->cd();
 	//store individual function{{{
 	fyieldtot = (TF1*) fmass_total->Clone();
 	fyieldtot->SetName("massfit");

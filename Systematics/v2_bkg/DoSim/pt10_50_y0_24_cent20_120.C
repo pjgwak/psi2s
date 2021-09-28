@@ -19,13 +19,12 @@
 #include <Fit/Chi2FCN.h>
 #include <Math/WrappedMultiTF1.h>
 #include <HFitInterface.h>
-#include "../../headers/commonUtility.h"
-#include "../../headers/cutsAndBin.h"
-#include "../../headers/HiEvtPlaneList.h"
-#include "../../headers/Style.h"
-#include "../../headers/tdrstyle.C"
-#include "../../headers/CMS_lumi_v2mass.C"
-
+#include "../../../headers/commonUtility.h"
+#include "../../../headers/cutsAndBin.h"
+#include "../../../headers/HiEvtPlaneList.h"
+#include "../../../headers/Style.h"
+#include "../../../headers/tdrstyle.C"
+#include "../../../headers/CMS_lumi_v2mass.C"
 using namespace std;
 
 const int nParmM = 11;
@@ -644,13 +643,13 @@ Double_t pol3bkg(Double_t* x, Double_t* par)
 }
 //}}}
 
-void doSim_pt10_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
+void pt10_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
     float ptLow = 10.0 , float ptHigh = 50.0,
     float yLow = 0.0, float yHigh = 2.4,
-    float SiMuPtCut = 0, float massLow = 3.3, float massHigh =4.3, bool dimusign=true, 
-	int ibkg_vn_sel = fpol1, bool fixSigPar=true)
+    float SiMuPtCut = 0, float massLow = 3.3, float massHigh =4.1, bool dimusign=true, 
+	int ibkg_vn_sel = fpol2, bool fixSigPar=true)
 {
-    TString DATE = "210927";
+    TString DATE = "210920";
     gSystem->mkdir(Form("roots/%s",DATE.Data()),kTRUE);
     gSystem->mkdir(Form("figs/%s",DATE.Data()),kTRUE);
     
@@ -750,20 +749,17 @@ void doSim_pt10_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
 	Double_t cheb0_ = ws->var("sl1")->getVal();
 	Double_t cheb1_ = ws->var("sl2")->getVal();
 	Double_t cheb2_ = ws->var("sl3")->getVal();
-	Double_t c_  = 0.0131;
+	//Double_t cheb0_ = 0.0321;
+	//Double_t cheb1_ = 0.0235;
+	//Double_t cheb2_ = 0.0226;
+    // Double_t cheb0_ = 0.0321;
+    // Double_t cheb1_ = 0.1135;
+    // Double_t cheb2_ = 0.0226;
+	Double_t c_  = 0.131;
 	Double_t c1_ = 0.0210;
 	Double_t c2_ = 0.0506;
 	Double_t c3_ = 0.0210;
  //}}}
-    
-    /*
-     pol2
-     Double_t c_  = 0.131;
-     Double_t c1_ = 0.0210;
-     Double_t c2_ = 0.0506;
-     Double_t c3_ = 0.0210;
-     */
-
     // Double_t cheb0_ = 0.0121;
     // Double_t cheb1_ = 0.0135;
     // Double_t cheb2_ = 1.0226;
@@ -870,7 +866,7 @@ void doSim_pt10_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
   for(int iparm=0;iparm<nprm_alpha; iparm++){
     fAlpha->FixParameter(iparm,fvn_simul->GetParameter(iparm));
   }
-  h_v2_SplusB->GetListOfFunctions()->Add(fAlpha);
+  //h_v2_SplusB->GetListOfFunctions()->Add(fAlpha);
   //}}}
 
 
@@ -1046,7 +1042,7 @@ void doSim_pt10_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
   leg2->SetTextSize(0.05);
   leg2->AddEntry(fvn_simul,"v_{2}^{S+B}","l");
   leg2->AddEntry(fvn_bkg,"v_{2}^{B}","l");
-  leg2->AddEntry(fAlpha,"#alpha","l");
+  //leg2->AddEntry(fAlpha,"#alpha","l");
     leg2->Draw("same");
 
   CMS_lumi_v2mass(pad1,iPeriod,iPos);  
@@ -1057,7 +1053,7 @@ void doSim_pt10_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
   pad2->Draw();
   c_mass_v2->Update();
     c_mass_v2->SaveAs(Form("figs/%s/v2Mass_Prompt_%s.pdf",DATE.Data(),kineLabel.Data()));
-  wf->cd();
+    wf->cd();
   //store individual function{{{
   fyieldtot = (TF1*) fmass_total->Clone();
   fyieldtot->SetName("massfit");

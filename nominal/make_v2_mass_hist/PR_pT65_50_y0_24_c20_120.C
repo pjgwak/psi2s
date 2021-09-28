@@ -32,7 +32,7 @@ void PR_pT65_50_y0_24_c20_120(
 		int cLow = 20, int cHigh = 120,
 		int PR=0, // 0: PR, 1: NP, 2: Inc.
 		float ctauCut=0.0195,
-		float massLow = 3.4, float massHigh = 4.0, 
+		float massLow = 3.3, float massHigh = 4.3,
 		bool dimusign=true, bool fAccW = true, bool fEffW = true, bool isMC = false, 
 		int dtype = 1, 
 		int weight_PR = 0 // PR : 0, NP : 1
@@ -40,7 +40,7 @@ void PR_pT65_50_y0_24_c20_120(
 {
 	//Basic Setting
 	gStyle->SetOptStat(0);
-	TString DATE="210920";
+	TString DATE="210924";
 	gStyle->SetEndErrorSize(0);
     gSystem->mkdir(Form("figs/%s",DATE.Data()), kTRUE);
     gSystem->mkdir(Form("roots/%s",DATE.Data()), kTRUE);
@@ -99,8 +99,8 @@ void PR_pT65_50_y0_24_c20_120(
 	//Get Correction histograms
 	bool isTnP = true;
 	bool isPtW = true;
-	TFile *fEff1 = new TFile(Form("../../primary_inputs/mc_eff_vs_pt_cent_0_to_20_rap_%s_pbpb_psi2S_PtW%d_tnp%d.root",wName.Data(),isPtW,isTnP),"read");
-	TFile *fEff2 = new TFile(Form("../../primary_inputs/mc_eff_vs_pt_cent_20_to_120_rap_%s_pbpb_psi2S_PtW%d_tnp%d.root",wName.Data(),isPtW,isTnP),"read");
+	TFile *fEff1 = new TFile(Form("../../primary_inputs/mc_eff_vs_pt_cent_0_to_20_rap_%s_pbpb_psi2S_PtW%d_tnp%d_2107.root",wName.Data(),isPtW,isTnP),"read");
+	TFile *fEff2 = new TFile(Form("../../primary_inputs/mc_eff_vs_pt_cent_20_to_120_rap_%s_pbpb_psi2S_PtW%d_tnp%d_2107.root",wName.Data(),isPtW,isTnP),"read");
 	TH1D* hEffPt1[4];
 	hEffPt1[0] = (TH1D*) fEff1 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy0_1p2",isTnP,isPtW));
 	hEffPt1[1] = (TH1D*) fEff1 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy1p2_1p6",isTnP,isPtW));
@@ -251,7 +251,7 @@ void PR_pT65_50_y0_24_c20_120(
 	// vector<float> massBinDiff={3.4,3.47,3.59,3.64,3.69,3.73,3.77,3.89,4.0}; //6.5 ~ 50, c  0~ 20
 	// vector<float> massBinDiff={3.4,3.50,3.59,3.64,3.70,3.74,3.78,3.85,4.0}; //6.5 ~ 50, c0~ 20
 	// vector<float> massBinDiff={3.4,3.55,3.60,3.68,3.72,3.74,3.80, 3.88, 4.0}; // pT 3 ~ 6.5
-	vector<float> massBinDiff={3.4,3.50,3.60,3.64,3.68,3.72,3.80,3.90,4.0}; // pT6.5 ~ 50, c20 ~ 120
+	vector<float> massBinDiff={3.3,3.35,3.4,3.50,3.60,3.64,3.68,3.72,3.80,3.90,4.0,4.1,4.2,4.3}; // pT6.5 ~ 50, c20 ~ 120
 
 	const int nMassBin = massBinDiff.size() - 1;
 	float massBin_[nMassBin+1];

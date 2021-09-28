@@ -19,13 +19,12 @@
 #include <Fit/Chi2FCN.h>
 #include <Math/WrappedMultiTF1.h>
 #include <HFitInterface.h>
-#include "../../headers/commonUtility.h"
-#include "../../headers/cutsAndBin.h"
-#include "../../headers/HiEvtPlaneList.h"
-#include "../../headers/Style.h"
-#include "../../headers/tdrstyle.C"
-#include "../../headers/CMS_lumi_v2mass.C"
-
+#include "../../../headers/commonUtility.h"
+#include "../../../headers/cutsAndBin.h"
+#include "../../../headers/HiEvtPlaneList.h"
+#include "../../../headers/Style.h"
+#include "../../../headers/tdrstyle.C"
+#include "../../../headers/CMS_lumi_v2mass.C"
 using namespace std;
 
 const int nParmM = 11;
@@ -35,188 +34,172 @@ Int_t iparvn[nParmV] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,13,14,15};
 
 struct GlobalChi2_width
 {
-	GlobalChi2_width(ROOT::Math::IMultiGenFunction & f1, ROOT::Math::IMultiGenFunction & f2):
-		fChi2_1(&f1), fChi2_2(&f2) {}
+    GlobalChi2_width(ROOT::Math::IMultiGenFunction & f1, ROOT::Math::IMultiGenFunction & f2):
+        fChi2_1(&f1), fChi2_2(&f2) {}
 
-	Double_t operator() (const double *par) const
-	{
-		Double_t p1[nParmM];
-		for(Int_t i = 0; i < nParmM; i++) p1[i] = par[iparmass[i]];
-		Double_t p2[nParmV];
-		for(Int_t i = 0; i < nParmV; i++) p2[i] = par[iparvn[i]];
-		return (*fChi2_1)(p1) + (*fChi2_2)(p2);
-	}
-	const ROOT::Math::IMultiGenFunction * fChi2_1;
-	const ROOT::Math::IMultiGenFunction * fChi2_2;
+    Double_t operator() (const double *par) const
+    {
+        Double_t p1[nParmM];
+        for(Int_t i = 0; i < nParmM; i++) p1[i] = par[iparmass[i]];
+        Double_t p2[nParmV];
+        for(Int_t i = 0; i < nParmV; i++) p2[i] = par[iparvn[i]];
+        return (*fChi2_1)(p1) + (*fChi2_2)(p2);
+    }
+    const ROOT::Math::IMultiGenFunction * fChi2_1;
+    const ROOT::Math::IMultiGenFunction * fChi2_2;
 };
 
 //totalYield{{{
 Double_t TotalYield(Double_t* x, Double_t* par)
 {
-	Double_t N1 = par[0]; //Number of Psi2S yield
-	Double_t Nbkg = par[1]; //Nuber of Bkg
-	Double_t mean = par[2]; //Crystall Ball mean
-	Double_t sigma = par[3]; //Crystall Ball sigma
-	Double_t alpha = par[4]; //crystall ball alpha
-	Double_t n = par[5]; //Crystall ball n
-	Double_t ratio = par[6]; //For fraction of Double Crystall ball
-	Double_t frac = par[7]; //Crystall ball f
-	Double_t cheb0 = par[8];
-	Double_t cheb1 = par[9];
-	Double_t cheb2 = par[10];
-	Double_t sigma1_2 = sigma*ratio; //
+    Double_t N1 = par[0]; //Number of Psi2S yield
+    Double_t Nbkg = par[1]; //Nuber of Bkg
+    Double_t mean = par[2]; //Crystall Ball mean
+    Double_t sigma = par[3]; //Crystall Ball sigma
+    Double_t alpha = par[4]; //crystall ball alpha
+    Double_t n = par[5]; //Crystall ball n
+    Double_t ratio = par[6]; //For fraction of Double Crystall ball
+    Double_t frac = par[7]; //Crystall ball f
+    Double_t cheb0 = par[8];
+    Double_t cheb1 = par[9];
+    Double_t cheb2 = par[10];
+    Double_t sigma1_2 = sigma*ratio; //
 
-	//t2 > t1
-	Double_t JPsi_t1 = (x[0]-mean)/sigma;
-	Double_t JPsi_t2 = (x[0]-mean)/sigma1_2;
+    //t2 > t1
+    Double_t JPsi_t1 = (x[0]-mean)/sigma;
+    Double_t JPsi_t2 = (x[0]-mean)/sigma1_2;
 
-	if (alpha < 0)
-	{
-		cout << "ERROR ::: alpha variable negative!!!! " << endl;
-		return -1;
-	}
+    if (alpha < 0)
+    {
+        cout << "ERROR ::: alpha variable negative!!!! " << endl;
+        return -1;
+    }
 
-	//Crystall ball fucntion
-	Double_t absAlpha = TMath::Abs(alpha);
-	Double_t a = TMath::Power(n/absAlpha,n)*exp(-absAlpha*absAlpha/2.);
-	Double_t b = n/absAlpha - absAlpha;
+    //Crystall ball fucntion
+    Double_t absAlpha = TMath::Abs(alpha);
+    Double_t a = TMath::Power(n/absAlpha,n)*exp(-absAlpha*absAlpha/2.);
+    Double_t b = n/absAlpha - absAlpha;
 
-	Double_t JPsi_1 = -1;
-	Double_t JPsi_2 = -1;
+    Double_t JPsi_1 = -1;
+    Double_t JPsi_2 = -1;
 
-	if(JPsi_t1 > -alpha){
-		JPsi_1 = exp(-JPsi_t1*JPsi_t1/2.);
-	}
-	if(JPsi_t1 <= -alpha){
-		JPsi_1 = a*TMath::Power((b-JPsi_t1),-n);
-	}
-	if(JPsi_t2 > -alpha){
-		JPsi_2 = exp(-JPsi_t2*JPsi_t2/2.);
-	}
-	if(JPsi_t2 <= -alpha){
-		JPsi_2 = a*TMath::Power((b-JPsi_t2),-n);
-	}
+    if(JPsi_t1 > -alpha){
+        JPsi_1 = exp(-JPsi_t1*JPsi_t1/2.);
+    }
+    if(JPsi_t1 <= -alpha){
+        JPsi_1 = a*TMath::Power((b-JPsi_t1),-n);
+    }
 
-	Double_t fC = n/absAlpha*1/(n-1)*exp(-absAlpha*absAlpha/2);
-	Double_t fD = TMath::Sqrt(TMath::Pi()/2)*(1+TMath::Erf(absAlpha/TMath::Sqrt(2)));
-	Double_t fN_1 = 1./(sigma*(fC+fD));
-	Double_t fN_2 = 1./(sigma1_2*(fC+fD));
+    JPsi_2=1/(sigma1_2*TMath::Sqrt(2*TMath::Pi()))*exp(-0.5*JPsi_t2*JPsi_t2);
+    Double_t fC = n/absAlpha*1/(n-1)*exp(-absAlpha*absAlpha/2);
+    Double_t fD = TMath::Sqrt(TMath::Pi()/2)*(1+TMath::Erf(absAlpha/TMath::Sqrt(2)));
+    Double_t fN_1 = 1./(sigma*(fC+fD));
 
-	double shx = (10*x[0]-37)/3;
-	Double_t BkgM = Nbkg*(1+cheb0*shx + cheb1*(2*shx*shx-1) + cheb2*(4*shx*shx*shx-3*shx));
+    double shx = (10*x[0]-37)/3;
+    Double_t BkgM = Nbkg*(1+cheb0*shx + cheb1*(2*shx*shx-1) + cheb2*(4*shx*shx*shx-3*shx));
 
-	return N1*(fN_1*frac*JPsi_1 + fN_2*(1-frac)*JPsi_2) + BkgM;
+    return N1*(fN_1*frac*JPsi_1 + (1-frac)*JPsi_2) + BkgM;
 }
 
 //totalYieldSig{{{
 Double_t TotalYieldSig(Double_t* x, Double_t* par)
 {
-	Double_t N1 = par[0];
-	Double_t mean = par[1];
-	Double_t sigma = par[2];
-	Double_t alpha = par[3];
-	Double_t n = par[4];
-	Double_t ratio = par[5];
-	Double_t frac = par[6];
-	Double_t normMin = par[7];
-	Double_t sigma1_2 = sigma*ratio;
+    Double_t N1 = par[0];
+    Double_t mean = par[1];
+    Double_t sigma = par[2];
+    Double_t alpha = par[3];
+    Double_t n = par[4];
+    Double_t ratio = par[5];
+    Double_t frac = par[6];
+    Double_t normMin = par[7];
+    Double_t sigma1_2 = sigma*ratio;
 
-	//t2 > t1
-	Double_t JPsi_t1 = (x[0]-mean)/sigma;
-	Double_t JPsi_t2 = (x[0]-mean)/sigma1_2;
+    //t2 > t1
+    Double_t JPsi_t1 = (x[0]-mean)/sigma;
+    Double_t JPsi_t2 = (x[0]-mean)/sigma1_2;
 
-	if (alpha < 0)
-	{
-		cout << "ERROR ::: alpha variable negative!!!! " << endl;
-		return -1;
-	}
+    if (alpha < 0)
+    {
+        cout << "ERROR ::: alpha variable negative!!!! " << endl;
+        return -1;
+    }
 
-	Double_t absAlpha = fabs((Double_t)alpha);
-	Double_t a = TMath::Power(n/absAlpha,n)*exp(-absAlpha*absAlpha/2.);
-	Double_t b = n/absAlpha - absAlpha;
-	Double_t JPsi_1 = -1;
-	Double_t JPsi_2 = -1;
+    Double_t absAlpha = fabs((Double_t)alpha);
+    Double_t a = TMath::Power(n/absAlpha,n)*exp(-absAlpha*absAlpha/2.);
+    Double_t b = n/absAlpha - absAlpha;
+    Double_t JPsi_1 = -1;
+    Double_t JPsi_2 = -1;
 
-	if(JPsi_t1 > -alpha){
-		JPsi_1 = exp(-JPsi_t1*JPsi_t1/2.);
-	}
-	else if(JPsi_t1 <= -alpha){
-		JPsi_1 = a*TMath::Power((b-JPsi_t1),-n);
-	}
+    if(JPsi_t1 > -alpha){
+        JPsi_1 = exp(-JPsi_t1*JPsi_t1/2.);
+    }
+    else if(JPsi_t1 <= -alpha){
+        JPsi_1 = a*TMath::Power((b-JPsi_t1),-n);
+    }
 
-	if(JPsi_t2 > -alpha){
-		JPsi_2 = exp(-JPsi_t2*JPsi_t2/2.);
-	}
-	else if(JPsi_t2 <= -alpha){
-		JPsi_2 = a*TMath::Power((b-JPsi_t2),-n);
-	}
-	Double_t fC = n/absAlpha*1/(n-1)*exp(-absAlpha*absAlpha/2);
-	Double_t fD = TMath::Sqrt(TMath::Pi()/2)*(1+TMath::Erf(absAlpha/TMath::Sqrt(2)));
-	Double_t fN_1 = 1./(sigma*(fC+fD));
-	Double_t fN_2 = 1./(sigma1_2*(fC+fD));
-	return normMin+N1*(fN_1*frac*JPsi_1 + fN_2*(1-frac)*JPsi_2);
+    JPsi_2=1/(sigma1_2*TMath::Sqrt(2*TMath::Pi()))*exp(-0.5*JPsi_t2*JPsi_t2);
+    Double_t fC = n/absAlpha*1/(n-1)*exp(-absAlpha*absAlpha/2);
+    Double_t fD = TMath::Sqrt(TMath::Pi()/2)*(1+TMath::Erf(absAlpha/TMath::Sqrt(2)));
+    Double_t fN_1 = 1./(sigma*(fC+fD));
+
+    normMin = 0;  // y axis cosmetic
+    return normMin+N1*(fN_1*frac*JPsi_1 + (1-frac)*JPsi_2);
 }
 
 //totalvn pol2 bkg Psi2S{{{
 Double_t Totalvnpol1JPsi(Double_t* x, Double_t* par)
 {
-	Double_t N1 = par[0];
-	Double_t Nbkg = par[1];
-	Double_t mean = par[2];
-	Double_t sigma = par[3];
-	Double_t alpha = par[4];
-	Double_t n = par[5];
-	Double_t ratio = par[6];
-	Double_t frac = par[7];
-	Double_t cheb0 = par[8];
-	Double_t cheb1 = par[9];
-	Double_t cheb2 = par[10];
-	Double_t c = par[11];
-	Double_t c1 = par[12];
-	Double_t c2 = par[13];
-	Double_t c3 = par[14];
+    Double_t N1 = par[0];
+    Double_t Nbkg = par[1];
+    Double_t mean = par[2];
+    Double_t sigma = par[3];
+    Double_t alpha = par[4];
+    Double_t n = par[5];
+    Double_t ratio = par[6];
+    Double_t frac = par[7];
+    Double_t cheb0 = par[8];
+    Double_t cheb1 = par[9];
+    Double_t cheb2 = par[10];
+    Double_t c = par[11];
+    Double_t c1 = par[12];
+    Double_t c2 = par[13];
+    Double_t c3 = par[14];
 
-	Double_t sigma1_2 = sigma*ratio;
+    Double_t sigma1_2 = sigma*ratio;
 
-	//t2 > t1
-	Double_t JPsi_t1 = (x[0]-mean)/sigma;
-	Double_t JPsi_t2 = (x[0]-mean)/sigma1_2;
-	if (alpha < 0)
-	{
-		cout << "ERROR ::: alpha variable negative!!!! " << endl;
-		return -1;
-	}
+    //t2 > t1
+    Double_t JPsi_t1 = (x[0]-mean)/sigma;
+    Double_t JPsi_t2 = (x[0]-mean)/sigma1_2;
+    if (alpha < 0)
+    {
+        cout << "ERROR ::: alpha variable negative!!!! " << endl;
+        return -1;
+    }
 
-	Double_t absAlpha = fabs((Double_t)alpha);
-	Double_t a = TMath::Power(n/absAlpha,n)*exp(-absAlpha*absAlpha/2.);
-	Double_t b = n/absAlpha - absAlpha;
+    Double_t absAlpha = fabs((Double_t)alpha);
+    Double_t a = TMath::Power(n/absAlpha,n)*exp(-absAlpha*absAlpha/2.);
+    Double_t b = n/absAlpha - absAlpha;
 
-	Double_t JPsi_1 = -1;
-	Double_t JPsi_2 = -1;
+    Double_t JPsi_1 = -1;
+    Double_t JPsi_2 = -1;
 
-	if(JPsi_t1 > -alpha){
-		JPsi_1 = exp(-JPsi_t1*JPsi_t1/2.);
-	}
-	else if(JPsi_t1 <= -alpha){
-		JPsi_1 = a*TMath::Power((b-JPsi_t1),-n);
-	}
+    if(JPsi_t1 > -alpha){
+        JPsi_1 = exp(-JPsi_t1*JPsi_t1/2.);
+    }
+    else if(JPsi_t1 <= -alpha){
+        JPsi_1 = a*TMath::Power((b-JPsi_t1),-n);
+    }
 
-	if(JPsi_t2 > -alpha){
-		JPsi_2 = exp(-JPsi_t2*JPsi_t2/2.);
-	}
-	else if(JPsi_t2 <= -alpha){
-		JPsi_2 = a*TMath::Power((b-JPsi_t2),-n);
-	}
-	Double_t fC = n/absAlpha*1/(n-1)*exp(-absAlpha*absAlpha/2);
-	Double_t fD = TMath::Sqrt(TMath::Pi()/2)*(1+TMath::Erf(absAlpha/TMath::Sqrt(2)));
-	Double_t fN_1 = 1./(sigma*(fC+fD));
-	Double_t fN_2 = 1./(sigma1_2*(fC+fD));
-	Double_t SigM = N1*(fN_1*frac*JPsi_1 + fN_2*(1-frac)*JPsi_2);
+    JPsi_2=1/(sigma1_2*TMath::Sqrt(2*TMath::Pi()))*exp(-0.5*JPsi_t2*JPsi_t2);
+    Double_t fC = n/absAlpha*1/(n-1)*exp(-absAlpha*absAlpha/2);
+    Double_t fD = TMath::Sqrt(TMath::Pi()/2)*(1+TMath::Erf(absAlpha/TMath::Sqrt(2)));
+    Double_t fN_1 = 1./(sigma*(fC+fD));
+    Double_t SigM = N1*(fN_1*frac*JPsi_1 + (1-frac)*JPsi_2);
+    
+    double shx = (10*x[0]-37)/3;
+    Double_t BkgM = Nbkg*(1+cheb0*shx + cheb1*(2*shx*shx-1) + cheb2*(4*shx*shx*shx-3*shx));
 
-	double shx = (10*x[0]-37)/3;
-	Double_t BkgM = Nbkg*(1+cheb0*shx + cheb1*(2*shx*shx-1) + cheb2*(4*shx*shx*shx-3*shx));
-
-	return c*(SigM/(SigM+BkgM)) + (1 - SigM/(SigM+BkgM))*(c2 + c1*x[0]);
+    return c*(SigM/(SigM+BkgM)) + (1 - SigM/(SigM+BkgM))*(c2 + c1*x[0]);
 
 }
 //}}}
@@ -224,63 +207,57 @@ Double_t Totalvnpol1JPsi(Double_t* x, Double_t* par)
 //totalvn pol2 bkg Psi2S{{{
 Double_t Totalvnpol2JPsi(Double_t* x, Double_t* par)
 {
-	Double_t N1 = par[0];
-	Double_t Nbkg = par[1];
-	Double_t mean = par[2];
-	Double_t sigma = par[3];
-	Double_t alpha = par[4];
-	Double_t n = par[5];
-	Double_t ratio = par[6];
-	Double_t frac = par[7];
-	Double_t cheb0 = par[8];
-	Double_t cheb1 = par[9];
-	Double_t cheb2 = par[10];
-	Double_t c = par[11];
-	Double_t c1 = par[12];
-	Double_t c2 = par[13];
-	Double_t c3 = par[14];
+    Double_t N1 = par[0];
+    Double_t Nbkg = par[1];
+    Double_t mean = par[2];
+    Double_t sigma = par[3];
+    Double_t alpha = par[4];
+    Double_t n = par[5];
+    Double_t ratio = par[6];
+    Double_t frac = par[7];
+    Double_t cheb0 = par[8];
+    Double_t cheb1 = par[9];
+    Double_t cheb2 = par[10];
+    Double_t c = par[11];
+    Double_t c1 = par[12];
+    Double_t c2 = par[13];
+    Double_t c3 = par[14];
 
-	Double_t sigma1_2 = sigma*ratio;
+    Double_t sigma1_2 = sigma*ratio;
 
-	//t2 > t1
-	Double_t JPsi_t1 = (x[0]-mean)/sigma;
-	Double_t JPsi_t2 = (x[0]-mean)/sigma1_2;
-	if (alpha < 0)
-	{
-		cout << "ERROR ::: alpha variable negative!!!! " << endl;
-		return -1;
-	}
+    //t2 > t1
+    Double_t JPsi_t1 = (x[0]-mean)/sigma;
+    Double_t JPsi_t2 = (x[0]-mean)/sigma1_2;
+    if (alpha < 0)
+    {
+        cout << "ERROR ::: alpha variable negative!!!! " << endl;
+        return -1;
+    }
 
-	Double_t absAlpha = fabs((Double_t)alpha);
-	Double_t a = TMath::Power(n/absAlpha,n)*exp(-absAlpha*absAlpha/2.);
-	Double_t b = n/absAlpha - absAlpha;
+    Double_t absAlpha = fabs((Double_t)alpha);
+    Double_t a = TMath::Power(n/absAlpha,n)*exp(-absAlpha*absAlpha/2.);
+    Double_t b = n/absAlpha - absAlpha;
 
-	Double_t JPsi_1 = -1;
-	Double_t JPsi_2 = -1;
+    Double_t JPsi_1 = -1;
+    Double_t JPsi_2 = -1;
 
-	if(JPsi_t1 > -alpha){
-		JPsi_1 = exp(-JPsi_t1*JPsi_t1/2.);
-	}
-	else if(JPsi_t1 <= -alpha){
-		JPsi_1 = a*TMath::Power((b-JPsi_t1),-n);
-	}
+    if(JPsi_t1 > -alpha){
+        JPsi_1 = exp(-JPsi_t1*JPsi_t1/2.);
+    }
+    else if(JPsi_t1 <= -alpha){
+        JPsi_1 = a*TMath::Power((b-JPsi_t1),-n);
+    }
 
-	if(JPsi_t2 > -alpha){
-		JPsi_2 = exp(-JPsi_t2*JPsi_t2/2.);
-	}
-	else if(JPsi_t2 <= -alpha){
-		JPsi_2 = a*TMath::Power((b-JPsi_t2),-n);
-	}
-	Double_t fC = n/absAlpha*1/(n-1)*exp(-absAlpha*absAlpha/2);
-	Double_t fD = TMath::Sqrt(TMath::Pi()/2)*(1+TMath::Erf(absAlpha/TMath::Sqrt(2)));
-	Double_t fN_1 = 1./(sigma*(fC+fD));
-	Double_t fN_2 = 1./(sigma1_2*(fC+fD));
-	Double_t SigM = N1*(fN_1*frac*JPsi_1 + fN_2*(1-frac)*JPsi_2);
+    JPsi_2=1/(sigma1_2*TMath::Sqrt(2*TMath::Pi()))*exp(-0.5*JPsi_t2*JPsi_t2);
+    Double_t fC = n/absAlpha*1/(n-1)*exp(-absAlpha*absAlpha/2);
+    Double_t fD = TMath::Sqrt(TMath::Pi()/2)*(1+TMath::Erf(absAlpha/TMath::Sqrt(2)));
+    Double_t fN_1 = 1./(sigma*(fC+fD));
+    Double_t SigM = N1*(fN_1*frac*JPsi_1 + (1-frac)*JPsi_2);
 
-	double shx = (10*x[0]-37)/3;
-	Double_t BkgM = Nbkg*(1+cheb0*shx + cheb1*(2*shx*shx-1) + cheb2*(4*shx*shx*shx-3*shx));
+    double shx = (10*x[0]-37)/3;
+    Double_t BkgM = Nbkg*(1+cheb0*shx + cheb1*(2*shx*shx-1) + cheb2*(4*shx*shx*shx-3*shx));
 
-	return c*(SigM/(SigM+BkgM)) + (1 - SigM/(SigM+BkgM))*(c3 + c2*x[0] + c1*x[0]*x[0]);
+    return c*(SigM/(SigM+BkgM)) + (1 - SigM/(SigM+BkgM))*(c3 + c2*x[0] + c1*x[0]*x[0]);
 
 }
 //}}}
@@ -288,203 +265,185 @@ Double_t Totalvnpol2JPsi(Double_t* x, Double_t* par)
 //totalYieldBkg{{{
 Double_t TotalYieldBkg(Double_t* x, Double_t* par)
 {
-	Double_t Nbkg = par[0]; //Nuber of Bkg
-	Double_t cheb0 = par[1];
-	Double_t cheb1 = par[2];
-	Double_t cheb2 = par[3];
+    Double_t Nbkg = par[0]; //Nuber of Bkg
+    Double_t cheb0 = par[1];
+    Double_t cheb1 = par[2];
+    Double_t cheb2 = par[3];
 
-	double shx = (10*x[0]-37)/3;
-	Double_t BkgM = Nbkg*(1+cheb0*shx + cheb1*(2*shx*shx-1) + cheb2*(4*shx*shx*shx-3*shx));
+    double shx = (10*x[0]-37)/3;
+    Double_t BkgM = Nbkg*(1+cheb0*shx + cheb1*(2*shx*shx-1) + cheb2*(4*shx*shx*shx-3*shx));
 
-	return BkgM;
+    return BkgM;
 }
 
 
 //totalvn pol3 bkg Psi2S{{{
 Double_t Totalvnpol3JPsi(Double_t* x, Double_t* par)
 {
-	Double_t N1 = par[0];
-	Double_t Nbkg = par[1];
-	Double_t mean = par[2];
-	Double_t sigma = par[3];
-	Double_t alpha = par[4];
-	Double_t n = par[5];
-	Double_t ratio = par[6];
-	Double_t frac = par[7];
-	Double_t cheb0 = par[8];
-	Double_t cheb1 = par[9];
-	Double_t cheb2 = par[10];
-	Double_t c = par[11];
-	Double_t c1 = par[12];
-	Double_t c2 = par[13];
-	Double_t c3 = par[14];
-	Double_t c4 = par[15];
+    Double_t N1 = par[0];
+    Double_t Nbkg = par[1];
+    Double_t mean = par[2];
+    Double_t sigma = par[3];
+    Double_t alpha = par[4];
+    Double_t n = par[5];
+    Double_t ratio = par[6];
+    Double_t frac = par[7];
+    Double_t cheb0 = par[8];
+    Double_t cheb1 = par[9];
+    Double_t cheb2 = par[10];
+    Double_t c = par[11];
+    Double_t c1 = par[12];
+    Double_t c2 = par[13];
+    Double_t c3 = par[14];
+    Double_t c4 = par[15];
 
-	Double_t sigma1_2 = sigma*ratio;
+    Double_t sigma1_2 = sigma*ratio;
 
-	//t2 > t1
-	Double_t JPsi_t1 = (x[0]-mean)/sigma;
-	Double_t JPsi_t2 = (x[0]-mean)/sigma1_2;
-	if (alpha < 0)
-	{
-		cout << "ERROR ::: alpha variable negative!!!! " << endl;
-		return -1;
-	}
+    //t2 > t1
+    Double_t JPsi_t1 = (x[0]-mean)/sigma;
+    Double_t JPsi_t2 = (x[0]-mean)/sigma1_2;
+    if (alpha < 0)
+    {
+        cout << "ERROR ::: alpha variable negative!!!! " << endl;
+        return -1;
+    }
 
-	Double_t absAlpha = fabs((Double_t)alpha);
-	Double_t a = TMath::Power(n/absAlpha,n)*exp(-absAlpha*absAlpha/2.);
-	Double_t b = n/absAlpha - absAlpha;
+    Double_t absAlpha = fabs((Double_t)alpha);
+    Double_t a = TMath::Power(n/absAlpha,n)*exp(-absAlpha*absAlpha/2.);
+    Double_t b = n/absAlpha - absAlpha;
 
-	Double_t JPsi_1 = -1;
-	Double_t JPsi_2 = -1;
+    Double_t JPsi_1 = -1;
+    Double_t JPsi_2 = -1;
 
-	if(JPsi_t1 > -alpha){
-		JPsi_1 = exp(-JPsi_t1*JPsi_t1/2.);
-	}
-	else if(JPsi_t1 <= -alpha){
-		JPsi_1 = a*TMath::Power((b-JPsi_t1),-n);
-	}
+    if(JPsi_t1 > -alpha){
+        JPsi_1 = exp(-JPsi_t1*JPsi_t1/2.);
+    }
+    else if(JPsi_t1 <= -alpha){
+        JPsi_1 = a*TMath::Power((b-JPsi_t1),-n);
+    }
 
-	if(JPsi_t2 > -alpha){
-		JPsi_2 = exp(-JPsi_t2*JPsi_t2/2.);
-	}
-	else if(JPsi_t2 <= -alpha){
-		JPsi_2 = a*TMath::Power((b-JPsi_t2),-n);
-	}
-	Double_t fC = n/absAlpha*1/(n-1)*exp(-absAlpha*absAlpha/2);
-	Double_t fD = TMath::Sqrt(TMath::Pi()/2)*(1+TMath::Erf(absAlpha/TMath::Sqrt(2)));
-	Double_t fN_1 = 1./(sigma*(fC+fD));
-	Double_t fN_2 = 1./(sigma1_2*(fC+fD));
-	Double_t SigM = N1*(fN_1*frac*JPsi_1 + fN_2*(1-frac)*JPsi_2);
+    JPsi_2=1/(sigma1_2*TMath::Sqrt(2*TMath::Pi()))*exp(-0.5*JPsi_t2*JPsi_t2);
+    Double_t fC = n/absAlpha*1/(n-1)*exp(-absAlpha*absAlpha/2);
+    Double_t fD = TMath::Sqrt(TMath::Pi()/2)*(1+TMath::Erf(absAlpha/TMath::Sqrt(2)));
+    Double_t fN_1 = 1./(sigma*(fC+fD));
+    Double_t SigM = N1*(fN_1*frac*JPsi_1 + (1-frac)*JPsi_2);
 
-	double shx = (10*x[0]-37)/3;
-	Double_t BkgM = Nbkg*(1+cheb0*shx + cheb1*(2*shx*shx-1) + cheb2*(4*shx*shx*shx-3*shx));
+    double shx = (10*x[0]-37)/3;
+    Double_t BkgM = Nbkg*(1+cheb0*shx + cheb1*(2*shx*shx-1) + cheb2*(4*shx*shx*shx-3*shx));
 
-	return c*(SigM/(SigM+BkgM)) + (1 - SigM/(SigM+BkgM))*(c4 + c3*x[0] + c2*x[0]*x[0] + c1*x[0]*x[0]*x[0]);
+    return c*(SigM/(SigM+BkgM)) + (1 - SigM/(SigM+BkgM))*(c4 + c3*x[0] + c2*x[0]*x[0] + c1*x[0]*x[0]*x[0]);
 
 }
 //}}}
 
 Double_t vnPol1BkgAlpha(Double_t* x, Double_t* par)
 {
-	Double_t N1 = par[0];
-	Double_t Nbkg = par[1];
-	Double_t mean = par[2];
-	Double_t sigma = par[3];
-	Double_t alpha = par[4];
-	Double_t n = par[5];
-	Double_t ratio = par[6];
-	Double_t frac = par[7];
-	Double_t cheb0 = par[8];
-	Double_t cheb1 = par[9];
-	Double_t cheb2 = par[10];
-	Double_t c1 = par[11];
-	Double_t c2 = par[12];
-	Double_t c3 = par[13];
+    Double_t N1 = par[0];
+    Double_t Nbkg = par[1];
+    Double_t mean = par[2];
+    Double_t sigma = par[3];
+    Double_t alpha = par[4];
+    Double_t n = par[5];
+    Double_t ratio = par[6];
+    Double_t frac = par[7];
+    Double_t cheb0 = par[8];
+    Double_t cheb1 = par[9];
+    Double_t cheb2 = par[10];
+    Double_t c1 = par[11];
+    Double_t c2 = par[12];
+    Double_t c3 = par[13];
 
-	Double_t sigma1_2 = sigma*ratio;
+    Double_t sigma1_2 = sigma*ratio;
 
-	//t2 > t1
-	Double_t JPsi_t1 = (x[0]-mean)/sigma;
-	Double_t JPsi_t2 = (x[0]-mean)/sigma1_2;
-	if (alpha < 0)
-	{
-		cout << "ERROR ::: alpha variable negative!!!! " << endl;
-		return -1;
-	}
+    //t2 > t1
+    Double_t JPsi_t1 = (x[0]-mean)/sigma;
+    Double_t JPsi_t2 = (x[0]-mean)/sigma1_2;
+    if (alpha < 0)
+    {
+        cout << "ERROR ::: alpha variable negative!!!! " << endl;
+        return -1;
+    }
 
-	Double_t absAlpha = fabs((Double_t)alpha);
-	Double_t a = TMath::Power(n/absAlpha,n)*exp(-absAlpha*absAlpha/2.);
-	Double_t b = n/absAlpha - absAlpha;
+    Double_t absAlpha = fabs((Double_t)alpha);
+    Double_t a = TMath::Power(n/absAlpha,n)*exp(-absAlpha*absAlpha/2.);
+    Double_t b = n/absAlpha - absAlpha;
 
-	Double_t JPsi_1 = -1;
-	Double_t JPsi_2 = -1;
+    Double_t JPsi_1 = -1;
+    Double_t JPsi_2 = -1;
 
-	if(JPsi_t1 > -alpha){
-		JPsi_1 = exp(-JPsi_t1*JPsi_t1/2.);
-	}
-	else if(JPsi_t1 <= -alpha){
-		JPsi_1 = a*TMath::Power((b-JPsi_t1),-n);
-	}
+    if(JPsi_t1 > -alpha){
+        JPsi_1 = exp(-JPsi_t1*JPsi_t1/2.);
+    }
+    else if(JPsi_t1 <= -alpha){
+        JPsi_1 = a*TMath::Power((b-JPsi_t1),-n);
+    }
 
-	if(JPsi_t2 > -alpha){
-		JPsi_2 = exp(-JPsi_t2*JPsi_t2/2.);
-	}
-	else if(JPsi_t2 <= -alpha){
-		JPsi_2 = a*TMath::Power((b-JPsi_t2),-n);
-	}
-	Double_t fC = n/absAlpha*1/(n-1)*exp(-absAlpha*absAlpha/2);
-	Double_t fD = TMath::Sqrt(TMath::Pi()/2)*(1+TMath::Erf(absAlpha/TMath::Sqrt(2)));
-	Double_t fN_1 = 1./(sigma*(fC+fD));
-	Double_t fN_2 = 1./(sigma1_2*(fC+fD));
-	Double_t SigM = N1*(fN_1*frac*JPsi_1 + fN_2*(1-frac)*JPsi_2);
+    JPsi_2=1/(sigma1_2*TMath::Sqrt(2*TMath::Pi()))*exp(-0.5*JPsi_t2*JPsi_t2);
+    Double_t fC = n/absAlpha*1/(n-1)*exp(-absAlpha*absAlpha/2);
+    Double_t fD = TMath::Sqrt(TMath::Pi()/2)*(1+TMath::Erf(absAlpha/TMath::Sqrt(2)));
+    Double_t fN_1 = 1./(sigma*(fC+fD));
+    Double_t SigM = N1*(fN_1*frac*JPsi_1 + (1-frac)*JPsi_2);
 
-	double shx = (10*x[0]-37)/3;
-	Double_t BkgM = Nbkg*(1+cheb0*shx + cheb1*(2*shx*shx-1) + cheb2*(4*shx*shx*shx-3*shx));
+    double shx = (10*x[0]-37)/3;
+    Double_t BkgM = Nbkg*(1+cheb0*shx + cheb1*(2*shx*shx-1) + cheb2*(4*shx*shx*shx-3*shx));
 
-	return (1 - SigM/(SigM+BkgM))*(c2 + c1*x[0]);
+    return (1 - SigM/(SigM+BkgM))*(c2 + c1*x[0]);
 
 }
 
 //totalvn pol2 bkg Psi2S * (1-alpha){{{
 Double_t vnPol2BkgAlpha(Double_t* x, Double_t* par)
 {
-	Double_t N1 = par[0];
-	Double_t Nbkg = par[1];
-	Double_t mean = par[2];
-	Double_t sigma = par[3];
-	Double_t alpha = par[4];
-	Double_t n = par[5];
-	Double_t ratio = par[6];
-	Double_t frac = par[7];
-	Double_t cheb0 = par[8];
-	Double_t cheb1 = par[9];
-	Double_t cheb2 = par[10];
-	Double_t c1 = par[11];
-	Double_t c2 = par[12];
-	Double_t c3 = par[13];
+    Double_t N1 = par[0];
+    Double_t Nbkg = par[1];
+    Double_t mean = par[2];
+    Double_t sigma = par[3];
+    Double_t alpha = par[4];
+    Double_t n = par[5];
+    Double_t ratio = par[6];
+    Double_t frac = par[7];
+    Double_t cheb0 = par[8];
+    Double_t cheb1 = par[9];
+    Double_t cheb2 = par[10];
+    Double_t c1 = par[11];
+    Double_t c2 = par[12];
+    Double_t c3 = par[13];
 
-	Double_t sigma1_2 = sigma*ratio;
+    Double_t sigma1_2 = sigma*ratio;
 
-	//t2 > t1
-	Double_t JPsi_t1 = (x[0]-mean)/sigma;
-	Double_t JPsi_t2 = (x[0]-mean)/sigma1_2;
-	if (alpha < 0)
-	{
-		cout << "ERROR ::: alpha variable negative!!!! " << endl;
-		return -1;
-	}
+    //t2 > t1
+    Double_t JPsi_t1 = (x[0]-mean)/sigma;
+    Double_t JPsi_t2 = (x[0]-mean)/sigma1_2;
+    if (alpha < 0)
+    {
+        cout << "ERROR ::: alpha variable negative!!!! " << endl;
+        return -1;
+    }
 
-	Double_t absAlpha = fabs((Double_t)alpha);
-	Double_t a = TMath::Power(n/absAlpha,n)*exp(-absAlpha*absAlpha/2.);
-	Double_t b = n/absAlpha - absAlpha;
+    Double_t absAlpha = fabs((Double_t)alpha);
+    Double_t a = TMath::Power(n/absAlpha,n)*exp(-absAlpha*absAlpha/2.);
+    Double_t b = n/absAlpha - absAlpha;
 
-	Double_t JPsi_1 = -1;
-	Double_t JPsi_2 = -1;
+    Double_t JPsi_1 = -1;
+    Double_t JPsi_2 = -1;
 
-	if(JPsi_t1 > -alpha){
-		JPsi_1 = exp(-JPsi_t1*JPsi_t1/2.);
-	}
-	else if(JPsi_t1 <= -alpha){
-		JPsi_1 = a*TMath::Power((b-JPsi_t1),-n);
-	}
+    if(JPsi_t1 > -alpha){
+        JPsi_1 = exp(-JPsi_t1*JPsi_t1/2.);
+    }
+    else if(JPsi_t1 <= -alpha){
+        JPsi_1 = a*TMath::Power((b-JPsi_t1),-n);
+    }
 
-	if(JPsi_t2 > -alpha){
-		JPsi_2 = exp(-JPsi_t2*JPsi_t2/2.);
-	}
-	else if(JPsi_t2 <= -alpha){
-		JPsi_2 = a*TMath::Power((b-JPsi_t2),-n);
-	}
-	Double_t fC = n/absAlpha*1/(n-1)*exp(-absAlpha*absAlpha/2);
-	Double_t fD = TMath::Sqrt(TMath::Pi()/2)*(1+TMath::Erf(absAlpha/TMath::Sqrt(2)));
-	Double_t fN_1 = 1./(sigma*(fC+fD));
-	Double_t fN_2 = 1./(sigma1_2*(fC+fD));
-	Double_t SigM = N1*(fN_1*frac*JPsi_1 + fN_2*(1-frac)*JPsi_2);
+    JPsi_2=1/(sigma1_2*TMath::Sqrt(2*TMath::Pi()))*exp(-0.5*JPsi_t2*JPsi_t2);
+    Double_t fC = n/absAlpha*1/(n-1)*exp(-absAlpha*absAlpha/2);
+    Double_t fD = TMath::Sqrt(TMath::Pi()/2)*(1+TMath::Erf(absAlpha/TMath::Sqrt(2)));
+    Double_t fN_1 = 1./(sigma*(fC+fD));
+    Double_t SigM = N1*(fN_1*frac*JPsi_1 + (1-frac)*JPsi_2);
 
-	double shx = (10*x[0]-37)/3;
-	Double_t BkgM = Nbkg*(1+cheb0*shx + cheb1*(2*shx*shx-1) + cheb2*(4*shx*shx*shx-3*shx));
+    double shx = (10*x[0]-37)/3;
+    Double_t BkgM = Nbkg*(1+cheb0*shx + cheb1*(2*shx*shx-1) + cheb2*(4*shx*shx*shx-3*shx));
 
-	return (1 - SigM/(SigM+BkgM))*(c3 + c2*x[0] + c1*x[0]*x[0]);
+    return (1 - SigM/(SigM+BkgM))*(c3 + c2*x[0] + c1*x[0]*x[0]);
 
 }
 //}}}
@@ -492,62 +451,57 @@ Double_t vnPol2BkgAlpha(Double_t* x, Double_t* par)
 //totalvn pol3 bkg Psi2S * (1-alpha){{{
 Double_t vnPol3BkgAlpha(Double_t* x, Double_t* par)
 {
-	Double_t N1 = par[0];
-	Double_t Nbkg = par[1];
-	Double_t mean = par[2];
-	Double_t sigma = par[3];
-	Double_t alpha = par[4];
-	Double_t n = par[5];
-	Double_t ratio = par[6];
-	Double_t frac = par[7];
-	Double_t cheb0 = par[8];
-	Double_t cheb1 = par[9];
-	Double_t cheb2 = par[10];
-	Double_t c1 = par[11];
-	Double_t c2 = par[12];
-	Double_t c3 = par[13];
-	Double_t c4 = par[14];
+    Double_t N1 = par[0];
+    Double_t Nbkg = par[1];
+    Double_t mean = par[2];
+    Double_t sigma = par[3];
+    Double_t alpha = par[4];
+    Double_t n = par[5];
+    Double_t ratio = par[6];
+    Double_t frac = par[7];
+    Double_t cheb0 = par[8];
+    Double_t cheb1 = par[9];
+    Double_t cheb2 = par[10];
+    Double_t c1 = par[11];
+    Double_t c2 = par[12];
+    Double_t c3 = par[13];
+    Double_t c4 = par[14];
 
-	Double_t sigma1_2 = sigma*ratio;
+    Double_t sigma1_2 = sigma*ratio;
 
-	//t2 > t1
-	Double_t JPsi_t1 = (x[0]-mean)/sigma;
-	Double_t JPsi_t2 = (x[0]-mean)/sigma1_2;
-	if (alpha < 0)
-	{
-		cout << "ERROR ::: alpha variable negative!!!! " << endl;
-		return -1;
-	}
+    //t2 > t1
+    Double_t JPsi_t1 = (x[0]-mean)/sigma;
+    Double_t JPsi_t2 = (x[0]-mean)/sigma1_2;
+    if (alpha < 0)
+    {
+        cout << "ERROR ::: alpha variable negative!!!! " << endl;
+        return -1;
+    }
 
-	Double_t absAlpha = fabs((Double_t)alpha);
-	Double_t a = TMath::Power(n/absAlpha,n)*exp(-absAlpha*absAlpha/2.);
-	Double_t b = n/absAlpha - absAlpha;
+    Double_t absAlpha = fabs((Double_t)alpha);
+    Double_t a = TMath::Power(n/absAlpha,n)*exp(-absAlpha*absAlpha/2.);
+    Double_t b = n/absAlpha - absAlpha;
 
-	Double_t JPsi_1 = -1;
-	Double_t JPsi_2 = -1;
+    Double_t JPsi_1 = -1;
+    Double_t JPsi_2 = -1;
 
-	if(JPsi_t1 > -alpha){
-		JPsi_1 = exp(-JPsi_t1*JPsi_t1/2.);
-	}
-	else if(JPsi_t1 <= -alpha){
-		JPsi_1 = a*TMath::Power((b-JPsi_t1),-n);
-	}
+    if(JPsi_t1 > -alpha){
+        JPsi_1 = exp(-JPsi_t1*JPsi_t1/2.);
+    }
+    else if(JPsi_t1 <= -alpha){
+        JPsi_1 = a*TMath::Power((b-JPsi_t1),-n);
+    }
 
-	if(JPsi_t2 > -alpha){
-		JPsi_2 = exp(-JPsi_t2*JPsi_t2/2.);
-	}
-	else if(JPsi_t2 <= -alpha){
-		JPsi_2 = a*TMath::Power((b-JPsi_t2),-n);
-	}
-	Double_t fC = n/absAlpha*1/(n-1)*exp(-absAlpha*absAlpha/2);
-	Double_t fD = TMath::Sqrt(TMath::Pi()/2)*(1+TMath::Erf(absAlpha/TMath::Sqrt(2)));
-	Double_t fN_1 = 1./(sigma*(fC+fD));
-	Double_t fN_2 = 1./(sigma1_2*(fC+fD));
-	Double_t SigM = N1*(fN_1*frac*JPsi_1 + fN_2*(1-frac)*JPsi_2);
-	double shx = (10*x[0]-37)/3;
-	Double_t BkgM = Nbkg*(1+cheb0*shx + cheb1*(2*shx*shx-1) + cheb2*(4*shx*shx*shx-3*shx));
+    JPsi_2=1/(sigma1_2*TMath::Sqrt(2*TMath::Pi()))*exp(-0.5*JPsi_t2*JPsi_t2);
+    Double_t fC = n/absAlpha*1/(n-1)*exp(-absAlpha*absAlpha/2);
+    Double_t fD = TMath::Sqrt(TMath::Pi()/2)*(1+TMath::Erf(absAlpha/TMath::Sqrt(2)));
+    Double_t fN_1 = 1./(sigma*(fC+fD));
+    Double_t SigM = N1*(fN_1*frac*JPsi_1 + (1-frac)*JPsi_2);
+    
+    double shx = (10*x[0]-37)/3;
+    Double_t BkgM = Nbkg*(1+cheb0*shx + cheb1*(2*shx*shx-1) + cheb2*(4*shx*shx*shx-3*shx));
 
-	return (1 - SigM/(SigM+BkgM))*(c4 + c3*x[0] + c2*x[0]*x[0] + c1*x[0]*x[0]*x[0]);
+    return (1 - SigM/(SigM+BkgM))*(c4 + c3*x[0] + c2*x[0]*x[0] + c1*x[0]*x[0]*x[0]);
 
 }
 //}}}
@@ -555,58 +509,53 @@ Double_t vnPol3BkgAlpha(Double_t* x, Double_t* par)
 //Alpha Funct{{{
 Double_t alphaFunct(Double_t* x, Double_t* par)
 {
-	Double_t N1 = par[0];
-	Double_t Nbkg = par[1];
-	Double_t mean = par[2];
-	Double_t sigma = par[3];
-	Double_t alpha = par[4];
-	Double_t n = par[5];
-	Double_t ratio = par[6];
-	Double_t frac = par[7];
-	Double_t cheb0 = par[8];
-	Double_t cheb1 = par[9];
-	Double_t cheb2 = par[10];
-	Double_t sigma1_2 = sigma*ratio;
+    Double_t N1 = par[0];
+    Double_t Nbkg = par[1];
+    Double_t mean = par[2];
+    Double_t sigma = par[3];
+    Double_t alpha = par[4];
+    Double_t n = par[5];
+    Double_t ratio = par[6];
+    Double_t frac = par[7];
+    Double_t cheb0 = par[8];
+    Double_t cheb1 = par[9];
+    Double_t cheb2 = par[10];
+    Double_t sigma1_2 = sigma*ratio;
 
-	//t2 > t1
-	Double_t JPsi_t1 = (x[0]-mean)/sigma;
-	Double_t JPsi_t2 = (x[0]-mean)/sigma1_2;
-	if (alpha < 0)
-	{
+    //t2 > t1
+    Double_t JPsi_t1 = (x[0]-mean)/sigma;
+    Double_t JPsi_t2 = (x[0]-mean)/sigma1_2;
+    if (alpha < 0)
+    {
 
-		cout << "ERROR ::: alpha variable negative!!!! " << endl;
-		return -1;
-	}
+        cout << "ERROR ::: alpha variable negative!!!! " << endl;
+        return -1;
+    }
 
-	Double_t absAlpha = fabs((Double_t)alpha);
-	Double_t a = TMath::Power(n/absAlpha,n)*exp(-absAlpha*absAlpha/2.);
-	Double_t b = n/absAlpha - absAlpha;
+    Double_t absAlpha = fabs((Double_t)alpha);
+    Double_t a = TMath::Power(n/absAlpha,n)*exp(-absAlpha*absAlpha/2.);
+    Double_t b = n/absAlpha - absAlpha;
 
-	Double_t JPsi_1 = -1;
-	Double_t JPsi_2 = -1;
+    Double_t JPsi_1 = -1;
+    Double_t JPsi_2 = -1;
 
-	if(JPsi_t1 > -alpha){
-		JPsi_1 = exp(-JPsi_t1*JPsi_t1/2.);
-	}
-	else if(JPsi_t1 <= -alpha){
-		JPsi_1 = a*TMath::Power((b-JPsi_t1),-n);
-	}
+    if(JPsi_t1 > -alpha){
+        JPsi_1 = exp(-JPsi_t1*JPsi_t1/2.);
+    }
+    else if(JPsi_t1 <= -alpha){
+        JPsi_1 = a*TMath::Power((b-JPsi_t1),-n);
+    }
 
-	if(JPsi_t2 > -alpha){
-		JPsi_2 = exp(-JPsi_t2*JPsi_t2/2.);
-	}
-	else if(JPsi_t2 <= -alpha){
-		JPsi_2 = a*TMath::Power((b-JPsi_t2),-n);
-	}
-	Double_t fC = n/absAlpha*1/(n-1)*exp(-absAlpha*absAlpha/2);
-	Double_t fD = TMath::Sqrt(TMath::Pi()/2)*(1+TMath::Erf(absAlpha/TMath::Sqrt(2)));
-	Double_t fN_1 = 1./(sigma*(fC+fD));
-	Double_t fN_2 = 1./(sigma1_2*(fC+fD));
-	Double_t SigM = N1*(fN_1*frac*JPsi_1 + fN_2*(1-frac)*JPsi_2);
-	double shx = (10*x[0]-37)/3;
-	Double_t BkgM = Nbkg*(1+cheb0*shx + cheb1*(2*shx*shx-1) + cheb2*(4*shx*shx*shx-3*shx));
+    JPsi_2=1/(sigma1_2*TMath::Sqrt(2*TMath::Pi()))*exp(-0.5*JPsi_t2*JPsi_t2);
+    Double_t fC = n/absAlpha*1/(n-1)*exp(-absAlpha*absAlpha/2);
+    Double_t fD = TMath::Sqrt(TMath::Pi()/2)*(1+TMath::Erf(absAlpha/TMath::Sqrt(2)));
+    Double_t fN_1 = 1./(sigma*(fC+fD));
+    Double_t SigM = N1*(fN_1*frac*JPsi_1 + (1-frac)*JPsi_2);
+    
+    double shx = (10*x[0]-37)/3;
+    Double_t BkgM = Nbkg*(1+cheb0*shx + cheb1*(2*shx*shx-1) + cheb2*(4*shx*shx*shx-3*shx));
 
-	return (SigM/(SigM+BkgM)); 
+    return (SigM/(SigM+BkgM));
 
 }
 //}}}
@@ -614,10 +563,10 @@ Double_t alphaFunct(Double_t* x, Double_t* par)
 //pol1 bkg{{{
 Double_t pol1bkg(Double_t* x, Double_t* par)
 {
-	Double_t c1 = par[0];
-	Double_t c2 = par[1];
+    Double_t c1 = par[0];
+    Double_t c2 = par[1];
 
-	return c1*x[0]+c2;
+    return c1*x[0]+c2;
 }
 //}}}
 
@@ -625,33 +574,33 @@ Double_t pol1bkg(Double_t* x, Double_t* par)
 //pol2 bkg{{{
 Double_t pol2bkg(Double_t* x, Double_t* par)
 {
-	Double_t c1 = par[0];
-	Double_t c2 = par[1];
-	Double_t c3 = par[2];
+    Double_t c1 = par[0];
+    Double_t c2 = par[1];
+    Double_t c3 = par[2];
 
-	return c1*x[0]*x[0]+c2*x[0]+c3;
+    return c1*x[0]*x[0]+c2*x[0]+c3;
 }
 //}}}
 
 //pol2 bkg{{{
 Double_t pol3bkg(Double_t* x, Double_t* par)
 {
-	Double_t c1 = par[0];
-	Double_t c2 = par[1];
-	Double_t c3 = par[2];
-	Double_t c4 = par[3];
+    Double_t c1 = par[0];
+    Double_t c2 = par[1];
+    Double_t c3 = par[2];
+    Double_t c4 = par[3];
 
-	return c1*x[0]*x[0]*x[0]+c2*x[0]*x[0]+c3*x[0] + c4;
+    return c1*x[0]*x[0]*x[0]+c2*x[0]*x[0]+c3*x[0] + c4;
 }
 //}}}
 
-void doSim_pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
+void signal_systematic_doSim_pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
 		float ptLow =  6.5, float ptHigh = 50.0,
 		float yLow = 0.0, float yHigh = 2.4,
-		float SiMuPtCut = 0, float massLow = 3.3, float massHigh =4.3, bool dimusign=true, 
+		float SiMuPtCut = 0, float massLow = 3.3, float massHigh =4.1, bool dimusign=true, 
 		int ibkg_vn_sel = fpol1, bool fixSigPar=true)
 {
-    TString DATE = "210927";
+    TString DATE = "210928";
     gSystem->mkdir(Form("roots/%s",DATE.Data()),kTRUE);
     gSystem->mkdir(Form("figs/%s",DATE.Data()),kTRUE);
     
@@ -686,11 +635,11 @@ void doSim_pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
 
 	//Get yield distribution{{{
 	//TFile* rf = new TFile(Form("roots/v2mass_hist/Psi2S_NonPrompt_%s.root",kineLabel.Data()),"read");
-	TFile* rf = new TFile(Form("../make_v2_mass_hist/roots/Psi2S_Prompt_%s_Eff1_Acc1_PtW1_TnP1.root",kineLabel.Data()),"read");
+    TFile* rf = new TFile(Form("../make_v2_mass_hist/roots/Psi2S_Prompt_%s_Eff1_Acc1_PtW1_TnP1.root",kineLabel.Data()),"read");
 	TH1D* h_v2_SplusB = (TH1D*) rf->Get("h_v2_SplusB");
 	TGraphAsymmErrors* g_mass = (TGraphAsymmErrors*) rf->Get("g_mass");
 
-	TFile *wf = new TFile(Form("roots/%s/SimFitResult_Prompt_%s.root",DATE.Data(),kineLabel.Data()),"recreate");
+    TFile *wf = new TFile(Form("roots/%s/SimFitResult_Prompt_%s.root",DATE.Data(),kineLabel.Data()),"recreate");
 
 	//define function for simultaneous fitting{{{
 	TF1* fmass_total = new TF1("fmass_total", TotalYield, massLow, massHigh, nParmM);
@@ -731,7 +680,7 @@ void doSim_pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
 	//}}}
 
 	TString kineLabel_ = getKineLabel (ptLow, ptHigh, yLow, yHigh, SiMuPtCut, cLow, cHigh) ;
-	TFile* f_mass = new TFile(Form("../MassFit/data_fit/roots/MassFitResult_%s_PRw_Effw1_Accw1_PtW1_TnP1.root",kineLabel_.Data()),"read");
+    TFile* f_mass = new TFile(Form("../MassFit/data_fit/roots/MassFitResult_%s_PRw_Effw1_Accw1_PtW1_TnP1.root",kineLabel_.Data()),"read");
 	RooWorkspace *ws = new RooWorkspace("workspace");
 	RooDataSet *datasetMass = (RooDataSet*)f_mass->Get("datasetMass");
 	ws->import(*datasetMass);
@@ -750,25 +699,22 @@ void doSim_pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
     Double_t cheb0_ = ws->var("sl1")->getVal();
     Double_t cheb1_ = ws->var("sl2")->getVal();
     Double_t cheb2_ = ws->var("sl3")->getVal();
-	//Double_t cheb0_ = 0.0426;
-	//Double_t cheb1_ = 0.0535;
-	//Double_t cheb2_ = 0.0226;
-	Double_t c_  = 0.150;
-	Double_t c1_ = 0.0010;
-	Double_t c2_ = 0.0006;
+	Double_t c_  = 0.0160;
+	Double_t c1_ = 0.00310;
+	Double_t c2_ = 0.00406;
 
 	// Double_t cheb0_ = 0.0426;
 	// Double_t cheb1_ = 0.0535;
 	// Double_t cheb2_ = 0.0226;
-	// Double_t c_  = 0.050;
+	// Double_t c_  = 0.150;
 	// Double_t c1_ = 0.0010;
 	// Double_t c2_ = 0.0006;
+
+
+
 	//}}}
-
-
 	Double_t c3_ = 3.0210;
 	Double_t c4_ = -0.0010;
-
 
 	std::cout << "----- OK? ------" << std::endl;
 	Double_t par0[nParmV];
@@ -867,7 +813,7 @@ void doSim_pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
 	for(int iparm=0;iparm<nprm_alpha; iparm++){
 		fAlpha->FixParameter(iparm,fvn_simul->GetParameter(iparm));
 	}
-	h_v2_SplusB->GetListOfFunctions()->Add(fAlpha);
+	//h_v2_SplusB->GetListOfFunctions()->Add(fAlpha);
 	//}}}
 
 
@@ -1043,7 +989,7 @@ void doSim_pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
 	leg2->SetTextSize(0.05);
 	leg2->AddEntry(fvn_simul,"v_{2}^{S+B}","l");
 	leg2->AddEntry(fvn_bkg,"v_{2}^{B}","l");
-	leg2->AddEntry(fAlpha,"#alpha","l");
+	//leg2->AddEntry(fAlpha,"#alpha","l");
 	leg2->Draw("same");
 
 	CMS_lumi_v2mass(pad1,iPeriod,iPos);  

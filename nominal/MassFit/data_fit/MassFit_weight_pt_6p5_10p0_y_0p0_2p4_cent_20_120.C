@@ -30,7 +30,7 @@ void MassFit_weight_pt_6p5_10p0_y_0p0_2p4_cent_20_120(
 		int PRw=1, bool fEffW = true, bool fAccW = true, bool isPtW = true, bool isTnP = true
 		)
 {
-    TString DATE = "210922_with_MC_mass_fixed";
+    TString DATE = "210928";
     gStyle->SetEndErrorSize(0);
     gSystem->mkdir(Form("roots/%s",DATE.Data()),kTRUE);
     gSystem->mkdir(Form("figs/%s",DATE.Data()),kTRUE);
@@ -60,7 +60,7 @@ void MassFit_weight_pt_6p5_10p0_y_0p0_2p4_cent_20_120(
 	RooMsgService::instance().setGlobalKillBelow(ERROR);
 	RooMsgService::instance().setSilentMode(true);
 
-	TFile* f1 = new TFile("../../make_RooDataSet/roots/OniaRooDataSet_isMC0_pt_6.5_10.0_y_0.0_2.4_Cent_20_120_CtauCtu_0.0285_wPt1_wAccPt1_wTnPPR1_Psi_2S_20210831.root","read");
+	TFile* f1 = new TFile("../../make_RooDataSet/roots/OniaRooDataSet_isMC0_pt_6.5_10.0_y_0.0_2.4_Cent_20_120_CtauCtu_0.0285_wPt1_wAccPt1_wTnPPR1_Psi_2S_210928.root","read");
 	//###TFile* f1 = new TFile(Form("../make_RooDataSet/roots/OniaRooDataSet_isMC0_Psi2S_PRw_Effw1_Accw1_PtW1_TnP1_20210604.root"));
 	// TFile* f1 = new TFile(Form("../data/OniaRooDataSet_isMC0_JPsi_%sw_Effw%d_Accw%d_PtW%d_TnP%d_20210111.root",fname.Data(),fEffW,fAccW,isPtW,isTnP));
 
@@ -70,8 +70,10 @@ void MassFit_weight_pt_6p5_10p0_y_0p0_2p4_cent_20_120(
 	// fname.Data(),fEffW,fAccW,isPtW,isTnP) << endl;
 	// exit(0);
 
-	TString kineCut;
-	kineCut = Form("pt>%.2f && pt<%.2f && abs(y)>%.2f && abs(y)<%.2f && mass>3.4 && mass<4.0 && cBin>=%d && cBin<%d",ptLow, ptHigh, yLow, yHigh, cLow, cHigh);
+    double massLow = 3.3;
+    double massHigh = 4.1;
+    TString kineCut;
+    kineCut = Form("pt>%.2f && pt<%.2f && abs(y)>%.2f && abs(y)<%.2f && mass>%.2f && mass<%.2f && cBin>=%d && cBin<%d",ptLow, ptHigh, yLow, yHigh,massLow,massHigh,cLow, cHigh);
 
 	TString accCut = "( ((abs(eta1) <= 1.2) && (pt1 >=3.5)) || ((abs(eta2) <= 1.2) && (pt2 >=3.5)) || ((abs(eta1) > 1.2) && (abs(eta1) <= 2.1) && (pt1 >= 5.47-1.89*(abs(eta1)))) || ((abs(eta2) > 1.2)  && (abs(eta2) <= 2.1) && (pt2 >= 5.47-1.89*(abs(eta2)))) || ((abs(eta1) > 2.1) && (abs(eta1) <= 2.4) && (pt1 >= 1.5)) || ((abs(eta2) > 2.1)  && (abs(eta2) <= 2.4) && (pt2 >= 1.5)) ) &&";//2018 acceptance cut
 
@@ -107,13 +109,13 @@ void MassFit_weight_pt_6p5_10p0_y_0p0_2p4_cent_20_120(
     double paramslower[8] = {0,   0,     0, 0, 0.0,     -5.0};
     
 	//SIGNAL: initial params
-	double sigma_1_init = 0.035;
+	double sigma_1_init = 0.033;
     double x_init = 1.9033;
     double alpha_1_init = 1.9153;
     double n_1_init = 1.6136;
-	double f_init = 0.53;
-    double sl1_mean = 0.40, sl2_mean = 0.33, sl3_mean = 0.22;
-    double N_Jpsi_high = 18000, N_Bkg_high = 390000;
+	double f_init = 0.68;
+    double sl1_mean = 0.30, sl2_mean = 0.53, sl3_mean = 0.32;
+    double N_Jpsi_high = 21000, N_Bkg_high = 700000;
 	double m_lambda_init = 5;
 
     double psi_2S_mass = pdgMass.Psi2S;
@@ -195,15 +197,14 @@ void MassFit_weight_pt_6p5_10p0_y_0p0_2p4_cent_20_120(
 	Yup = YMax*TMath::Power((YMax/YMin), (0.4/(1.0-0.1-0.4)));
 	myPlot2_A->GetYaxis()->SetRangeUser(Ydown,Yup);
 
-	//myPlot2_A->SetMinimum(2*10);
 	myPlot2_A->GetXaxis()->SetLabelSize(0);
 	myPlot2_A->GetXaxis()->SetTitleSize(0);
 	myPlot2_A->GetXaxis()->CenterTitle();
 	myPlot2_A->GetXaxis()->SetRangeUser(massLow,massHigh);
 	myPlot2_A->GetXaxis()->SetTitle("m_{#mu^{+}#mu^{-}} (GeV/c^{2})");
 //###
-	myPlot2_A->SetMinimum(8000);
-	myPlot2_A->SetMaximum(20000);
+	// myPlot2_A->SetMinimum(8000);
+	myPlot2_A->SetMaximum(30000);
 
 	myPlot2_A->Draw();
 

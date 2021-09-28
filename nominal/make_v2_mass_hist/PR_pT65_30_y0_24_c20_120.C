@@ -40,7 +40,7 @@ void PR_pT65_30_y0_24_c20_120(
 {
 	//Basic Setting
 	gStyle->SetOptStat(0);
-	TString DATE="210920";
+	TString DATE="210928";
 	gStyle->SetEndErrorSize(0);
     gSystem->mkdir(Form("figs/%s",DATE.Data()), kTRUE);
     gSystem->mkdir(Form("roots/%s",DATE.Data()), kTRUE);
@@ -99,8 +99,8 @@ void PR_pT65_30_y0_24_c20_120(
 	//Get Correction histograms
 	bool isTnP = true;
 	bool isPtW = true;
-	TFile *fEff1 = new TFile(Form("../../primary_inputs/mc_eff_vs_pt_cent_0_to_20_rap_%s_pbpb_psi2S_PtW%d_tnp%d.root",wName.Data(),isPtW,isTnP),"read");
-	TFile *fEff2 = new TFile(Form("../../primary_inputs/mc_eff_vs_pt_cent_20_to_120_rap_%s_pbpb_psi2S_PtW%d_tnp%d.root",wName.Data(),isPtW,isTnP),"read");
+	TFile *fEff1 = new TFile(Form("../../primary_inputs/mc_eff_vs_pt_cent_0_to_20_rap_%s_pbpb_psi2S_PtW%d_tnp%d_2107.root",wName.Data(),isPtW,isTnP),"read");
+	TFile *fEff2 = new TFile(Form("../../primary_inputs/mc_eff_vs_pt_cent_20_to_120_rap_%s_pbpb_psi2S_PtW%d_tnp%d_2107.root",wName.Data(),isPtW,isTnP),"read");
 	TH1D* hEffPt1[4];
 	hEffPt1[0] = (TH1D*) fEff1 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy0_1p2",isTnP,isPtW));
 	hEffPt1[1] = (TH1D*) fEff1 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy1p2_1p6",isTnP,isPtW));
