@@ -25,7 +25,7 @@ double getAccWeight(TH1D* h = 0, double pt = 0);
 double getEffWeight(TH1D* h = 0, double pt = 0);
 void GetHistSqrt(TH1D* h1 =0, TH1D* h2=0);
 
-void data_RooDataSet_20210831(
+void data_RooDataSet(
 		double ptLow = 6.5, double ptHigh = 10,
 		double yLow = 0, double yHigh = 2.4,
 		int cLow = 20, int cHigh = 120,
@@ -35,7 +35,7 @@ void data_RooDataSet_20210831(
 		bool fAccW = true, bool fEffW = true, 
 		int state=1) //state 0: inclusive, state 1: Prompt, state 2: NonPrompt
 {
-    TString DATE = "210920";
+    TString DATE = "210928";
      
   //Basic Setting
   gStyle->SetOptStat(0);
@@ -50,8 +50,8 @@ void data_RooDataSet_20210831(
   else if (state==2) {bCont = "nprompt"; outName="NP"; }
   else if (state==0) {outName="Inclusive"; }
 
-  double massLow = 3.4;
-  double massHigh = 4.0;
+  double massLow = 3.3;
+  double massHigh = 4.1;
  
   //READ Input Skimmed File
   TFile *rf;
@@ -67,8 +67,8 @@ void data_RooDataSet_20210831(
   
   //Get Correction histograms
 //  TFile *fEff = new TFile(Form("/home/deathold/work/CMS/analysis/Upsilon_v2/UpsilonPbPb2018_v2/Efficiency/mc_eff_vs_pt_TnP%d_PtW1_OfficialMC_Y%dS_muPtCut3.5.root",isTnP,state),"read");
-  TFile *fEff1 = new TFile(Form("../../primary_inputs/mc_eff_vs_pt_cent_0_to_20_rap_%s_pbpb_psi2S_PtW%d_tnp%d.root",bCont.Data(),isPtW,isTnP),"read");
-  TFile *fEff2 = new TFile(Form("../../primary_inputs/mc_eff_vs_pt_cent_20_to_120_rap_%s_pbpb_psi2S_PtW%d_tnp%d.root",bCont.Data(),isPtW,isTnP),"read");
+  TFile *fEff1 = new TFile(Form("../../primary_inputs/mc_eff_vs_pt_cent_0_to_20_rap_%s_pbpb_psi2S_PtW%d_tnp%d_2107.root",bCont.Data(),isPtW,isTnP),"read");
+  TFile *fEff2 = new TFile(Form("../../primary_inputs/mc_eff_vs_pt_cent_20_to_120_rap_%s_pbpb_psi2S_PtW%d_tnp%d_2107.root",bCont.Data(),isPtW,isTnP),"read");
   TH1D* hEffPt1[15];
   TH1D* hEffPt2[15];
   hEffPt1[0] = (TH1D*) fEff1 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy0_1p2",isTnP,isPtW));

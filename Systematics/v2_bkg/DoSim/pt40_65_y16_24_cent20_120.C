@@ -19,13 +19,12 @@
 #include <Fit/Chi2FCN.h>
 #include <Math/WrappedMultiTF1.h>
 #include <HFitInterface.h>
-#include "../../headers/commonUtility.h"
-#include "../../headers/cutsAndBin.h"
-#include "../../headers/HiEvtPlaneList.h"
-#include "../../headers/Style.h"
-#include "../../headers/tdrstyle.C"
-#include "../../headers/CMS_lumi_v2mass.C"
-
+#include "../../../headers/commonUtility.h"
+#include "../../../headers/cutsAndBin.h"
+#include "../../../headers/HiEvtPlaneList.h"
+#include "../../../headers/Style.h"
+#include "../../../headers/tdrstyle.C"
+#include "../../../headers/CMS_lumi_v2mass.C"
 using namespace std;
 
 const int nParmM = 11;
@@ -645,13 +644,13 @@ Double_t pol3bkg(Double_t* x, Double_t* par)
 }
 //}}}
 
-void doSim_pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
-		float ptLow =  6.5, float ptHigh = 50.0,
-		float yLow = 0.0, float yHigh = 2.4,
-		float SiMuPtCut = 0, float massLow = 3.3, float massHigh =4.3, bool dimusign=true, 
-		int ibkg_vn_sel = fpol1, bool fixSigPar=true)
+void pt40_65_y16_24_cent20_120(int cLow = 20, int cHigh = 120,
+		float ptLow =  4.0, float ptHigh = 6.5,
+		float yLow = 1.6, float yHigh = 2.4,
+		float SiMuPtCut = 0, float massLow = 3.4, float massHigh =4.0, bool dimusign=true, 
+		int ibkg_vn_sel = fpol2, bool fixSigPar=true)
 {
-    TString DATE = "210927";
+    TString DATE = "210920";
     gSystem->mkdir(Form("roots/%s",DATE.Data()),kTRUE);
     gSystem->mkdir(Form("figs/%s",DATE.Data()),kTRUE);
     
@@ -686,11 +685,11 @@ void doSim_pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
 
 	//Get yield distribution{{{
 	//TFile* rf = new TFile(Form("roots/v2mass_hist/Psi2S_NonPrompt_%s.root",kineLabel.Data()),"read");
-	TFile* rf = new TFile(Form("../make_v2_mass_hist/roots/Psi2S_Prompt_%s_Eff1_Acc1_PtW1_TnP1.root",kineLabel.Data()),"read");
+    TFile* rf = new TFile(Form("../make_v2_mass_hist/roots/Psi2S_Prompt_%s_Eff1_Acc1_PtW1_TnP1.root",kineLabel.Data()),"read");
 	TH1D* h_v2_SplusB = (TH1D*) rf->Get("h_v2_SplusB");
 	TGraphAsymmErrors* g_mass = (TGraphAsymmErrors*) rf->Get("g_mass");
 
-	TFile *wf = new TFile(Form("roots/%s/SimFitResult_Prompt_%s.root",DATE.Data(),kineLabel.Data()),"recreate");
+    TFile *wf = new TFile(Form("roots/%s/SimFitResult_Prompt_%s.root",DATE.Data(),kineLabel.Data()),"recreate");
 
 	//define function for simultaneous fitting{{{
 	TF1* fmass_total = new TF1("fmass_total", TotalYield, massLow, massHigh, nParmM);
@@ -731,7 +730,7 @@ void doSim_pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
 	//}}}
 
 	TString kineLabel_ = getKineLabel (ptLow, ptHigh, yLow, yHigh, SiMuPtCut, cLow, cHigh) ;
-	TFile* f_mass = new TFile(Form("../MassFit/data_fit/roots/MassFitResult_%s_PRw_Effw1_Accw1_PtW1_TnP1.root",kineLabel_.Data()),"read");
+    TFile* f_mass = new TFile(Form("../MassFit/data_fit/roots/MassFitResult_%s_PRw_Effw1_Accw1_PtW1_TnP1.root",kineLabel_.Data()),"read");
 	RooWorkspace *ws = new RooWorkspace("workspace");
 	RooDataSet *datasetMass = (RooDataSet*)f_mass->Get("datasetMass");
 	ws->import(*datasetMass);
@@ -747,28 +746,37 @@ void doSim_pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
 	Double_t n_ = ws->var("n_1_A")->getVal();
 	Double_t ratio_ = ws->var("x_A")->getVal();
 	Double_t frac_ = ws->var("f")->getVal();
-    Double_t cheb0_ = ws->var("sl1")->getVal();
-    Double_t cheb1_ = ws->var("sl2")->getVal();
-    Double_t cheb2_ = ws->var("sl3")->getVal();
-	//Double_t cheb0_ = 0.0426;
-	//Double_t cheb1_ = 0.0535;
-	//Double_t cheb2_ = 0.0226;
-	Double_t c_  = 0.150;
-	Double_t c1_ = 0.0010;
-	Double_t c2_ = 0.0006;
-
-	// Double_t cheb0_ = 0.0426;
-	// Double_t cheb1_ = 0.0535;
-	// Double_t cheb2_ = 0.0226;
-	// Double_t c_  = 0.050;
-	// Double_t c1_ = 0.0010;
-	// Double_t c2_ = 0.0006;
+	Double_t cheb0_ = ws->var("sl1")->getVal();
+	Double_t cheb1_ = ws->var("sl2")->getVal();
+	Double_t cheb2_ = ws->var("sl3")->getVal();
+    Double_t c_  = 0.0125535661210;
+    Double_t c1_ = 7.0423465401113;
+    Double_t c2_ = 4.0105430056215;
+    Double_t c3_ = 5.0040702040706;
 	//}}}
+	Double_t c4_ = 0.00010;
 
-
-	Double_t c3_ = 3.0210;
-	Double_t c4_ = -0.0010;
-
+	/*
+     Double_t c_  = 0.0125535661210;
+     Double_t c1_ = 7.0423465401113;
+     Double_t c2_ = 4.0105430056215;
+     Double_t c3_ = 5.0040702040706;
+     
+     Double_t c_  = 0.0125535661210;
+     Double_t c1_ = 7.0423465401113;
+     Double_t c2_ = 4.0105430056219;
+     Double_t c3_ = 5.0040702040706;
+     
+     Double_t c_  = 0.000123384;
+     Double_t c1_ = 0.002133589;
+     Double_t c2_ = 0.000123428;
+     Double_t c3_ = 0.00011006;
+     
+     Double_t c_  = -.000123384;
+     Double_t c1_ = -.002133589;
+     Double_t c2_ = -2.000123428;
+     Double_t c3_ = 0.00011006;
+	   */
 
 	std::cout << "----- OK? ------" << std::endl;
 	Double_t par0[nParmV];
@@ -791,6 +799,7 @@ void doSim_pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
 
     Double_t parLimitLow[nParmV]  = {    0,       0, mean_-0.005,     0,   0.,   0.,    0,     0,  -10, -10, -10,  0, -20, -20, -20,-20};
     Double_t parLimitHigh[nParmV] = {N1_*1.2, Nbkg_*1.2, mean_+0.005,      0.4,    5.,   5.,  5.,  1.,   10,  10,  10, 0.3,  20,  20,  20, 20};
+
 
 	fitter.Config().SetParamsSettings(nParmV_, par0);
 	for(int ipar = 0; ipar<nParmV_; ipar++){
@@ -838,8 +847,8 @@ void doSim_pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
 	int nprm_sigf      = 8;
 	int nprm_bkgf      = 4;
 	int nprm_alpha     = 11;
-	double massYMin=4000;//0
-	double massYMax=7000;//1000
+	double massYMin=0;//0
+	// double massYMax=7000;//1000
 
 	TF1* fyield_bkg = new TF1("fyield_bkg", TotalYieldBkg, massLow, massHigh,nprm_bkgf);
 	fyield_bkg->FixParameter(0, fmass_total->GetParameter(prmid_bkgyield));
@@ -867,7 +876,7 @@ void doSim_pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
 	for(int iparm=0;iparm<nprm_alpha; iparm++){
 		fAlpha->FixParameter(iparm,fvn_simul->GetParameter(iparm));
 	}
-	h_v2_SplusB->GetListOfFunctions()->Add(fAlpha);
+	//h_v2_SplusB->GetListOfFunctions()->Add(fAlpha);
 	//}}}
 
 
@@ -943,7 +952,7 @@ void doSim_pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
 	fAlpha->SetLineColor(kGreen+2);
 	fAlpha->SetLineWidth(2);
 
-	h_v2_SplusB->GetYaxis()->SetRangeUser(0.08,0.23);
+	h_v2_SplusB->GetYaxis()->SetRangeUser(-0.05,0.26);
 	h_v2_SplusB->GetYaxis()->SetTitle("v_{2}^{S+B}");
 	h_v2_SplusB->GetXaxis()->SetTitle("m_{#mu^{+}#mu^{-}} (GeV)");
 	h_v2_SplusB->GetYaxis()->SetLabelSize(0.055);
@@ -1043,7 +1052,7 @@ void doSim_pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
 	leg2->SetTextSize(0.05);
 	leg2->AddEntry(fvn_simul,"v_{2}^{S+B}","l");
 	leg2->AddEntry(fvn_bkg,"v_{2}^{B}","l");
-	leg2->AddEntry(fAlpha,"#alpha","l");
+	//leg2->AddEntry(fAlpha,"#alpha","l");
 	leg2->Draw("same");
 
 	CMS_lumi_v2mass(pad1,iPeriod,iPos);  
@@ -1053,8 +1062,8 @@ void doSim_pt65_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
 	pad1->Draw();
 	pad2->Draw();
 	c_mass_v2->Update();
-	c_mass_v2->SaveAs(Form("figs/%s/v2Mass_Prompt_%s.pdf",DATE.Data(),kineLabel.Data()));
-	wf->cd();
+    c_mass_v2->SaveAs(Form("figs/%s/v2Mass_Prompt_%s.pdf",DATE.Data(),kineLabel.Data()));
+    wf->cd();
 	//store individual function{{{
 	fyieldtot = (TF1*) fmass_total->Clone();
 	fyieldtot->SetName("massfit");

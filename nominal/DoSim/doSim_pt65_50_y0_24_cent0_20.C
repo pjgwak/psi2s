@@ -648,10 +648,10 @@ Double_t pol3bkg(Double_t* x, Double_t* par)
 void doSim_pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20,
 		float ptLow =  6.5, float ptHigh = 50.0,
 		float yLow = 0.0, float yHigh = 2.4,
-		float SiMuPtCut = 0, float massLow = 3.4, float massHigh =4.0, bool dimusign=true, 
+		float SiMuPtCut = 0, float massLow = 3.3, float massHigh =4.1, bool dimusign=true,
 		int ibkg_vn_sel = fpol1, bool fixSigPar=true)
 {
-    TString DATE = "210920";
+    TString DATE = "210928";
     gSystem->mkdir(Form("roots/%s",DATE.Data()),kTRUE);
     gSystem->mkdir(Form("figs/%s",DATE.Data()),kTRUE);
     
@@ -750,28 +750,24 @@ void doSim_pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20,
     Double_t cheb0_ = ws->var("sl1")->getVal();
     Double_t cheb1_ = ws->var("sl2")->getVal();
     Double_t cheb2_ = ws->var("sl3")->getVal();
-	Double_t c_  = 0.022321261;
-	Double_t c1_ = 6.045064434;
-	Double_t c2_ = 4.135131483;
-	
-	Double_t c3_ = 0.2210;
+    Double_t c_  = 0.1641573;
+    Double_t c1_ = 6.1515575;
+    Double_t c2_ = 1.1331594;
 
-	// Double_t c_  = 0.132321198;
-	// Double_t c1_ = 7.245064449;
-	// Double_t c2_ = 7.245131451;
-	
-	// Double_t c_  = 0.022321261;
-	// Double_t c1_ = 6.045064434;
-	// Double_t c2_ = 4.135131483;
-	
-	// Double_t c_  = 0.022321309;
-	// Double_t c1_ = 6.045064552;
-	// Double_t c2_ = 4.135131230;
-	
-	// Double_t c_  = 0.12531034;
-	// Double_t c1_ = 0.310210;
-	// Double_t c2_ = 0.0810;
-
+	Double_t c3_ = 0.013210;
+/*
+ Double_t c_  = 0.151524;
+ Double_t c1_ = 8.5515157;
+ Double_t c2_ = 0.231525;
+ 
+ Double_t c_  = 0.001463;
+ Double_t c1_ = 8.015852;
+ Double_t c2_ = 3.056572;
+ 
+ Double_t c_  = 0.1641573;
+ Double_t c1_ = 6.1515575;
+ Double_t c2_ = 1.1331594;
+  */
 	Double_t c4_ = 0.0010;
 	std::cout << "----- OK? ------" << std::endl;
 	Double_t par0[nParmV];
@@ -793,8 +789,8 @@ void doSim_pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20,
 	par0[15] = c4_;
 
 
-    Double_t parLimitLow[nParmV]  = {    0,       0, mean_-0.005,    0,   0.,   0.,    0,     0,  -10, -10, -10,  0, -20, -20, -20,-20};
-    Double_t parLimitHigh[nParmV] = {N1_*1.2, Nbkg_*1.2, mean_+0.005,   0.4,    5.,   5.,  5.,  1.,   10,  10,  10, 0.3,  20,  20,  20, 20};
+    Double_t parLimitLow[nParmV]  = {    0,       0, mean_-0.005,     0,   0.,   0.,    0,     0,  -5, -5, -5,  0, -20, -20, -20,-20};
+    Double_t parLimitHigh[nParmV] = {N1_*1.2, Nbkg_*1.2, mean_+0.005,      0.1,    5.,   5.,  5.,  1.,   5,  5,  5, 0.2,  20,  20,  20, 20};
 
 
 	fitter.Config().SetParamsSettings(nParmV_, par0);
@@ -872,7 +868,7 @@ void doSim_pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20,
 	for(int iparm=0;iparm<nprm_alpha; iparm++){
 		fAlpha->FixParameter(iparm,fvn_simul->GetParameter(iparm));
 	}
-	h_v2_SplusB->GetListOfFunctions()->Add(fAlpha);
+	// h_v2_SplusB->GetListOfFunctions()->Add(fAlpha);
 	//}}}
 
 
@@ -1048,7 +1044,7 @@ void doSim_pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20,
 	leg2->SetTextSize(0.05);
 	leg2->AddEntry(fvn_simul,"v_{2}^{S+B}","l");
 	leg2->AddEntry(fvn_bkg,"v_{2}^{B}","l");
-	leg2->AddEntry(fAlpha,"#alpha","l");
+	// leg2->AddEntry(fAlpha,"#alpha","l");
 	leg2->Draw("same");
 
 	CMS_lumi_v2mass(pad1,iPeriod,iPos);  

@@ -32,7 +32,7 @@ void PR_pT4_65_y16_24_c20_120(
 		int cLow = 20, int cHigh = 120,
 		int PR=0, // 0: PR, 1: NP, 2: Inc.
 		float ctauCut=0.0395,
-		float massLow = 3.4, float massHigh = 4.0, 
+		float massLow = 3.3, float massHigh = 4.1,
 		bool dimusign=true, bool fAccW = true, bool fEffW = true, bool isMC = false, 
 		int dtype = 1, 
 		int weight_PR = 0 // PR : 0, NP : 1
@@ -40,7 +40,7 @@ void PR_pT4_65_y16_24_c20_120(
 {
 	//Basic Setting
 	gStyle->SetOptStat(0);
-	TString DATE="210920";
+	TString DATE="210928";
 	gStyle->SetEndErrorSize(0);
     gSystem->mkdir(Form("figs/%s",DATE.Data()), kTRUE);
     gSystem->mkdir(Form("roots/%s",DATE.Data()), kTRUE);
@@ -99,8 +99,8 @@ void PR_pT4_65_y16_24_c20_120(
 	//Get Correction histograms
 	bool isTnP = true;
 	bool isPtW = true;
-	TFile *fEff1 = new TFile(Form("../../primary_inputs/mc_eff_vs_pt_cent_0_to_20_rap_%s_pbpb_psi2S_PtW%d_tnp%d.root",wName.Data(),isPtW,isTnP),"read");
-	TFile *fEff2 = new TFile(Form("../../primary_inputs/mc_eff_vs_pt_cent_20_to_120_rap_%s_pbpb_psi2S_PtW%d_tnp%d.root",wName.Data(),isPtW,isTnP),"read");
+	TFile *fEff1 = new TFile(Form("../../primary_inputs/mc_eff_vs_pt_cent_0_to_20_rap_%s_pbpb_psi2S_PtW%d_tnp%d_2107.root",wName.Data(),isPtW,isTnP),"read");
+	TFile *fEff2 = new TFile(Form("../../primary_inputs/mc_eff_vs_pt_cent_20_to_120_rap_%s_pbpb_psi2S_PtW%d_tnp%d_2107.root",wName.Data(),isPtW,isTnP),"read");
 	TH1D* hEffPt1[4];
 	hEffPt1[0] = (TH1D*) fEff1 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy0_1p2",isTnP,isPtW));
 	hEffPt1[1] = (TH1D*) fEff1 -> Get(Form("mc_eff_vs_pt_TnP%d_PtW%d_cent_0_to_20_absy1p2_1p6",isTnP,isPtW));
@@ -224,24 +224,24 @@ void PR_pT4_65_y16_24_c20_120(
 	// vector<float> massBinDiff={3.4,3.46,3.52,3.58,3.64,3.7,3.76,3.82,3.88,3.94,4}; //pT6.5 ~ 50, c0~ 20
 	// vector<float> massBinDiff={3.4,3.465,3.53,3.595,3.66,3.725,3.79,3.855,3.92,4}; // pT4.0 ~ 6.5
 	
+/*
+	 vector<float> massBinDiff;
+	 for (auto i = 3.3; i <= 4.3; i += 0.05) {
+         massBinDiff.push_back(i);
+         cout << i << endl;
+	 }
+	 if (massBinDiff.back() != 4.3) {
+	 massBinDiff.push_back(4.3);
+	 }
 
-	// vector<float> massBinDiff;
-	// for (auto i = 3.4; i <= 4.0; i += 0.05) {
-		// massBinDiff.push_back(i);
-		// // cout << i << endl;
-	// }
-	// if (massBinDiff.back() != 4.0) {
-		// massBinDiff.push_back(4.0);
-	// }
-//
-	// for (auto ele : massBinDiff)
-		// cout << ele << ",";
-	// cout << endl;
-
+	for (auto ele : massBinDiff)
+	 cout << ele << ",";
+	cout << endl;
+*/
 
 	// here
-	vector<float> massBinDiff={3.4,3.5,3.58,3.65,3.7,3.75,3.8,3.9,4};
-	// vector<float> massBinDiff={3.4,3.48,3.58,3.64,3.70,3.75,3.80,3.90,4.0};
+	// vector<float> massBinDiff={3.3,3.4,3.5,3.55,3.6,3.65,3.75,3.8,3.9,4.00,4.09,4.17,4.3};
+	vector<float> massBinDiff={3.3,3.4,3.5,3.6,3.65,3.7,3.8,3.9,4.00,4.08,4.1};
 
 	const int nMassBin = massBinDiff.size() - 1;
 	float massBin_[nMassBin+1];
