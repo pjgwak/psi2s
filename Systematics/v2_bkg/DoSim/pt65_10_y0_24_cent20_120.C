@@ -647,7 +647,7 @@ Double_t pol3bkg(Double_t* x, Double_t* par)
 void pt65_10_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
 		float ptLow =  6.5, float ptHigh = 10.0,
 		float yLow = 0.0, float yHigh = 2.4,
-		float SiMuPtCut = 0, float massLow = 3.4, float massHigh =4.0, bool dimusign=true, 
+		float SiMuPtCut = 0, float massLow = 3.3, float massHigh =4.1, bool dimusign=true, 
 		int ibkg_vn_sel = fpol2, bool fixSigPar=true)
 {
     TString DATE = "210920";
