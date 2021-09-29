@@ -649,7 +649,7 @@ void pt10_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
     float SiMuPtCut = 0, float massLow = 3.3, float massHigh =4.1, bool dimusign=true, 
 	int ibkg_vn_sel = fpol2, bool fixSigPar=true)
 {
-    TString DATE = "210920";
+    TString DATE = "210928";
     gSystem->mkdir(Form("roots/%s",DATE.Data()),kTRUE);
     gSystem->mkdir(Form("figs/%s",DATE.Data()),kTRUE);
     
@@ -749,23 +749,16 @@ void pt10_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
 	Double_t cheb0_ = ws->var("sl1")->getVal();
 	Double_t cheb1_ = ws->var("sl2")->getVal();
 	Double_t cheb2_ = ws->var("sl3")->getVal();
-	//Double_t cheb0_ = 0.0321;
-	//Double_t cheb1_ = 0.0235;
-	//Double_t cheb2_ = 0.0226;
-    // Double_t cheb0_ = 0.0321;
-    // Double_t cheb1_ = 0.1135;
-    // Double_t cheb2_ = 0.0226;
-	Double_t c_  = 0.131;
-	Double_t c1_ = 0.0210;
-	Double_t c2_ = 0.0506;
-	Double_t c3_ = 0.0210;
- //}}}
-    // Double_t cheb0_ = 0.0121;
-    // Double_t cheb1_ = 0.0135;
-    // Double_t cheb2_ = 1.0226;
-    // Double_t c_  = 0.18021;
-    // Double_t c1_ = 2.1210;
-    // Double_t c2_ = 0.0006;
+	Double_t c_  = 0.111513;
+	Double_t c1_ = 0.301342;
+	Double_t c2_ = 3.102345;
+	Double_t c3_ = 0.301112;
+/*
+ Double_t c_  = 0.1215314;
+ Double_t c1_ = 2.40210425;
+ Double_t c2_ = 4.35062455;
+ Double_t c3_ = 3.22102123;
+ */
 
     Double_t c4_ = -0.0010;
     std::cout << "----- OK? ------" << std::endl;
@@ -789,7 +782,7 @@ void pt10_50_y0_24_cent20_120(int cLow = 20, int cHigh = 120,
 
     
     Double_t parLimitLow[nParmV]  = {    0,       0, mean_-0.005,     0,   0.,   0.,    0,     0,  -10, -10, -10,  0, -20, -20, -20,-20};
-    Double_t parLimitHigh[nParmV] = {N1_*1.2, Nbkg_*1.2, mean_+0.005,      0.4,    5.,   5.,  5.,  1.,   10,  10,  10, 0.3,  20,  20,  20, 20};
+    Double_t parLimitHigh[nParmV] = {N1_*1.2, Nbkg_*1.2, mean_+0.005,      0.4,    5.,   5.,  5.,  1.,   10,  10,  10, 0.2,  20,  20,  20, 20};
 
   fitter.Config().SetParamsSettings(nParmV_, par0);
   for(int ipar = 0; ipar<nParmV_; ipar++){

@@ -231,7 +231,7 @@ void MassFit_weight_pt_10p0_50p0_y_0p0_2p4_Cent_20_120(
     */
     
     // myPlot2_A->SetMinimum(2*10);
-    //myPlot2_A->SetMaximum(3000);
+    myPlot2_A->SetMaximum(3*1000);
     // myPlot2_A->GetYaxis()->SetRangeUser(0,340000);
     
     

@@ -105,17 +105,17 @@ void MassFit_weight_pt_6p5_10p0_y_0p0_2p4_Cent_20_120(
     //double paramsupper[8] = {0.4,    1.0,     4.9, 2.9, 1.0,     25.0};
     //double paramslower[8] = {0.01,   0.0,     1., 1., 0.0,      0.0};//pt3-4.5 m_lambda==-25.0
     //Cent.10-20
-    double paramsupper[8] = {0.4,    1.0,     4.9, 3.9, 1.0,     25.0};
-    double paramslower[8] = {0.01,   0.0,     1.1, 1.1, 0.0,      0.0};//pt3-4.5 m_lambda==-25.0
+    double paramsupper[8] = {0.1,    3,     3,   3, 1.0,   25.0};
+    double paramslower[8] = {0,   0,   0, 0,  0,        0.0};//pt3-4.5 m_lambda==-25.0
     //SIGNAL: initial params
     double sigma_1_init = 0.04;
     double x_init = 1.8774;
     double alpha_1_init = 1.9399;
     double n_1_init = 0.9600;
-    double f_init = 0.4;
+    double f_init = 0.76;
     double m_lambda_init = 5;
-    double sl1_mean = 0.542, sl2_mean = 0.54, sl3_mean = 0.52;
-    double N_Jpsi_high = 30000, N_Bkg_high = 600000;
+    double sl1_mean = 0.14, sl2_mean = 0.34, sl3_mean = 0.12;
+    double N_Jpsi_high = 25000, N_Bkg_high = 600000;
 
     double psi_2S_mass = pdgMass.Psi2S;
 
@@ -203,7 +203,7 @@ void MassFit_weight_pt_6p5_10p0_y_0p0_2p4_Cent_20_120(
     myPlot2_A->GetXaxis()->SetTitle("m_{#mu^{+}#mu^{-}} (GeV/c^{2})");
 //###
     //myPlot2_A->SetMinimum(8000);
-    //myPlot2_A->SetMaximum(20000);
+    myPlot2_A->SetMaximum(2.5*10000);
 
     myPlot2_A->Draw();
 

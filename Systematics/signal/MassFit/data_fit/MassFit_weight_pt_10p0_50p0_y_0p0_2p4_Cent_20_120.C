@@ -232,7 +232,7 @@ void MassFit_weight_pt_10p0_50p0_y_0p0_2p4_Cent_20_120(
     */
     
     // myPlot2_A->SetMinimum(2*10);
-    // myPlot2_A->SetMaximum(3000);
+    myPlot2_A->SetMaximum(3*1000);
     // myPlot2_A->GetYaxis()->SetRangeUser(0,340000);
     
     drawText(Form("%.1f < p_{T}^{#mu#mu} < %.1f GeV/c; Cent. %d - %d%s",ptLow, ptHigh, cLow/2, cHigh/2, "%"),text_x,text_y,text_color,text_size);

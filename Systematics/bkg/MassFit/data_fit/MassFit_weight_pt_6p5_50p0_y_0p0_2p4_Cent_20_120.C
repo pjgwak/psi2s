@@ -108,14 +108,14 @@ void MassFit_weight_pt_6p5_50p0_y_0p0_2p4_Cent_20_120(
     double paramslower[8] = {0,   0,     0, 0, 0.0,      0.0};
     
     //SIGNAL: initial params
-    double sigma_1_init = 0.03;
+    double sigma_1_init = 0.025;
     double x_init = 1.7961;
     double alpha_1_init = 1.8582;
     double n_1_init = 1.8503;
-    double f_init = 0.68;
-    double m_lambda_init = 6;
-    double sl1_mean = 0.042, sl2_mean = 0.03, sl3_mean = 0.19;
-    double N_Jpsi_high = 17000, N_Bkg_high = 380000;
+    double f_init = 0.125;
+    double m_lambda_init = 7;
+    double sl1_mean = 0.1, sl2_mean = 0.25, sl3_mean = 0.1;
+    double N_Jpsi_high = 22000, N_Bkg_high = 500000;
 
     double psi_2S_mass = pdgMass.Psi2S;
 
