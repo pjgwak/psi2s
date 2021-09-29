@@ -594,7 +594,7 @@ Double_t pol3bkg(Double_t* x, Double_t* par)
 }
 //}}}
 
-void signal_systematic_doSim_pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20,
+void doSim_pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20,
 		float ptLow =  6.5, float ptHigh = 50.0,
 		float yLow = 0.0, float yHigh = 2.4,
 		float SiMuPtCut = 0, float massLow = 3.3, float massHigh =4.1, bool dimusign=true, 
@@ -699,14 +699,14 @@ void signal_systematic_doSim_pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20
     Double_t cheb0_ = ws->var("sl1")->getVal();
     Double_t cheb1_ = ws->var("sl2")->getVal();
     Double_t cheb2_ = ws->var("sl3")->getVal();
-    Double_t c_  = 0.00503421;
-    Double_t c1_ = -3.0002105;
-    Double_t c2_ = -3.0018104;
+    Double_t c_  = 0.10022911;
+    Double_t c1_ = 8.01001452;
+    Double_t c2_ = 0.05550035;
     
     /*
-     Double_t c_  = 0.000122531034;
-     Double_t c1_ = -2.000001010210;
-     Double_t c2_ = -3.000000001810;
+     Double_t c_  = 0.10022911;
+     Double_t c1_ = 8.01001452;
+     Double_t c2_ = 0.05550035;
      */
 	Double_t c3_ = 0.210;
 	Double_t c4_ = 0.0010;
@@ -730,8 +730,8 @@ void signal_systematic_doSim_pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20
 	par0[15] = c4_;
 
 
-    Double_t parLimitLow[nParmV]  = {    0,       0, mean_-0.005,     0,   0.,   0.,    0,     0,  -10, -10, -10,  0, -20, -20, -20,-20};
-    Double_t parLimitHigh[nParmV] = {N1_*1.2, Nbkg_*1.2, mean_+0.005,      0.4,    5.,   5.,  5.,  1.,   10,  10,  10, 0.3,  20,  20,  20, 20};
+    Double_t parLimitLow[nParmV]  = {    0,       0, mean_-0.01,     0,   0.,   0.,    0,     0,  -10, -10, -10,  0, -20, -20, -20,-20};
+    Double_t parLimitHigh[nParmV] = {N1_*1.3, Nbkg_*1.3, mean_+0.01,      0.4,    5.,   5.,  5.,  1.,   10,  10,  10, 0.2,  20,  20,  20, 20};
 
 
 	fitter.Config().SetParamsSettings(nParmV_, par0);

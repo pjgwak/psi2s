@@ -1,7 +1,7 @@
 #include <iostream>
-#include "../../../headers/rootFitHeaders.h"
-#include "../../../headers/commonUtility.h"
-#include "../../../headers/JpsiUtility.h"
+#include "../../../../headers/rootFitHeaders.h"
+#include "../../../../headers/commonUtility.h"
+#include "../../../../headers/JpsiUtility.h"
 #include <RooGaussian.h>
 #include <RooFormulaVar.h>
 #include <RooCBShape.h>
@@ -12,9 +12,9 @@
 #include "TText.h"
 #include "TArrow.h"
 #include "TFile.h"
-#include "../../../headers/cutsAndBin.h"
-#include "../../../headers/CMS_lumi_v2mass.C"
-#include "../../../headers/tdrstyle.C"
+#include "../../../../headers/cutsAndBin.h"
+#include "../../../../headers/CMS_lumi_v2mass.C"
+#include "../../../../headers/tdrstyle.C"
 #include "RooDataHist.h"
 #include "RooCategory.h"
 #include "RooSimultaneous.h"
@@ -31,11 +31,15 @@ void mc_MassFit_pT6p5_50p0_y_0p0_2p4_cent_20_120(
     // 0.512, 0.2, 0.22
 		)
 {
-    TString DATE = "210920";
+    TString DATE = "210929";
     gStyle->SetEndErrorSize(0);
     gSystem->mkdir(Form("roots/%s",DATE.Data()),kTRUE);
     gSystem->mkdir(Form("figs/%s",DATE.Data()),kTRUE);
 
+    // Caution: MC only uses mass 3.4 ~ 4.0
+    double massLow = 3.4;
+    double massHigh = 4.0;
+    
 	TString bCont;
 	if(PR==0) bCont="Prompt";
 	else if(PR==1) bCont="NonPrompt";
@@ -99,12 +103,12 @@ void mc_MassFit_pT6p5_50p0_y_0p0_2p4_cent_20_120(
 	double paramsupper[8] = {0.1,    3.0,     3, 3, 1.0,     25.0};
 	double paramslower[8] = {0.,   0.0,     0, 0, 0.0,     -0};
 	//SIGNAL: initial params
-	double sigma_1_init = 0.025;
-	double x_init = 1.835;
-	double alpha_1_init = 1.9;
-	double n_1_init = 1.53;
-	double f_init = 0.63;
-    double sl1_mean = 0.312, sl2_mean = 0.2, sl3_mean = 0.22;
+	double sigma_1_init = 0.031;
+	double x_init = 1.8;
+	double alpha_1_init = 1.7;
+	double n_1_init = 1.2;
+	double f_init = 0.42;
+    double sl1_mean = 0.112, sl2_mean = 0.3, sl3_mean = 0.12;
     double N_Jpsi_high = 1700000, N_Bkg_high = 18000;
     
 	double m_lambda_init = 5;
@@ -126,8 +130,8 @@ void mc_MassFit_pT6p5_50p0_y_0p0_2p4_cent_20_120(
     RooAddPdf*  pdfMASS_Jpsi;
 
     //DOUBLE CRYSTAL BALL
-    RooCBShape* cb_2_A = new RooCBShape("cball_2_A", "cystal Ball", *(ws->var("mass")), mean, sigma_2_A, alpha_2_A, n_2_A);
-    pdfMASS_Jpsi = new RooAddPdf("pdfMASS_Jpsi","Signal ",RooArgList(*cb_1_A,*cb_2_A), RooArgList(*f) );
+    RooGaussian* gauss = new RooGaussian("gauss", "gaussian", *(ws->var("mass")), mean, sigma_2_A);
+    pdfMASS_Jpsi = new RooAddPdf("pdfMASS_Jpsi","Signal ",RooArgList(*cb_1_A,*gauss), RooArgList(*f) );
 
     //BACKGROUND
     RooRealVar m_lambda_A("#lambda_A","m_lambda",  m_lambda_init, paramslower[5], paramsupper[5]);
@@ -142,7 +146,6 @@ void mc_MassFit_pT6p5_50p0_y_0p0_2p4_cent_20_120(
     //Build the model
     RooRealVar *N_Jpsi= new RooRealVar("N_Jpsi","inclusive Jpsi signals",0, N_Jpsi_high);
     RooRealVar *N_Bkg = new RooRealVar("N_Bkg","fraction of component 1 in bkg",0, N_Bkg_high);
-    //RooAddPdf* pdfMASS_Tot = new RooAddPdf("pdfMASS_Tot","Jpsi + Bkg",RooArgList(*pdfMASS_Jpsi, *pdfMASS_bkg),RooArgList(*N_Jpsi,*N_Bkg));
     RooAddPdf* pdfMASS_Tot = new RooAddPdf("pdfMASS_Tot","Jpsi + Bkg",RooArgList(*pdfMASS_Jpsi),RooArgList(*N_Jpsi));
     //pdfMASS_Tot = new RooAddPdf("pdfMASS_Tot","Jpsi + Bkg",RooArgList(*pdfMASS_Jpsi, *bkg_1order),RooArgList(*N_Jpsi,*N_Bkg));
     //pdfMASS_Tot = new RooAddPdf("pdfMASS_Tot","PR Jpsi + NP Jpsi + Bkg",RooArgList(*cb_1_A, *cb_2_A, *bkg),RooArgList(*N_JpsiPR,*N_JpsiNP,*N_Bkg));
@@ -195,9 +198,9 @@ void mc_MassFit_pT6p5_50p0_y_0p0_2p4_cent_20_120(
     double f_factor = (double) fitFraction.getVal();
     ws->pdf("pdfMASS_Tot")->plotOn(myPlot2_A,Name("pdfMASS_tot"), LineColor(kBlack), Range(3.4, fit_limit));
     // ws->pdf("cball_1_A")->plotOn(myPlot2_A,Name("cball_1_A"), LineColor(kBlue+2), Range(3.4, 3.87), Normalization(fitFraction.getVal()));
-    // ws->pdf("cball_2_A")->plotOn(myPlot2_A,Name("cball_2_A"), LineColor(kGreen+2), Range(3.4, 3.87), Normalization(1-fitFraction.getVal()));
+    // ws->pdf("gauss")->plotOn(myPlot2_A,Name("gauss"), LineColor(kGreen+2), Range(3.4, 3.87), Normalization(1-fitFraction.getVal()));
     ws->pdf("cball_1_A")->plotOn(myPlot2_A,Name("cball_1_A"), LineColor(kBlue+2), Normalization(fitFraction.getVal()), Range(3.4, fit_limit));
-    ws->pdf("cball_2_A")->plotOn(myPlot2_A,Name("cball_2_A"), LineColor(kGreen+2), Normalization(1-fitFraction.getVal()), Range(3.4, fit_limit));
+    ws->pdf("gauss")->plotOn(myPlot2_A,Name("gauss"), LineColor(kGreen+2), Normalization(1-fitFraction.getVal()), Range(3.4, fit_limit));
     //ws->pdf("pdfMASS_Tot")->plotOn(myPlot2_A,Name("Sig_A"),Components(RooArgSet(*pdfMASS_Jpsi)),LineColor(kOrange+7),LineWidth(2),LineStyle(2));
 
     //make a pretty plot

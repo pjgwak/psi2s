@@ -32,8 +32,8 @@ void MassFit_weight_pt_4p0_6p5_y_1p6_2p4_Cent_20_120(
 {
     TString DATE = "210928";
     gStyle->SetEndErrorSize(0);
-    gSystem->mkdir(Form("roots/mass/%s",DATE.Data()),kTRUE);
-    gSystem->mkdir(Form("figs/mass/%s",DATE.Data()),kTRUE);
+    gSystem->mkdir(Form("roots/%s",DATE.Data()),kTRUE);
+    gSystem->mkdir(Form("figs/%s",DATE.Data()),kTRUE);
 
     TString bCont;
     if(PR==0) bCont="Prompt";
@@ -60,7 +60,7 @@ void MassFit_weight_pt_4p0_6p5_y_1p6_2p4_Cent_20_120(
     RooMsgService::instance().setGlobalKillBelow(ERROR);
     RooMsgService::instance().setSilentMode(true);
 
-    TFile* f1 = new TFile("../make_RooDataSet/roots/OniaRooDataSet_isMC0_pt_4.0_6.5_y_1.6_2.4_Cent_20_120_CtauCtu_0.0395_wPt1_wAccPt1_wTnPPR1_Psi_2S_210927.root","read");
+    TFile* f1 = new TFile("../../make_RooDataSet/roots/OniaRooDataSet_isMC0_pt_4.0_6.5_y_1.6_2.4_Cent_20_120_CtauCtu_0.0395_wPt1_wAccPt1_wTnPPR1_Psi_2S_210928.root","read");
     //###TFile* f1 = new TFile(Form("../make_RooDataSet/roots/OniaRooDataSet_isMC0_Psi2S_PRw_Effw1_Accw1_PtW1_TnP1_20210604.root"));
     // TFile* f1 = new TFile(Form("../data/OniaRooDataSet_isMC0_JPsi_%sw_Effw%d_Accw%d_PtW%d_TnP%d_20210111.root",fname.Data(),fEffW,fAccW,isPtW,isTnP));
 
@@ -105,18 +105,18 @@ void MassFit_weight_pt_4p0_6p5_y_1p6_2p4_Cent_20_120(
     //double paramsupper[8] = {0.4,    1.0,     4.9, 2.9, 1.0,     25.0};
     //double paramslower[8] = {0.01,   0.0,     1., 1., 0.0,      0.0};//pt3-4.5 m_lambda==-25.0
     //Cent.10-20
-    double paramsupper[8] = {0.1,    5,     5, 5, 1,     15.0};
+    double paramsupper[8] = {0.1,    5,     5, 5, 1,     25.0};
     double paramslower[8] = {0,   0.0,     0, 0, 0,      -5.0};
     
     //SIGNAL: initial params
-    double sigma_1_init = 0.0617;
-    double x_init = 0.6341;
-    double alpha_1_init = 2.0493;
-    double n_1_init = 1.6168;
-	double f_init = 0.69;
-	double sl1_mean = 0.61, sl2_mean = 0.23, sl3_mean = 0.35;
-	double N_Jpsi_high =20000, N_Bkg_high = 1600000;
-	double m_lambda_init = 5;
+    double sigma_1_init = 0.0688;
+    double x_init = 1.5388;
+    double alpha_1_init = 2.0335;
+    double n_1_init = 0.8102;
+	double f_init = 0.67;
+	double sl1_mean = 0.1, sl2_mean = 0.25, sl3_mean = 0.15;
+	double N_Jpsi_high = 30000, N_Bkg_high = 1710000;
+	double m_lambda_init = 7;
 
 	double psi_2S_mass = pdgMass.Psi2S;
 
@@ -150,7 +150,7 @@ void MassFit_weight_pt_4p0_6p5_y_1p6_2p4_Cent_20_120(
 	pdfMASS_bkg = new RooChebychev("pdfMASS_bkg","Background",*(ws->var("mass")),RooArgList(*sl1, *sl2, *sl3));
 
 	//Build the model
-	RooRealVar *N_Jpsi= new RooRealVar("N_Jpsi","inclusive Jpsi signals",N_Jpsi_high*0.9,3000, N_Jpsi_high);
+	RooRealVar *N_Jpsi= new RooRealVar("N_Jpsi","inclusive Jpsi signals",N_Jpsi_high*0.89,0, N_Jpsi_high);
 	RooRealVar *N_Bkg = new RooRealVar("N_Bkg","fraction of component 1 in bkg",0, N_Bkg_high);
 	RooAddPdf* pdfMASS_Tot = new RooAddPdf("pdfMASS_Tot","Jpsi + Bkg",RooArgList(*pdfMASS_Jpsi, *pdfMASS_bkg),RooArgList(*N_Jpsi,*N_Bkg));
 	//pdfMASS_Tot = new RooAddPdf("pdfMASS_Tot","Jpsi + Bkg",RooArgList(*pdfMASS_Jpsi, *bkg_1order),RooArgList(*N_Jpsi,*N_Bkg));
@@ -197,7 +197,7 @@ void MassFit_weight_pt_4p0_6p5_y_1p6_2p4_Cent_20_120(
 	Yup = YMax*TMath::Power((YMax/YMin), (0.4/(1.0-0.1-0.4)));
 	myPlot2_A->GetYaxis()->SetRangeUser(Ydown,Yup);
 
-	//myPlot2_A->SetMinimum(2*10);
+	myPlot2_A->SetMaximum(7*10000);
 	myPlot2_A->GetXaxis()->SetLabelSize(0);
 	myPlot2_A->GetXaxis()->SetTitleSize(0);
 	myPlot2_A->GetXaxis()->CenterTitle();

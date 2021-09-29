@@ -747,16 +747,15 @@ void doSim_pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20,
     Double_t cheb0_ = ws->var("sl1")->getVal();
     Double_t cheb1_ = ws->var("sl2")->getVal();
     Double_t cheb2_ = 0.1; // Not used
-	Double_t c_  = 0.0161;
-	Double_t c1_ = 0.02464;
-	Double_t c2_ = 0.0326;
+	Double_t c_  = 0.161;
+	Double_t c1_ = 3.02464;
+	Double_t c2_ = 2.0326;
 
-	// Double_t cheb0_ = 0.551;
-	// Double_t cheb1_ = 0.885;
-	// Double_t cheb2_ = 0.436;
-	// Double_t c_  = 0.136;
-	// Double_t c1_ = -1.0334;
-	// Double_t c2_ = 0.08226;
+    /*
+     Double_t c_  = 0.161;
+     Double_t c1_ = 3.02464;
+     Double_t c2_ = 2.0326;
+     */
 
 	//}}}
 	Double_t c3_ = 0.0010;
@@ -782,7 +781,7 @@ void doSim_pt65_50_y0_24_cent0_20(int cLow = 0, int cHigh = 20,
 
 
     Double_t parLimitLow[nParmV]  = {    0,       0, mean_-0.005,     0,   0.,   0.,    0,     0,  -10, -10, -10,  0, -20, -20, -20,-20};
-    Double_t parLimitHigh[nParmV] = {N1_*1.2, Nbkg_*1.2, mean_+0.005,      0.4,    5.,   5.,  5.,  1.,   10,  10,  10, 0.3,  20,  20,  20, 20};
+    Double_t parLimitHigh[nParmV] = {N1_*1.2, Nbkg_*1.2, mean_+0.005,      0.4,    5.,   5.,  5.,  1.,   10,  10,  10, 0.2,  20,  20,  20, 20};
 
 
 	fitter.Config().SetParamsSettings(nParmV_, par0);

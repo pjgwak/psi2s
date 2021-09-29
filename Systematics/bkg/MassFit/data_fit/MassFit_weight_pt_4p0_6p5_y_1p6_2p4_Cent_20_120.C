@@ -105,15 +105,15 @@ void MassFit_weight_pt_4p0_6p5_y_1p6_2p4_Cent_20_120(
     //double paramsupper[8] = {0.4,    1.0,     4.9, 2.9, 1.0,     25.0};
     //double paramslower[8] = {0.01,   0.0,     1., 1., 0.0,      0.0};//pt3-4.5 m_lambda==-25.0
     //Cent.10-20
-    double paramsupper[8] = {0.1,    5.,     5, 5, 1.,     25.0};
-    double paramslower[8] = {0.0,   0,     0, 0, 0,      -5.};
+    double paramsupper[8] = {0.2, 3.,    3, 6, 1.0,     25.0};
+    double paramslower[8] = {0,   0,     0, 0, 0.0,      0.0};
     
     //SIGNAL: initial params
-    double sigma_1_init = 0.0612;
+    double sigma_1_init = 0.0812;
     double x_init = 0.6341;
     double alpha_1_init = 2.0493;
     double n_1_init = 1.6168;
-	double f_init = .6533;
+	double f_init = .553;
 	double sl1_mean = 0.43, sl2_mean = 0.221, sl3_mean = 0.422;
 	double N_Jpsi_high = 34000, N_Bkg_high = 1810000;
 	double m_lambda_init = 3.8;

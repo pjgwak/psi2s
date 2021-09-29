@@ -747,21 +747,15 @@ void doSim_pt40_65_y16_24_cent20_120(int cLow = 20, int cHigh = 120,
     Double_t cheb0_ = ws->var("sl1")->getVal();
     Double_t cheb1_ = ws->var("sl2")->getVal();
     Double_t cheb2_ = 0.; // Not used
-    Double_t c_  = 0.004546201516;
-    Double_t c1_ = 7.056416966455;
-    Double_t c2_ = 8.035642374654;
+    Double_t c_  = 0.12145283;
+    Double_t c1_ = 4.12142889;
+    Double_t c2_ = 1.05341371;
 	//}}}
 	Double_t c3_ = 0.001110;
     /*
-     Double_t c_  = 0.004546201516;
-     Double_t c1_ = 7.056416966455;
-     Double_t c2_ = 8.035642374654;
-     
-     // pol2
-     Double_t c_  = 0.100;
-     Double_t c1_ = 1.515;
-     Double_t c2_ = 0.300506;
-     Double_t c3_ = 0.0110;
+     Double_t c_  = 0.12145283;
+     Double_t c1_ = 4.12142889;
+     Double_t c2_ = 1.05341371;
      */
 	Double_t c4_ = 0.0010;
 
@@ -785,7 +779,7 @@ void doSim_pt40_65_y16_24_cent20_120(int cLow = 20, int cHigh = 120,
 	par0[15] = c4_;
 
     Double_t parLimitLow[nParmV]  = {    0,       0, mean_-0.005,     0,   0.,   0.,    0,     0,  -10, -10, -10,  0, -20, -20, -20,-20};
-    Double_t parLimitHigh[nParmV] = {N1_*1.2, Nbkg_*1.2, mean_+0.005,      0.4,    5.,   5.,  5.,  1.,   10,  10,  10, 0.3,  20,  20,  20, 20};
+    Double_t parLimitHigh[nParmV] = {N1_*1.2, Nbkg_*1.2, mean_+0.005,      0.4,    5.,   5.,  5.,  1.,   10,  10,  10, 0.25,  20,  20,  20, 20};
 
 
 	fitter.Config().SetParamsSettings(nParmV_, par0);

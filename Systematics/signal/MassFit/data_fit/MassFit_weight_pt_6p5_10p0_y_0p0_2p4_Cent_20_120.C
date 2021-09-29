@@ -1,7 +1,7 @@
 #include <iostream>
-#include "../header/rootFitHeaders.h"
-#include "../header/commonUtility.h"
-#include "../header/JpsiUtility.h"
+#include "../../../../headers/rootFitHeaders.h"
+#include "../../../../headers/commonUtility.h"
+#include "../../../../headers/JpsiUtility.h"
 #include <RooGaussian.h>
 #include <RooFormulaVar.h>
 #include <RooCBShape.h>
@@ -12,9 +12,9 @@
 #include "TText.h"
 #include "TArrow.h"
 #include "TFile.h"
-#include "../header/cutsAndBin.h"
-#include "../header/CMS_lumi_v2mass.C"
-#include "../header/tdrstyle.C"
+#include "../../../../headers/cutsAndBin.h"
+#include "../../../../headers/CMS_lumi_v2mass.C"
+#include "../../../../headers/tdrstyle.C"
 #include "RooDataHist.h"
 #include "RooCategory.h"
 #include "RooSimultaneous.h"
@@ -22,7 +22,7 @@
 using namespace std;
 using namespace RooFit;
 
-void signal_systematic_MassFit_weight_pt_6p5_10p0_y_0p0_2p4_Cent_20_120(
+void MassFit_weight_pt_6p5_10p0_y_0p0_2p4_Cent_20_120(
 		float ptLow=6.5, float ptHigh=10.0,
 		float yLow=0.0, float yHigh=2.4,
 		int cLow=20, int cHigh=120,
@@ -32,8 +32,8 @@ void signal_systematic_MassFit_weight_pt_6p5_10p0_y_0p0_2p4_Cent_20_120(
 {
     TString DATE = "210928";
     gStyle->SetEndErrorSize(0);
-    gSystem->mkdir(Form("roots/mass/%s",DATE.Data()),kTRUE);
-    gSystem->mkdir(Form("figs/mass/%s",DATE.Data()),kTRUE);
+    gSystem->mkdir(Form("roots/%s",DATE.Data()),kTRUE);
+    gSystem->mkdir(Form("figs/%s",DATE.Data()),kTRUE);
 
     TString bCont;
     if(PR==0) bCont="Prompt";
@@ -60,7 +60,7 @@ void signal_systematic_MassFit_weight_pt_6p5_10p0_y_0p0_2p4_Cent_20_120(
     RooMsgService::instance().setGlobalKillBelow(ERROR);
     RooMsgService::instance().setSilentMode(true);
 
-    TFile* f1 = new TFile("../make_RooDataSet/roots/OniaRooDataSet_isMC0_pt_6.5_10.0_y_0.0_2.4_Cent_20_120_CtauCtu_0.0285_wPt1_wAccPt1_wTnPPR1_Psi_2S_210927.root","read");
+    TFile* f1 = new TFile("../../make_RooDataSet/roots/OniaRooDataSet_isMC0_pt_6.5_10.0_y_0.0_2.4_Cent_20_120_CtauCtu_0.0285_wPt1_wAccPt1_wTnPPR1_Psi_2S_210928.root","read");
     //###TFile* f1 = new TFile(Form("../make_RooDataSet/roots/OniaRooDataSet_isMC0_Psi2S_PRw_Effw1_Accw1_PtW1_TnP1_20210604.root"));
     // TFile* f1 = new TFile(Form("../data/OniaRooDataSet_isMC0_JPsi_%sw_Effw%d_Accw%d_PtW%d_TnP%d_20210111.root",fname.Data(),fEffW,fAccW,isPtW,isTnP));
 
@@ -109,9 +109,9 @@ void signal_systematic_MassFit_weight_pt_6p5_10p0_y_0p0_2p4_Cent_20_120(
     double paramslower[8] = {0.01,   0.0,     1.1, 1.1, 0.0,      0.0};//pt3-4.5 m_lambda==-25.0
     //SIGNAL: initial params
     double sigma_1_init = 0.04;
-    double x_init = 1.9033;
-    double alpha_1_init = 1.9153;
-    double n_1_init = 1.6136;
+    double x_init = 1.8774;
+    double alpha_1_init = 1.9399;
+    double n_1_init = 0.9600;
     double f_init = 0.4;
     double m_lambda_init = 5;
     double sl1_mean = 0.542, sl2_mean = 0.54, sl3_mean = 0.52;

@@ -1,7 +1,7 @@
 #include <iostream>
-#include "../../../headers/rootFitHeaders.h"
-#include "../../../headers/commonUtility.h"
-#include "../../../headers/JpsiUtility.h"
+#include "../../../../headers/rootFitHeaders.h"
+#include "../../../../headers/commonUtility.h"
+#include "../../../../headers/JpsiUtility.h"
 #include <RooGaussian.h>
 #include <RooFormulaVar.h>
 #include <RooCBShape.h>
@@ -12,9 +12,9 @@
 #include "TText.h"
 #include "TArrow.h"
 #include "TFile.h"
-#include "../../../headers/cutsAndBin.h"
-#include "../../../headers/CMS_lumi_v2mass.C"
-#include "../../../headers/tdrstyle.C"
+#include "../../../../headers/cutsAndBin.h"
+#include "../../../../headers/CMS_lumi_v2mass.C"
+#include "../../../../headers/tdrstyle.C"
 #include "RooDataHist.h"
 #include "RooCategory.h"
 #include "RooSimultaneous.h"
@@ -30,11 +30,15 @@ void mc_MassFit_pT4p0_6p5_y_1p6_2p4_cent_20_120(
 		int PRw=1, bool fEffW = true, bool fAccW = true, bool isPtW = true, bool isTnP = true
 		)
 {
-	TString DATE = "210922_fix_mass";
+	TString DATE = "210929";
 	gStyle->SetEndErrorSize(0);
 	gSystem->mkdir(Form("roots/%s",DATE.Data()),kTRUE);
 	gSystem->mkdir(Form("figs/%s",DATE.Data()),kTRUE);
 
+    // Caution: MC only uses mass 3.4 ~ 4.0
+    double massLow = 3.4;
+    double massHigh = 4.0;
+    
 	TString bCont;
 	if(PR==0) bCont="Prompt";
 	else if(PR==1) bCont="NonPrompt";
@@ -96,56 +100,55 @@ void mc_MassFit_pT4p0_6p5_y_1p6_2p4_cent_20_120(
 	//***********************************************************************
 
 	// The order is {sigma_1,  x, alpha_1, n_1,   f, m_lambda}
-    double paramsupper[8] = {0.1,    3,   3,   3,    1,     25.0};
-    double paramslower[8] = {0.,   0.,   0.,    0.,      0,  -5.0};
-    double sigma_1_init = 0.085;
+    double paramsupper[8] = {0.4,    3.0,     3, 3, 1.0,     25.0};
+    double paramslower[8] = {0.,   0.0,     0, 0, 0.0,     -0};
+    double sigma_1_init = 0.05;
     double alpha_1_init = 1.77;
-    double x_init = 1.2;
-    double n_1_init = 1.1;
-    double f_init = 0.87;
-    double sl1_mean = .158, sl2_mean = 0.1558, sl3_mean = 0.158;
-    double N_Jpsi_high = 2500000, N_Bkg_high = 10000;
+    double x_init = 1.7;
+    double n_1_init = 1.8;
+    double f_init = 0.6;
+    double sl1_mean = .18, sl2_mean = 0.38, sl3_mean = 0.18;
+    double N_Jpsi_high = 5000000, N_Bkg_high = 10000;
 
 	double m_lambda_init = 5;
     double psi_2S_mass = pdgMass.Psi2S;
 
-	//SIGNAL
-	RooRealVar    mean("m_{J/#Psi}","mean of the signal gaussian mass PDF",psi_2S_mass, psi_2S_mass, psi_2S_mass);
-	RooRealVar   *x_A = new RooRealVar("x_A","sigma ratio ", x_init, paramslower[1], paramsupper[1]);
-	RooRealVar    sigma_1_A("sigma_1_A","width/sigma of the signal gaussian mass PDF",sigma_1_init, paramslower[0], paramsupper[0]);
-	RooFormulaVar sigma_2_A("sigma_2_A","@0*@1",RooArgList(sigma_1_A, *x_A) );
-	RooRealVar    alpha_1_A("alpha_1_A","tail shift", alpha_1_init, paramslower[2], paramsupper[2]);
-	RooFormulaVar alpha_2_A("alpha_2_A","1.0*@0",RooArgList(alpha_1_A) );
-	RooRealVar    n_1_A("n_1_A","power order", n_1_init , paramslower[3], paramsupper[3]);
-	RooFormulaVar n_2_A("n_2_A","1.0*@0",RooArgList(n_1_A) );
-	RooRealVar   *f = new RooRealVar("f","cb fraction", f_init, paramslower[4], paramsupper[4]);
+    //SIGNAL
+    RooRealVar    mean("m_{J/#Psi}","mean of the signal gaussian mass PDF",psi_2S_mass, psi_2S_mass, psi_2S_mass);
+    RooRealVar   *x_A = new RooRealVar("x_A","sigma ratio ", x_init, paramslower[1], paramsupper[1]);
+    RooRealVar    sigma_1_A("sigma_1_A","width/sigma of the signal gaussian mass PDF",sigma_1_init, paramslower[0], paramsupper[0]);
+    RooFormulaVar sigma_2_A("sigma_2_A","@0*@1",RooArgList(sigma_1_A, *x_A) );
+    RooRealVar    alpha_1_A("alpha_1_A","tail shift", alpha_1_init, paramslower[2], paramsupper[2]);
+    RooFormulaVar alpha_2_A("alpha_2_A","1.0*@0",RooArgList(alpha_1_A) );
+    RooRealVar    n_1_A("n_1_A","power order", n_1_init , paramslower[3], paramsupper[3]);
+    RooFormulaVar n_2_A("n_2_A","1.0*@0",RooArgList(n_1_A) );
+    RooRealVar   *f = new RooRealVar("f","cb fraction", f_init, paramslower[4], paramsupper[4]);
 
-	//Set up crystal ball shapes
-	RooCBShape* cb_1_A = new RooCBShape("cball_1_A", "cystal Ball", *(ws->var("mass")), mean, sigma_1_A, alpha_1_A, n_1_A);
-	RooAddPdf*  pdfMASS_Jpsi;
+    //Set up crystal ball shapes
+    RooCBShape* cb_1_A = new RooCBShape("cball_1_A", "cystal Ball", *(ws->var("mass")), mean, sigma_1_A, alpha_1_A, n_1_A);
+    RooAddPdf*  pdfMASS_Jpsi;
 
-	//DOUBLE CRYSTAL BALL
-	RooCBShape* cb_2_A = new RooCBShape("cball_2_A", "cystal Ball", *(ws->var("mass")), mean, sigma_2_A, alpha_2_A, n_2_A);
-	pdfMASS_Jpsi = new RooAddPdf("pdfMASS_Jpsi","Signal ",RooArgList(*cb_1_A,*cb_2_A), RooArgList(*f) );
+    //DOUBLE CRYSTAL BALL
+    RooGaussian* gauss = new RooGaussian("gauss", "gaussian", *(ws->var("mass")), mean, sigma_2_A);
+    pdfMASS_Jpsi = new RooAddPdf("pdfMASS_Jpsi","Signal ",RooArgList(*cb_1_A,*gauss), RooArgList(*f) );
 
-	//BACKGROUND
-	RooRealVar m_lambda_A("#lambda_A","m_lambda",  m_lambda_init, paramslower[5], paramsupper[5]);
-	RooRealVar *sl1 = new RooRealVar("sl1","sl1", sl1_mean, -10., 10.);
-	RooRealVar *sl2 = new RooRealVar("sl2","sl2", sl2_mean, -10., 10.);
-	RooRealVar *sl3 = new RooRealVar("sl3","sl3", sl3_mean, -10., 10.);
+    //BACKGROUND
+    RooRealVar m_lambda_A("#lambda_A","m_lambda",  m_lambda_init, paramslower[5], paramsupper[5]);
+    RooRealVar *sl1 = new RooRealVar("sl1","sl1", sl1_mean, -10., 10.);
+    RooRealVar *sl2 = new RooRealVar("sl2","sl2", sl2_mean, -10., 10.);
+    RooRealVar *sl3 = new RooRealVar("sl3","sl3", sl3_mean, -10., 10.);
 
-	//THIS IS THE BACKGROUND FUNCTION
-	RooChebychev *pdfMASS_bkg;
-	pdfMASS_bkg = new RooChebychev("pdfMASS_bkg","Background",*(ws->var("mass")),RooArgList(*sl1, *sl2, *sl3));
+    //THIS IS THE BACKGROUND FUNCTION
+    RooChebychev *pdfMASS_bkg;
+    pdfMASS_bkg = new RooChebychev("pdfMASS_bkg","Background",*(ws->var("mass")),RooArgList(*sl1, *sl2, *sl3));
 
-	//Build the model
-	RooRealVar *N_Jpsi= new RooRealVar("N_Jpsi","inclusive Jpsi signals",0, N_Jpsi_high);
-	RooRealVar *N_Bkg = new RooRealVar("N_Bkg","fraction of component 1 in bkg",0, N_Bkg_high);
-	//RooAddPdf* pdfMASS_Tot = new RooAddPdf("pdfMASS_Tot","Jpsi + Bkg",RooArgList(*pdfMASS_Jpsi, *pdfMASS_bkg),RooArgList(*N_Jpsi,*N_Bkg));
-	RooAddPdf* pdfMASS_Tot = new RooAddPdf("pdfMASS_Tot","Jpsi",RooArgList(*pdfMASS_Jpsi),RooArgList(*N_Jpsi));
-	//pdfMASS_Tot = new RooAddPdf("pdfMASS_Tot","Jpsi + Bkg",RooArgList(*pdfMASS_Jpsi, *bkg_1order),RooArgList(*N_Jpsi,*N_Bkg));
-	//pdfMASS_Tot = new RooAddPdf("pdfMASS_Tot","PR Jpsi + NP Jpsi + Bkg",RooArgList(*cb_1_A, *cb_2_A, *bkg),RooArgList(*N_JpsiPR,*N_JpsiNP,*N_Bkg));
-	ws->import(*pdfMASS_Tot);
+    //Build the model
+    RooRealVar *N_Jpsi= new RooRealVar("N_Jpsi","inclusive Jpsi signals",0, N_Jpsi_high);
+    RooRealVar *N_Bkg = new RooRealVar("N_Bkg","fraction of component 1 in bkg",0, N_Bkg_high);
+    RooAddPdf* pdfMASS_Tot = new RooAddPdf("pdfMASS_Tot","Jpsi + Bkg",RooArgList(*pdfMASS_Jpsi),RooArgList(*N_Jpsi));
+    //pdfMASS_Tot = new RooAddPdf("pdfMASS_Tot","Jpsi + Bkg",RooArgList(*pdfMASS_Jpsi, *bkg_1order),RooArgList(*N_Jpsi,*N_Bkg));
+    //pdfMASS_Tot = new RooAddPdf("pdfMASS_Tot","PR Jpsi + NP Jpsi + Bkg",RooArgList(*cb_1_A, *cb_2_A, *bkg),RooArgList(*N_JpsiPR,*N_JpsiNP,*N_Bkg));
+    ws->import(*pdfMASS_Tot);
 
 	//nMassBin = 25;
 	TCanvas* c_A =  new TCanvas("canvas_A","My plots",4,4,550,520);
@@ -194,7 +197,7 @@ void mc_MassFit_pT4p0_6p5_y_1p6_2p4_cent_20_120(
     
 	ws->pdf("pdfMASS_Tot")->plotOn(myPlot2_A,Name("pdfMASS_tot"), LineColor(kBlack), Range(3.4, fit_limit));
 	ws->pdf("cball_1_A")->plotOn(myPlot2_A,Name("cball_1_A"), LineColor(kBlue+2), Normalization(fitFraction.getVal()), Range(3.4, fit_limit));
-	ws->pdf("cball_2_A")->plotOn(myPlot2_A,Name("cball_2_A"), LineColor(kGreen+2), Normalization(1-fitFraction.getVal()), Range(3.4, fit_limit));
+	ws->pdf("gauss")->plotOn(myPlot2_A,Name("gauss"), LineColor(kGreen+2), Normalization(1-fitFraction.getVal()), Range(3.4, fit_limit));
 	//ws->pdf("pdfMASS_Tot")->plotOn(myPlot2_A,Name("Sig_A"),Components(RooArgSet(*pdfMASS_Jpsi)),LineColor(kOrange+7),LineWidth(2),LineStyle(2));
 
 	//make a pretty plot
@@ -220,8 +223,8 @@ void mc_MassFit_pT4p0_6p5_y_1p6_2p4_cent_20_120(
 	myPlot2_A->GetXaxis()->SetTitleSize(0);
 	myPlot2_A->GetXaxis()->CenterTitle();
 	if (logY_flag == true) {
-		myPlot2_A->SetMinimum(2*10);
-		myPlot2_A->SetMaximum(10000000000);
+		myPlot2_A->SetMinimum(2*100);
+		myPlot2_A->SetMaximum(90000000000);
 	}
 	else {
 		myPlot2_A->GetYaxis()->SetRangeUser(0,20000);

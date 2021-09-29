@@ -104,23 +104,23 @@ void MassFit_weight_pt_6p5_50p0_y_0p0_2p4_Cent_0_20(
     //double paramsupper[8] = {0.4,    1.0,     4.9, 2.9, 1.0,     25.0};
     //double paramslower[8] = {0.01,   0.0,     1., 1., 0.0,      0.0};//pt3-4.5 m_lambda==-25.0
     //Cent.10-20
-    double paramsupper[8] = {0.1,    3.,     3, 3, 1,     15.0};
-    double paramslower[8] = {0,   0.,     0., 0., 0,      -5};
+    double paramsupper[8] = {0.1, 3.,    3, 6, 1.0,     25.0};
+    double paramslower[8] = {0,   0,     0, 0, 0.0,      0.0};
     
     //SIGNAL: initial params
-    double sigma_1_init = 0.05;
-    double x_init = 1.7964;
+    double sigma_1_init = 0.025;
+    double x_init = 1.7961;
     double alpha_1_init = 1.8582;
-    double n_1_init = 1.8508;
-    double f_init = 0.6;
+    double n_1_init = 1.8503;
+    double f_init = 0.125;
     double m_lambda_init = 7;
-    double sl1_mean = 0.4, sl2_mean = 0.37, sl3_mean = 0.39;
-    double N_Jpsi_high = 20000, N_Bkg_high = 425000;
+    double sl1_mean = 0.01, sl2_mean = 0.3, sl3_mean = 0.1;
+    double N_Jpsi_high = 12000, N_Bkg_high = 415000;
 
     double psi_2S_mass = pdgMass.Psi2S;
 
     //SIGNAL
-    RooRealVar    mean("m_{J/#Psi}","mean of the signal gaussian mass PDF",psi_2S_mass, psi_2S_mass-0.005, psi_2S_mass+0.005);
+    RooRealVar    mean("m_{J/#Psi}","mean of the signal gaussian mass PDF",psi_2S_mass, psi_2S_mass-0.01, psi_2S_mass+0.01);
     RooRealVar   *x_A = new RooRealVar("x_A","sigma ratio ", x_init, x_init, x_init);
     RooRealVar    sigma_1_A("sigma_1_A","width/sigma of the signal gaussian mass PDF",sigma_1_init, paramslower[0], paramsupper[0]);
     RooFormulaVar sigma_2_A("sigma_2_A","@0*@1",RooArgList(sigma_1_A, *x_A) );
@@ -155,7 +155,7 @@ void MassFit_weight_pt_6p5_50p0_y_0p0_2p4_Cent_0_20(
     pdfMASS_bkg = new RooChebychev("pdfMASS_bkg","Background",*(ws->var("mass")),RooArgList(*sl1, *sl2));
 
     //Build the model
-    RooRealVar *N_Jpsi= new RooRealVar("N_Jpsi","inclusive Jpsi signals",N_Jpsi_high*0.8,0, N_Jpsi_high);
+    RooRealVar *N_Jpsi= new RooRealVar("N_Jpsi","inclusive Jpsi signals",N_Jpsi_high*0.95,0, N_Jpsi_high);
     RooRealVar *N_Bkg = new RooRealVar("N_Bkg","fraction of component 1 in bkg",0, N_Bkg_high);
     RooAddPdf* pdfMASS_Tot = new RooAddPdf("pdfMASS_Tot","Jpsi + Bkg",RooArgList(*pdfMASS_Jpsi, *pdfMASS_bkg),RooArgList(*N_Jpsi,*N_Bkg));
     //pdfMASS_Tot = new RooAddPdf("pdfMASS_Tot","Jpsi + Bkg",RooArgList(*pdfMASS_Jpsi, *bkg_1order),RooArgList(*N_Jpsi,*N_Bkg));
