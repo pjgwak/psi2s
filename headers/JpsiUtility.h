@@ -13,7 +13,7 @@ using namespace std;
     bool bkgfit=true;
     bool sigfit=true;
     bool totfit=true;
-    float massLow = 3.4, massHigh = 4.0;
+    float massLow = 3.3, massHigh = 4.1;
     int   nMassBin  = 36; //(massHigh-massLow)*30;
 
     float ctauLow = -4, ctauHigh = 6.5;
